@@ -1,0 +1,470 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+  <!-- <link rel="canonical" href="https://bioproj.extra.cea.fr/redmine/projects/nsap/_modules/capsul/pipeline/pipeline_tools.html" /> -->
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    var bodywrapper = $('.bodywrapper');
+    var sidebarbutton = $('#sidebarbutton');
+    sidebarbutton.css({'height': '900px'});
+  </script>
+
+  </head>
+  <body>
+
+<div class="header-wrapper">
+  <div class="header">
+    <p class="logo">
+      <a href="../../../index.html">
+        <img src="../../../_static/capsul.png" alt="Logo"/>
+      </a>
+    </p><div class="navbar">
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../../installation.html">Installation</a></li>
+        <li class="btn-li">
+          <div class="btn-group">
+		    <a href="../../../documentation.html">Documentation</a>
+		    <a class="btn dropdown-toggle" data-toggle="dropdown">
+		      <span class="caret"></span>
+		    </a>
+		    <ul class="dropdown-menu">
+	          <li class="link-title">CAPSUL</li>
+			  <li><a href="../../../user_guide_tree/index.html">User guide</a></li>
+			  <li><a href="../../../api_tree/index.html">API</a></li>
+			  <li><a href="../../../gui_tree/index.html">GUI</a></li>
+			  <li class="divider"></li>
+		      <li><a href="../../../developer_tree/index.html">Development</a></li>
+		    </ul>
+		  </div>
+        </li>
+        <li><a href="http://neurospin-wiki.org/">NeuroSpin Wiki</a></li>
+      </ul>
+    </div> <!-- end navbar --></div>
+</div>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
+          Report a Bug</a>.
+        </p>
+        <!-- <form action="/scripts/nsap-src-message.php" method="post">
+          <textarea rows="4" name="comments" style="width:175px">Enter here your comments</textarea>
+          <center>
+           <input type="submit" value="Send">
+          </center>
+        </form> -->
+
+      <!-- toc tree -->
+      
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for capsul.pipeline.pipeline_tools</h1><div class="highlight"><pre>
+<span class="c">##########################################################################</span>
+<span class="c"># CAPSUL - Copyright (C) CEA, 2013</span>
+<span class="c"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c"># for details.</span>
+<span class="c">##########################################################################</span>
+
+<span class="c"># System import</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c"># Define the logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="c"># Trait import</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">traits</span> <span class="kn">import</span> <span class="n">api</span> <span class="k">as</span> <span class="n">traits</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">enthought.traits</span> <span class="kn">import</span> <span class="n">api</span> <span class="k">as</span> <span class="n">traits</span>
+
+<span class="c"># Capsul import</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineNode</span>
+
+
+<div class="viewcode-block" id="disable_node_for_downhill_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.disable_node_for_downhill_pipeline.html#capsul.pipeline.pipeline_tools.disable_node_for_downhill_pipeline">[docs]</a><span class="k">def</span> <span class="nf">disable_node_for_downhill_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Disable the selected node, and keep its downhill nodes active.</span>
+
+<span class="sd">    Disable the selected node, and keep its downhill nodes active by</span>
+<span class="sd">    exporting their inputs which come from this one on the main pipeline.</span>
+
+<span class="sd">    Such exports are &quot;temporary exports&quot; and are recorded in nodes in a</span>
+<span class="sd">    &quot;temporary_exports&quot; variable.</span>
+
+<span class="sd">    This operation can be reverted using remove_temporary_exports().</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">     pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to disbale nodes in.</span>
+<span class="sd">    node_name: str (mandatory)</span>
+<span class="sd">        name of the node to be disabled.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span>
+    <span class="c"># check output plugs to be exported in the following nodes</span>
+    <span class="n">to_export</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+            <span class="n">to_export</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">links_to</span><span class="p">)</span>
+    <span class="c"># now check in downhill nodes</span>
+    <span class="k">for</span> <span class="n">link_spec</span> <span class="ow">in</span> <span class="n">to_export</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span> \
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">activated</span><span class="p">:</span>
+            <span class="c"># links to the main node are already OK (exported as outputs).</span>
+            <span class="c"># inactive nodes will not export either.</span>
+            <span class="k">continue</span>
+        <span class="c"># they need to be connected (as input) to the main pipeline node</span>
+        <span class="n">from_main</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">links_from</span> \
+            <span class="k">if</span> <span class="n">link</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">from_main</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;adding export for&#39;</span><span class="p">,</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">pipeline</span><span class="o">.</span><span class="n">export_parameter</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;temporary_exports&#39;</span><span class="p">):</span>
+                <span class="n">temp_exports</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">temporary_exports</span> <span class="o">=</span> <span class="n">temp_exports</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_exports</span> <span class="o">=</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">temporary_exports</span>
+            <span class="n">temp_exports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c"># disable node</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes_activation</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">remove_temporary_exports</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="disable_node_for_uphill_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.disable_node_for_uphill_pipeline.html#capsul.pipeline.pipeline_tools.disable_node_for_uphill_pipeline">[docs]</a><span class="k">def</span> <span class="nf">disable_node_for_uphill_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Disable the selected node, and keep its uphill nodes active.</span>
+
+<span class="sd">    Disable the selected node, and keep its uphill nodes active by</span>
+<span class="sd">    exporting their outputs which go to this one on the main pipeline.</span>
+
+<span class="sd">    Such exports are &quot;temporary exports&quot; and are recorded in nodes in a</span>
+<span class="sd">    &quot;temporary_exports&quot; variable.</span>
+
+<span class="sd">    This operation can be reverted using remove_temporary_exports().</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">     pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to disbale nodes in.</span>
+<span class="sd">    node_name: str (mandatory)</span>
+<span class="sd">        name of the node to be disabled.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span>
+    <span class="c"># check input plugs to be exported in the preceding nodes</span>
+    <span class="n">to_export</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+            <span class="n">to_export</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">links_from</span><span class="p">)</span>
+    <span class="c"># now check in uphill nodes</span>
+    <span class="k">for</span> <span class="n">link_spec</span> <span class="ow">in</span> <span class="n">to_export</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">:</span>
+            <span class="c"># links from the main node are already OK (exported as inputs)</span>
+            <span class="k">continue</span>
+        <span class="c"># they need to be connected (as output) from the main pipeline node</span>
+        <span class="n">to_main</span> <span class="o">=</span> <span class="p">[</span><span class="n">link</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">links_to</span> \
+            <span class="k">if</span> <span class="n">link</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_main</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;addin export for&#39;</span><span class="p">,</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">pipeline</span><span class="o">.</span><span class="n">export_parameter</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;temporary_exports&#39;</span><span class="p">):</span>
+                <span class="n">temp_exports</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">temporary_exports</span> <span class="o">=</span> <span class="n">temp_exports</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_exports</span> <span class="o">=</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">temporary_exports</span>
+            <span class="n">temp_exports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="c"># disable node</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes_activation</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">remove_temporary_exports</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="remove_temporary_exports"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.remove_temporary_exports.html#capsul.pipeline.pipeline_tools.remove_temporary_exports">[docs]</a><span class="k">def</span> <span class="nf">remove_temporary_exports</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Remove the temporary exports made from the selected node.</span>
+
+<span class="sd">    Remove the temporary exports made from the selected node through</span>
+<span class="sd">    disable_node_for_downhill_pipeline() or disable_node_for_uphill_pipeline().</span>
+
+<span class="sd">    Exports in the pipeline, corresponding links, and the &quot;temporary_exports&quot;</span>
+<span class="sd">    variable from the node will be cleared.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">     pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to disbale nodes in.</span>
+<span class="sd">    node_name: str (mandatory)</span>
+<span class="sd">        name of the node to be cleaned.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;temporary_exports&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">temporary_exports</span><span class="p">:</span>
+            <span class="n">plug</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+            <span class="k">print</span> <span class="s">&#39;removing export:&#39;</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">param</span>
+            <span class="n">pipeline_param</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_link</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">-&gt;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">pipeline_param</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_link</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s">-&gt;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pipeline_param</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+            <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_trait</span><span class="p">(</span><span class="n">pipeline_param</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">temporary_exports</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">user_traits_changed</span> <span class="o">=</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="reactivate_node"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.reactivate_node.html#capsul.pipeline.pipeline_tools.reactivate_node">[docs]</a><span class="k">def</span> <span class="nf">reactivate_node</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Re-activate the selected node.</span>
+
+<span class="sd">    Re-activate the selected node after disable_node_for_downhill_pipeline() or</span>
+<span class="sd">    disable_node_for_uphill_pipeline(), and remove the corresponding temporary</span>
+<span class="sd">    exports in otehr nodes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">     pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to disbale nodes in.</span>
+<span class="sd">    node_name: str (mandatory)</span>
+<span class="sd">        name of the node to be reactivated.</span>
+<span class="sd">    direction: int (optional)</span>
+<span class="sd">        bit-wise combination of input (1) and output (2) temporary exports</span>
+<span class="sd">        to be cleared. Default is both ways (3).</span>
+
+<span class="sd">    To revert disable_node_for_downhill_pipeline(), the direction parameter</span>
+<span class="sd">    should strictly be 2 (output).</span>
+<span class="sd">    To revert disable_node_for_uphill_pipeline(), the direction parameter</span>
+<span class="sd">    should strictly be 1 (intput).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes_activation</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+    <span class="c"># clear temporary exports</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span>
+    <span class="n">to_unexport_in</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">to_unexport_out</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">force_update</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">to_unexport_out</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">links_to</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="p">(</span><span class="n">direction</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">to_unexport_in</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">links_from</span><span class="p">)</span>
+    <span class="c"># now check in downhill nodes</span>
+    <span class="k">for</span> <span class="n">link_spec</span> <span class="ow">in</span> <span class="n">to_unexport_out</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">:</span>
+            <span class="c"># links to the main node are already OK (exported as outputs)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;temporary_exports&#39;</span><span class="p">):</span>
+            <span class="n">dest_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">dest_node</span> <span class="o">=</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">temp_exports</span> <span class="o">=</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">temporary_exports</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">temp_exports</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;removing export:&#39;</span><span class="p">,</span> <span class="n">dest_node_name</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">param</span>
+                <span class="n">pipeline_param</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dest_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_link</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s">-&gt;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pipeline_param</span><span class="p">,</span> <span class="n">dest_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_trait</span><span class="p">(</span><span class="n">pipeline_param</span><span class="p">)</span>
+                <span class="n">force_update</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">temp_exports</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_exports</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">temporary_exports</span>
+    <span class="c"># now check in uphill nodes</span>
+    <span class="k">for</span> <span class="n">link_spec</span> <span class="ow">in</span> <span class="n">to_unexport_in</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">:</span>
+            <span class="c"># links to the main node are already OK (exported as outputs)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s">&#39;temporary_exports&#39;</span><span class="p">):</span>
+            <span class="n">source_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">source_node</span> <span class="o">=</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">temp_exports</span> <span class="o">=</span> <span class="n">source_node</span><span class="o">.</span><span class="n">temporary_exports</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">temp_exports</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;removing export:&#39;</span><span class="p">,</span> <span class="n">source_node_name</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="n">param</span>
+                <span class="n">pipeline_param</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">source_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_link</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">-&gt;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">source_node_name</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">pipeline_param</span><span class="p">))</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">remove_trait</span><span class="p">(</span><span class="n">pipeline_param</span><span class="p">)</span>
+                <span class="n">force_update</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">temp_exports</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">temp_exports</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">source_node</span><span class="o">.</span><span class="n">temporary_exports</span>
+    <span class="k">if</span> <span class="n">force_update</span><span class="p">:</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">user_traits_changed</span> <span class="o">=</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="disable_nodes_with_existing_outputs"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.disable_nodes_with_existing_outputs.html#capsul.pipeline.pipeline_tools.disable_nodes_with_existing_outputs">[docs]</a><span class="k">def</span> <span class="nf">disable_nodes_with_existing_outputs</span><span class="p">(</span><span class="n">pipeline</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Disable nodes in a pipeline which outputs contain existing files.</span>
+<span class="sd">    The aim is to prevent overwriting files which have already been processed,</span>
+<span class="sd">    and to allow downstream execution of the remaining steps of the pipeline.</span>
+<span class="sd">    Sub-pipelines nodes are disabled the same way, recursively.</span>
+<span class="sd">    Outputs in the main pipeline which represent existing files are set to</span>
+<span class="sd">    optional.</span>
+
+<span class="sd">    This operation can be reverted using reactivate_pipeline().</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to disbale nodes in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># make optional output parameters which already exist</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">optional</span><span class="p">:</span>
+            <span class="n">trait</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plug_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> \
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">Directory</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">traits</span><span class="o">.</span><span class="n">Undefined</span> \
+                        <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                    <span class="n">plug</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;temporary_optional_plugs&#39;</span><span class="p">):</span>
+                        <span class="n">temp_optional</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">temporary_optional_plugs</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">temp_optional</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">node</span><span class="o">.</span><span class="n">temporary_optional_plugs</span> <span class="o">=</span> <span class="n">temp_optional</span>
+                    <span class="n">temp_optional</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plug_name</span><span class="p">)</span>
+    <span class="c"># check every output of every node</span>
+    <span class="n">sub_pipelines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">disabled_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">):</span>
+            <span class="c"># main pipeline node, switch...</span>
+            <span class="k">continue</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
+        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">optional</span><span class="p">:</span>
+                <span class="n">trait</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plug_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> \
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">Directory</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">traits</span><span class="o">.</span><span class="n">Undefined</span> \
+                            <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                        <span class="n">disabled_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
+                        <span class="k">break</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+            <span class="c"># pipelines will be dealt recursively</span>
+            <span class="n">sub_pipelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;disabling nodes:&#39;</span><span class="p">,</span> <span class="n">disabled_nodes</span>
+    <span class="k">if</span> <span class="n">sub_pipelines</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;checking pipelines:&#39;</span><span class="p">,</span> <span class="n">sub_pipelines</span>
+    <span class="k">for</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+        <span class="c"># disable nodes first, so that those nodes will not have exported inputs</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes_activation</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="c"># then export downhill inputs</span>
+    <span class="k">for</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+        <span class="n">disable_node_for_downhill_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sub_pipeline</span> <span class="ow">in</span> <span class="n">sub_pipelines</span><span class="p">:</span>
+        <span class="n">disable_nodes_with_existing_outputs</span><span class="p">(</span><span class="n">sub_pipeline</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="reactivate_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.reactivate_pipeline.html#capsul.pipeline.pipeline_tools.reactivate_pipeline">[docs]</a><span class="k">def</span> <span class="nf">reactivate_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Reactivate pipeline nodes and optional plugs.</span>
+
+<span class="sd">    Reactivate pipeline nodes and optional plugs after</span>
+<span class="sd">    disable_nodes_with_existing_outputs() have been used.</span>
+<span class="sd">    Sub-pipelines will be processed recursively.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pipeline: Pipeline (mandatory)</span>
+<span class="sd">        pipeline to reactive nodes in.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;temporary_optional_plugs&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">plug_name</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">temporary_optional_plugs</span><span class="p">:</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">plug_name</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">del</span> <span class="n">node</span><span class="o">.</span><span class="n">temporary_optional_plugs</span>
+    <span class="c"># check every node</span>
+    <span class="n">sub_pipelines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">continue</span> <span class="c"># main pipeline</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">):</span>
+            <span class="n">sub_pipelines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">activated</span><span class="p">:</span>
+            <span class="n">reactivate_node</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sub_pipeline</span> <span class="ow">in</span> <span class="n">sub_pipelines</span><span class="p">:</span>
+        <span class="n">reactivate_pipeline</span><span class="p">(</span><span class="n">sub_pipeline</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

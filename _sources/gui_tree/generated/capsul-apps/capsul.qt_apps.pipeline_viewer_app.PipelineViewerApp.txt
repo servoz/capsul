@@ -1,0 +1,13 @@
+:orphan:
+
+capsul.qt_apps.pipeline_viewer_app.PipelineViewerApp
+====================================================
+
+.. currentmodule:: capsul.qt_apps.pipeline_viewer_app
+
+.. autoclass:: PipelineViewerApp
+
+   
+   .. automethod:: __init__
+   
+
