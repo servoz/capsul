@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -131,28 +130,20 @@
 <dt id="capsul.process.process.Process">
 <em class="property">class </em><tt class="descclassname">capsul.process.process.</tt><tt class="descname">Process</tt><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>A process is an atomic component that contains a processing.</p>
-<p class="rubric">Notes</p>
-<p>Type &#8216;Process.help()&#8217; for a full description of this process parameters.
-Type &#8216;&lt;Process&gt;.get_input_spec()&#8217; for a full description of this process input trait types.
-Type &#8216;&lt;Process&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="19%" />
-<col width="70%" />
+<col width="32%" />
+<col width="68%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><cite>name</cite></td>
-<td>str</td>
+<tr class="row-odd"><td><cite>name</cite>: str</td>
 <td>the class name.</td>
 </tr>
-<tr class="row-even"><td><cite>id</cite></td>
-<td>str</td>
+<tr class="row-even"><td><cite>id</cite>: str</td>
 <td>the string description of the class location (ie., module.class).</td>
 </tr>
-<tr class="row-odd"><td><cite>log_file</cite></td>
-<td>str (default None)</td>
+<tr class="row-odd"><td><cite>log_file</cite>: str (default None)</td>
 <td>if None, the log will be generated in the current directory
 otherwise it will be written in log_file path.</td>
 </tr>
@@ -174,8 +165,8 @@ otherwise it will be written in log_file path.</td>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_get_log</span></tt>(exec_info)</td>
 <td>Method that generate the logging structure from the execution information and class attributes.</td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">add_trait</span></tt>(name,&nbsp;*trait)</td>
-<td>Add a new trait.</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.add_trait" title="capsul.process.process.Process.add_trait"><tt class="xref py py-obj docutils literal"><span class="pre">add_trait</span></tt></a>(name,&nbsp;trait)</td>
+<td>Ensure that trait.output and trait.optional are set to a boolean value before calling parent class add_trait.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.save_log" title="capsul.process.process.Process.save_log"><tt class="xref py py-obj docutils literal"><span class="pre">save_log</span></tt></a>(returncode)</td>
 <td>Method to save process execution informations in json format.</td>
@@ -183,10 +174,10 @@ otherwise it will be written in log_file path.</td>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.help" title="capsul.process.process.Process.help"><tt class="xref py py-obj docutils literal"><span class="pre">help</span></tt></a>([returnhelp])</td>
 <td>Method to print the full help.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_help" title="capsul.process.process.Process.get_input_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_input_help</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_help" title="capsul.process.process.Process.get_input_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_input_help</span></tt></a>([rst_formating])</td>
 <td>Generate description for process input parameters.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_help" title="capsul.process.process.Process.get_output_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_output_help</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_help" title="capsul.process.process.Process.get_output_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_output_help</span></tt></a>([rst_formating])</td>
 <td>Generate description for process output parameters.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_commandline" title="capsul.process.process.Process.get_commandline"><tt class="xref py py-obj docutils literal"><span class="pre">get_commandline</span></tt></a>()</td>
@@ -215,6 +206,22 @@ otherwise it will be written in log_file path.</td>
 </tr>
 </tbody>
 </table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&nbsp;</td>
+<td><ul class="first last simple">
+<li>Type &#8216;Process.help()&#8217; for a full description of this process parameters.</li>
+<li>Type &#8216;&lt;Process&gt;.get_input_spec()&#8217; for a full description of this process input trait types.</li>
+<li>Type &#8216;&lt;Process&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="capsul.process.process.Process.__init__">
 <tt class="descname">__init__</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.__init__" title="Permalink to this definition">¶</a></dt>
@@ -236,13 +243,13 @@ process trait name.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>kwargs: dict (optional)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kwargs: dict (optional)</strong> :</p>
 <blockquote>
 <div><p>should correspond to the declared parameter traits.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>results:  ProcessResult object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>results:  ProcessResult object</strong> :</p>
 <blockquote class="last">
 <div><p>contains all execution information.</p>
 </div></blockquote>
@@ -261,6 +268,13 @@ defined in derived classes.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="capsul.process.process.Process.add_trait">
+<tt class="descname">add_trait</tt><big>(</big><em>name</em>, <em>trait</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.add_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.add_trait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that trait.output and trait.optional are set to a
+boolean value before calling parent class add_trait.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="capsul.process.process.Process.get_commandline">
 <tt class="descname">get_commandline</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_commandline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_commandline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to generate a comandline representation of the process.</p>
@@ -274,10 +288,10 @@ defined in derived classes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>returnhelp: bool (optional, default False)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returnhelp: bool (optional, default False)</strong> :</p>
 <blockquote class="last">
-<div><p>if True return the help string message,
-otherwise display it on the console.</p>
+<div><p>if True return the help string message formatted in rst,
+otherwise display the raw help string message on the console.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -287,13 +301,19 @@ otherwise display it on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_input_help">
-<tt class="descname">get_input_help</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_help" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_input_help</tt><big>(</big><em>rst_formating=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate description for process input parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong> :</p>
+<blockquote>
+<div><p>if True generate a rst table witht the input descriptions.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
 <blockquote class="last">
 <div><p>the class input traits help</p>
 </div></blockquote>
@@ -311,7 +331,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
 <blockquote class="last">
 <div><p>a string representation of all the input trait specifications.</p>
 </div></blockquote>
@@ -329,7 +349,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
 <blockquote class="last">
 <div><p>a dictionary with all the input trait names and values.</p>
 </div></blockquote>
@@ -347,7 +367,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>log: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>log: dict</strong> :</p>
 <blockquote class="last">
 <div><p>the content of the log file.</p>
 </div></blockquote>
@@ -359,13 +379,19 @@ otherwise display it on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_output_help">
-<tt class="descname">get_output_help</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_help" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_output_help</tt><big>(</big><em>rst_formating=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate description for process output parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong> :</p>
+<blockquote>
+<div><p>if True generate a rst table witht the input descriptions.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
 <blockquote class="last">
 <div><p>the trait output help descriptions</p>
 </div></blockquote>
@@ -383,7 +409,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
 <blockquote class="last">
 <div><p>a string representation of all the output trait specifications.</p>
 </div></blockquote>
@@ -401,7 +427,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
 <blockquote class="last">
 <div><p>a dictionary with all the output trait names and values.</p>
 </div></blockquote>
@@ -419,13 +445,13 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
 <blockquote class="last">
 <div><p>the trait value we want to access</p>
 </div></blockquote>
@@ -443,7 +469,7 @@ otherwise display it on the console.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>cls: process class (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cls: process class (mandatory)</strong> :</p>
 <blockquote>
 <div><p>a process class</p>
 </div></blockquote>
@@ -456,6 +482,25 @@ otherwise display it on the console.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.process.process.Process.make_commandline_argument">
+<tt class="descname">make_commandline_argument</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.make_commandline_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.make_commandline_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>This helper function may be used to build non-trivial commandline
+arguments in get_commandline implementations.
+Basically it concatenates arguments, but it also takes care of keeping
+track of temporary file objects (if any), and converts non-string
+arguments to strings (using repr()).</p>
+<p>Ex:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">process</span><span class="o">.</span><span class="n">make_commandline_argument</span><span class="p">(</span><span class="s">&#39;param=&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will return the same as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;param=&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span>
+</pre></div>
+</div>
+<p>if self.param is a string (file name) or a temporary path.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -474,7 +519,7 @@ file is generated in the process call current working directory.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>returncode: ProcessResult</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returncode: ProcessResult</strong> :</p>
 <blockquote class="last">
 <div><p>the process result return code.</p>
 </div></blockquote>
@@ -494,7 +539,7 @@ special _Undefined trait value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>

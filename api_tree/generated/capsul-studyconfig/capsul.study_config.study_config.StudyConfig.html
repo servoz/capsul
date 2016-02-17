@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -181,7 +180,7 @@ file name is either defined in the global configuration or in
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.run" title="capsul.study_config.study_config.StudyConfig.run"><tt class="xref py py-obj docutils literal"><span class="pre">run</span></tt></a>(process_or_pipeline[,&nbsp;...])</td>
-<td>Method to execute a process or a pipline in a study configuration environment.</td>
+<td>Method to execute a process or a pipline in a study configuration  environment.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.reset_process_counter" title="capsul.study_config.study_config.StudyConfig.reset_process_counter"><tt class="xref py py-obj docutils literal"><span class="pre">reset_process_counter</span></tt></a>()</td>
 <td>Method to reset the process counter to one.</td>
@@ -211,7 +210,7 @@ file name is either defined in the global configuration or in
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>study_name: Name of the study to configure. This name is used to</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>study_name: Name of the study to configure. This name is used to</strong> :</p>
 <blockquote>
 <div><p>identify specific configuration for a study.</p>
 </div></blockquote>
@@ -245,7 +244,7 @@ files (or from init_config).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name.</p>
 </div></blockquote>
@@ -274,13 +273,13 @@ configuration.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name we want to access</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>trait: trait</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>trait: trait</strong> :</p>
 <blockquote class="last">
 <div><p>the trait we want to access</p>
 </div></blockquote>
@@ -301,13 +300,13 @@ configuration element.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
 <blockquote class="last">
 <div><p>the trait value we want to access</p>
 </div></blockquote>
@@ -335,7 +334,7 @@ initialization.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>config_module_name: Name of the module to load (e.g. &#8220;FSLConfig&#8221;).</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>config_module_name: Name of the module to load (e.g. &#8220;FSLConfig&#8221;).</strong> :</p>
 <p class="last"><strong>config: dictionary containing the configuration of the study.</strong> :</p>
 </td>
 </tr>
@@ -373,19 +372,20 @@ self.study_name) is used if it exists.</p>
 <dl class="method">
 <dt id="capsul.study_config.study_config.StudyConfig.run">
 <tt class="descname">run</tt><big>(</big><em>process_or_pipeline</em>, <em>executer_qc_nodes=True</em>, <em>verbose=1</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/study_config/study_config.html#StudyConfig.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.study_config.StudyConfig.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to execute a process or a pipline in a study configuration
-environment.</p>
-<blockquote>
-<div><p>Only pipeline nodes can be filtered on the &#8216;executer_qc_nodes&#8217;
+<dd><dl class="docutils">
+<dt>Method to execute a process or a pipline in a study configuration</dt>
+<dd><p class="first">environment.</p>
+<p>Only pipeline nodes can be filtered on the &#8216;executer_qc_nodes&#8217;
 attribute.</p>
-<p>A valid output directory is exepcted to execute the process or the
+<p class="last">A valid output directory is exepcted to execute the process or the
 pepeline without soma-workflow.</p>
-</div></blockquote>
+</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>process_or_pipeline: Process or Pipeline instance (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process_or_pipeline: Process or Pipeline instance (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the process or pipeline we want to execute</p>
 </div></blockquote>
@@ -412,7 +412,7 @@ process nodes.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>file: file or str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>file: file or str (mandatory)</strong> :</p>
 <blockquote class="last">
 <div><p>either a writable opened file or the path to the output json file.</p>
 </div></blockquote>
@@ -432,7 +432,7 @@ send an error message to the logger.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>new_config: ordered dict (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>new_config: ordered dict (mandatory)</strong> :</p>
 <blockquote class="last">
 <div><p>the structure that contain the default study configuration:
 see the class attributes to build this structure.</p>
@@ -451,7 +451,7 @@ see the class attributes to build this structure.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>
@@ -473,7 +473,7 @@ see the class attributes to build this structure.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>json_fname: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>json_fname: str (mandatory)</strong> :</p>
 <blockquote class="last">
 <div><p>the path to the output json file.</p>
 </div></blockquote>

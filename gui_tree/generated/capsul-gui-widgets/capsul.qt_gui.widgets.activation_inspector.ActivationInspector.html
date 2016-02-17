@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+  <!-- <link rel="canonical" href="https://bioproj.extra.cea.fr/redmine/projects/nsap/gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html" /> -->
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    var bodywrapper = $('.bodywrapper');
+    var sidebarbutton = $('#sidebarbutton');
+    sidebarbutton.css({'height': '900px'});
+  </script>
+
+  </head>
+  <body>
+
+<div class="header-wrapper">
+  <div class="header">
+    <p class="logo">
+      <a href="../../../index.html">
+        <img src="../../../_static/capsul.png" alt="Logo"/>
+      </a>
+    </p><div class="navbar">
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../../installation.html">Installation</a></li>
+        <li class="btn-li">
+          <div class="btn-group">
+		    <a href="../../../documentation.html">Documentation</a>
+		    <a class="btn dropdown-toggle" data-toggle="dropdown">
+		      <span class="caret"></span>
+		    </a>
+		    <ul class="dropdown-menu">
+	          <li class="link-title">CAPSUL</li>
+			  <li><a href="../../../user_guide_tree/index.html">User guide</a></li>
+			  <li><a href="../../../api_tree/index.html">API</a></li>
+			  <li><a href="../../index.html">GUI</a></li>
+			  <li class="divider"></li>
+		      <li><a href="../../../developer_tree/index.html">Development</a></li>
+		    </ul>
+		  </div>
+        </li>
+        <li><a href="http://neurospin-wiki.org/">NeuroSpin Wiki</a></li>
+      </ul>
+    </div> <!-- end navbar --></div>
+</div>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+          </p>
+        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
+          Report a Bug</a>.
+        </p>
+        <!-- <form action="/scripts/nsap-src-message.php" method="post">
+          <textarea rows="4" name="comments" style="width:175px">Enter here your comments</textarea>
+          <center>
+           <input type="submit" value="Send">
+          </center>
+        </form> -->
+
+      <!-- toc tree -->
+      <ul>
+<li><a class="reference internal" href="#">capsul.qt_gui.widgets.activation_inspector.ActivationInspector</a></li>
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="capsul-qt-gui-widgets-activation-inspector-activationinspector">
+<h1>capsul.qt_gui.widgets.activation_inspector.ActivationInspector<a class="headerlink" href="#capsul-qt-gui-widgets-activation-inspector-activationinspector" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector">
+<em class="property">class </em><tt class="descclassname">capsul.qt_gui.widgets.activation_inspector.</tt><tt class="descname">ActivationInspector</tt><big>(</big><em>pipeline</em>, <em>ui_file=None</em>, <em>record_file=None</em>, <em>developper_view=None</em>, <em>parent=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Widget to display the pipeline activation process step by step.</p>
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>pipeline</em>, <em>ui_file=None</em>, <em>record_file=None</em>, <em>developper_view=None</em>, <em>parent=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the ActivationInspector class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: capsul.Pipeline (mandatory)</strong> :</p>
+<blockquote>
+<div><p>the pipeline we want to inspect.</p>
+</div></blockquote>
+<p><strong>ui_file: str (optional)</strong> :</p>
+<blockquote>
+<div><p>the path to the qt user interface description file.
+If not specified, it will find its standard one.</p>
+</div></blockquote>
+<p><strong>record_file: str (optional)</strong> :</p>
+<blockquote>
+<div><p>a file path where the activation steps are recorded.
+If not specified (None), it will create a temporary file.</p>
+</div></blockquote>
+<p><strong>developper_view: PipelineDevelopperView (optional)</strong> :</p>
+<blockquote class="last">
+<div><p>if specified it is possible to click on a plug to set a filter
+pattern and to update the pipeline activation accordingly.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.add_controls_to_ui">
+<tt class="descname">add_controls_to_ui</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.add_controls_to_ui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.add_controls_to_ui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to find dynamic controls</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_next">
+<tt class="descname">find_next</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.find_next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward search for a pattern in the activation list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>is_found: int</strong> :</p>
+<blockquote class="last">
+<div><p>1 if a match has been found, 0 otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_previous">
+<tt class="descname">find_previous</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.find_previous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_previous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Backward search for a pattern in the activation list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>is_found: bool</strong> :</p>
+<blockquote class="last">
+<div><p>True if a match has been found, False otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.refresh_activation_from_record">
+<tt class="descname">refresh_activation_from_record</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.refresh_activation_from_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.refresh_activation_from_record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to display pipeline activation steps from the recorded file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.set_filter_pattern">
+<tt class="descname">set_filter_pattern</tt><big>(</big><em>filter_pattern</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.set_filter_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.set_filter_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that set a filter pattern.</p>
+<p>Try a forward search followed by a backward one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filter_pattern: str (mandatory)</strong> :</p>
+<blockquote class="last">
+<div><p>the filter pattern we want to set.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.show">
+<tt class="descname">show</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows the widget and its child widgets.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.qt_gui.widgets.activation_inspector.ActivationInspector.update_pipeline_activation">
+<tt class="descname">update_pipeline_activation</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/activation_inspector.html#ActivationInspector.update_pipeline_activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.update_pipeline_activation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that is used to replay the activation step by step.</p>
+<p>When a specific activation step is selected, the pipeline will reflect
+the selected activation status</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+</div>
+  </body>
+</html>

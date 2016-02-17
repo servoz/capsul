@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -131,7 +130,9 @@
 <dt id="capsul.pipeline.pipeline.Pipeline">
 <em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline.</tt><tt class="descname">Pipeline</tt><big>(</big><em>autoexport_nodes_parameters=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pipeline containing Process nodes, and links between node parameters.</p>
-<p>A Pipeline is normally subclassed, and its <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a> method is overloaded to define its nodes and links. <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a> will be called by the pipeline constructor.</p>
+<p>A Pipeline is normally subclassed, and its <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a>
+method is overloaded to define its nodes and links.
+<a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a> will be called by the pipeline constructor.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
 
 <span class="k">class</span> <span class="nc">MyPipeline</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">):</span>
@@ -146,25 +147,63 @@
       <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s">&#39;proc2.out1-&gt;main_switch.in2_switch_out2&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After execution of <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a>, the inner nodes parameters which are not connected will be automatically exported to the parent pipeline, with names prefixed with their process name, unless they are listed in a special &#8220;do_not_export&#8221; list (passed to <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_process" title="capsul.pipeline.pipeline.Pipeline.add_process"><tt class="xref py py-meth docutils literal"><span class="pre">add_process()</span></tt></a> or stored in the pipeline instance).</p>
+<p>After execution of <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a>, the inner nodes
+parameters which are not connected will be automatically exported to the
+parent pipeline, with names prefixed with their process name, unless they
+are listed in a special &#8220;do_not_export&#8221; list (passed to
+<a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_process" title="capsul.pipeline.pipeline.Pipeline.add_process"><tt class="xref py py-meth docutils literal"><span class="pre">add_process()</span></tt></a> or stored in the pipeline instance).</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">MyPipeline</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">proc1_input</span>
 <span class="go">&lt;undefined&gt;</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
-<p>Type &#8216;Pipeline.help()&#8217; for a full description of this process parameters.
-Type &#8216;&lt;Pipeline&gt;.get_input_spec()&#8217; for a full description of this process input trait types.
-Type &#8216;&lt;Pipeline&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</p>
+<p><strong>Nodes</strong></p>
+<p>A pipeline is made of nodes, and links between their parameters. Several
+types of nodes may be part of a pipeline:</p>
+<ul class="simple">
+<li>process nodes (<a class="reference internal" href="capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode" title="capsul.pipeline.pipeline_nodes.ProcessNode"><tt class="xref py py-class docutils literal"><span class="pre">pipeline_nodes.ProcessNode</span></tt></a>) are the leaf nodes
+which represent actual processing bricks.</li>
+<li>pipeline nodes (<a class="reference internal" href="capsul.pipeline.pipeline_nodes.PipelineNode.html#capsul.pipeline.pipeline_nodes.PipelineNode" title="capsul.pipeline.pipeline_nodes.PipelineNode"><tt class="xref py py-class docutils literal"><span class="pre">pipeline_nodes.PipelineNode</span></tt></a>) are sub-pipelines
+which allow to reuse an existing pipeline within another one</li>
+<li>switch nodes (<a class="reference internal" href="capsul.pipeline.pipeline_nodes.Switch.html#capsul.pipeline.pipeline_nodes.Switch" title="capsul.pipeline.pipeline_nodes.Switch"><tt class="xref py py-class docutils literal"><span class="pre">pipeline_nodes.Switch</span></tt></a>) allows to select values
+between several possible inputs. The switch mechanism also allows to select
+between several alternative processes or processing branchs.</li>
+<li>iterative process (:py:class:process_iteration.ProcessIteration`)
+represent parallel processing of the same pipeline on a set of parameters.</li>
+</ul>
+<p>Note that you normally do not instantiate these nodes explicitly when
+building a pipeline. Rather programmers may call the
+<a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_process" title="capsul.pipeline.pipeline.Pipeline.add_process"><tt class="xref py py-meth docutils literal"><span class="pre">add_process()</span></tt></a>, <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_switch" title="capsul.pipeline.pipeline.Pipeline.add_switch"><tt class="xref py py-meth docutils literal"><span class="pre">add_switch()</span></tt></a>,
+<a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_iterative_process" title="capsul.pipeline.pipeline.Pipeline.add_iterative_process"><tt class="xref py py-meth docutils literal"><span class="pre">add_iterative_process()</span></tt></a> methods.</p>
+<p><strong>Nodes activation</strong></p>
+<p>Pipeline nodes may be enabled or disabled. Disabling a node will trigger
+a global pipeline nodes activation step, where all nodes which do not form
+a complete chain will be inactive. This way a branch may be disabled by
+disabling one of its nodes. This process is used by the switch system,
+which allows to select one processing branch betwen several, and disables
+the unselected ones.</p>
+<p><strong>Pipeline steps</strong></p>
+<p>Pipelines may define execution steps: they are user-oriented groups of nodes
+that are to be run together, or disabled together for runtime execution.
+They are intended to allow partial, or step-by-step execution. They do not
+work like the nodes enabling mechanism described above.</p>
+<p>Steps may be defined within the <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition()</span></tt></a> method.
+See <a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_pipeline_step" title="capsul.pipeline.pipeline.Pipeline.add_pipeline_step"><tt class="xref py py-meth docutils literal"><span class="pre">add_pipeline_step()</span></tt></a>.</p>
+<p>Note also that pipeline steps only act at the highest level: if a
+sub-pipeline has disabled steps, they will not be taken into account in the
+higher level pipeline execution, because executing by steps a part of a
+sub-pipeline within the context of a higher one does generally not make
+sense.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="28%" />
-<col width="72%" />
+<col width="31%" />
+<col width="69%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><cite>nodes</cite>: dict {node_name: node}</td>
-<td>a dictionary containing the pipline nodes and where the pipeline node name is &#8216;&#8217;</td>
+<td>a dictionary containing the pipline nodes and where the pipeline node
+name is &#8216;&#8217;</td>
 </tr>
 <tr class="row-even"><td><cite>workflow_list</cite>: list</td>
 <td>a list of odered nodes that can be executed</td>
@@ -202,10 +241,10 @@ Type &#8216;&lt;Pipeline&gt;.get_output_spec()&#8217; for a full description of 
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.export_parameter" title="capsul.pipeline.pipeline.Pipeline.export_parameter"><tt class="xref py py-obj docutils literal"><span class="pre">export_parameter</span></tt></a>(node_name,&nbsp;plug_name[,&nbsp;...])</td>
 <td>Export a node plug at the pipeline level.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes" title="capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">workflow_ordered_nodes</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes" title="capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">workflow_ordered_nodes</span></tt></a>([remove_disabled_steps])</td>
 <td>Generate a workflow: list of process node to execute</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.workflow_graph" title="capsul.pipeline.pipeline.Pipeline.workflow_graph"><tt class="xref py py-obj docutils literal"><span class="pre">workflow_graph</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.workflow_graph" title="capsul.pipeline.pipeline.Pipeline.workflow_graph"><tt class="xref py py-obj docutils literal"><span class="pre">workflow_graph</span></tt></a>([remove_disabled_steps])</td>
 <td>Generate a workflow graph</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.update_nodes_and_plugs_activation" title="capsul.pipeline.pipeline.Pipeline.update_nodes_and_plugs_activation"><tt class="xref py py-obj docutils literal"><span class="pre">update_nodes_and_plugs_activation</span></tt></a>()</td>
@@ -218,10 +257,44 @@ Type &#8216;&lt;Pipeline&gt;.get_output_spec()&#8217; for a full description of 
 <td>Parse parameter of a node from its description.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.find_empty_parameters" title="capsul.pipeline.pipeline.Pipeline.find_empty_parameters"><tt class="xref py py-obj docutils literal"><span class="pre">find_empty_parameters</span></tt></a>()</td>
-<td>Find internal File/Directory parameters not exported to the main</td>
+<td>Find internal File/Directory parameters not exported to the main input/output parameters of the pipeline with empty values.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.count_items" title="capsul.pipeline.pipeline.Pipeline.count_items"><tt class="xref py py-obj docutils literal"><span class="pre">count_items</span></tt></a>()</td>
 <td>Count pipeline items to get its size.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.define_pipeline_steps" title="capsul.pipeline.pipeline.Pipeline.define_pipeline_steps"><tt class="xref py py-obj docutils literal"><span class="pre">define_pipeline_steps</span></tt></a>(steps)</td>
+<td>Define steps in the pipeline.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.add_pipeline_step" title="capsul.pipeline.pipeline.Pipeline.add_pipeline_step"><tt class="xref py py-obj docutils literal"><span class="pre">add_pipeline_step</span></tt></a>(step_name,&nbsp;nodes)</td>
+<td>Add a step definiton to the pipeline (see also define_steps).</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.remove_pipeline_step" title="capsul.pipeline.pipeline.Pipeline.remove_pipeline_step"><tt class="xref py py-obj docutils literal"><span class="pre">remove_pipeline_step</span></tt></a>(step_name)</td>
+<td>Remove the given step</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.disabled_pipeline_steps_nodes" title="capsul.pipeline.pipeline.Pipeline.disabled_pipeline_steps_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">disabled_pipeline_steps_nodes</span></tt></a>()</td>
+<td>List nodes disabled for runtime execution</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.get_pipeline_step_nodes" title="capsul.pipeline.pipeline.Pipeline.get_pipeline_step_nodes"><tt class="xref py py-obj docutils literal"><span class="pre">get_pipeline_step_nodes</span></tt></a>(step_name)</td>
+<td>Get the nodes in the given pipeline step</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline.Pipeline.enable_all_pipeline_steps" title="capsul.pipeline.pipeline.Pipeline.enable_all_pipeline_steps"><tt class="xref py py-obj docutils literal"><span class="pre">enable_all_pipeline_steps</span></tt></a>()</td>
+<td>Set all defined steps (using add_step() or define_steps()) to be enabled.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>&nbsp;</td>
+<td><ul class="first last simple">
+<li>Type &#8216;Pipeline.help()&#8217; for a full description of this process parameters.</li>
+<li>Type &#8216;&lt;Pipeline&gt;.get_input_spec()&#8217; for a full description of this process input trait types.</li>
+<li>Type &#8216;&lt;Pipeline&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -233,7 +306,7 @@ Type &#8216;&lt;Pipeline&gt;.get_output_spec()&#8217; for a full description of 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>autoexport_nodes_parameters: bool</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>autoexport_nodes_parameters: bool</strong> :</p>
 <blockquote class="last">
 <div><p>if True (default) nodes containing pipeline plugs are automatically
 exported.</p>
@@ -246,31 +319,39 @@ exported.</p>
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.add_iterative_process">
-<tt class="descname">add_iterative_process</tt><big>(</big><em>name</em>, <em>process</em>, <em>iterative_plugs=None</em>, <em>do_not_export=None</em>, <em>make_optional=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.add_iterative_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.add_iterative_process" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_iterative_process</tt><big>(</big><em>name</em>, <em>process</em>, <em>iterative_plugs=None</em>, <em>do_not_export=None</em>, <em>make_optional=None</em>, <em>inputs_to_copy=None</em>, <em>inputs_to_clean=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.add_iterative_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.add_iterative_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new iterative node in the pipeline.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
-<div><p>the node name (has to be unique)</p>
+<div><p>the node name (has to be unique).</p>
 </div></blockquote>
 <p><strong>process: Process (mandatory)</strong> :</p>
 <blockquote>
-<div><p>the process we want to add</p>
+<div><p>the process we want to add.</p>
 </div></blockquote>
 <p><strong>iterative_plugs: list of str (optional)</strong> :</p>
 <blockquote>
-<div><p>a list of plug names on which we want to iterate</p>
+<div><p>a list of plug names on which we want to iterate.</p>
 </div></blockquote>
 <p><strong>do_not_export: list of str (optional)</strong> :</p>
 <blockquote>
-<div><p>a list of plug names that we do not want to export</p>
+<div><p>a list of plug names that we do not want to export.</p>
 </div></blockquote>
 <p><strong>make_optional: list of str (optional)</strong> :</p>
+<blockquote>
+<div><p>a list of plug names that we do not want to export.</p>
+</div></blockquote>
+<p><strong>inputs_to_copy: list of str (optional)</strong> :</p>
+<blockquote>
+<div><p>a list of item to copy.</p>
+</div></blockquote>
+<p><strong>inputs_to_clean: list of str (optional)</strong> :</p>
 <blockquote class="last">
-<div><p>a list of plug names that we do not want to export</p>
+<div><p>a list of temporary items.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -288,7 +369,7 @@ optional.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
 <blockquote>
 <div><p>link descriptionof the form:
 &#8220;node.output-&gt;other_node.input&#8221;.
@@ -307,6 +388,35 @@ the plug information may not be generated.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.add_pipeline_step">
+<tt class="descname">add_pipeline_step</tt><big>(</big><em>step_name</em>, <em>nodes</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.add_pipeline_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.add_pipeline_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a step definiton to the pipeline (see also define_steps).</p>
+<p>Steps are groups of pipeline nodes, which may be disabled at runtime.
+They are normally defined in a logical order regarding the workflow
+streams. They are different from pipelines in that steps are purely
+virtual groups, they do not have parameters.</p>
+<p>Disabling a step acts differently as the pipeline node activation: other
+nodes are not inactivated according to their dependencies. Instead,
+those steps are not run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>step_name: string (mandatory)</strong> :</p>
+<blockquote>
+<div><p>name of the new step</p>
+</div></blockquote>
+<p><strong>nodes: list ore sequence</strong> :</p>
+<blockquote class="last">
+<div><p>nodes contained in the step (Node instances)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.add_process">
 <tt class="descname">add_process</tt><big>(</big><em>name</em>, <em>process</em>, <em>do_not_export=None</em>, <em>make_optional=None</em>, <em>inputs_to_copy=None</em>, <em>inputs_to_clean=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.add_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.add_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a new node in the pipeline</p>
@@ -314,7 +424,7 @@ the plug information may not be generated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the node name (has to be unique).</p>
 </div></blockquote>
@@ -331,8 +441,12 @@ the plug information may not be generated.</p>
 <div><p>a list of plug names that we do not want to export.</p>
 </div></blockquote>
 <p><strong>inputs_to_copy: list of str (optional)</strong> :</p>
-<blockquote class="last">
+<blockquote>
 <div><p>a list of item to copy.</p>
+</div></blockquote>
+<p><strong>inputs_to_clean: list of str (optional)</strong> :</p>
+<blockquote class="last">
+<div><p>a list of temporary items.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -348,7 +462,7 @@ the plug information may not be generated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>name for the switch node (has to be unique)</p>
 </div></blockquote>
@@ -373,19 +487,20 @@ several input groups.</p>
 <p><strong>make_optional: sequence (optional)</strong> :</p>
 <blockquote class="last">
 <div><p>list of optional outputs.
-These outputs will be made optional in the switch output. By default
-they are mandatory.</p>
+These outputs will be made optional in the switch output. By
+default they are mandatory.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="capsul.pipeline.pipeline_nodes.Switch.html#capsul.pipeline.pipeline_nodes.Switch" title="capsul.pipeline.pipeline_nodes.Switch"><tt class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline_nodes.Switch</span></tt></a></p>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">add_switch</span><span class="p">(</span><span class="s">&#39;group_switch&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;in1&#39;</span><span class="p">,</span> <span class="s">&#39;in2&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;out1&#39;</span><span class="p">,</span> <span class="s">&#39;out2&#39;</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">add_switch</span><span class="p">(</span><span class="s">&#39;group_switch&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;in1&#39;</span><span class="p">,</span> <span class="s">&#39;in2&#39;</span><span class="p">],</span>
+<span class="go">                        [&#39;out1&#39;, &#39;out2&#39;])</span>
 </pre></div>
 </div>
 <p>will create a switch with 4 inputs and 2 outputs:
@@ -402,7 +517,7 @@ outputs: &#8220;out1&#8221;, &#8220;out2&#8221;</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the trait name</p>
 </div></blockquote>
@@ -424,7 +539,7 @@ outputs: &#8220;out1&#8221;, &#8220;out2&#8221;</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>nodes: Generator of Node</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>nodes: Generator of Node</strong> :</p>
 <blockquote class="last">
 <div><p>Iterates over all nodes</p>
 </div></blockquote>
@@ -449,7 +564,7 @@ outputs: &#8220;out1&#8221;, &#8220;out2&#8221;</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>differences: list</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>differences: list</strong> :</p>
 <blockquote class="last">
 <div><p>each element is a human readable string explaining one difference
 (e.g. &#8216;node &#8220;my_process&#8221; is missing&#8217;)</p>
@@ -468,7 +583,7 @@ outputs: &#8220;out1&#8221;, &#8220;out2&#8221;</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>items: tuple</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>items: tuple</strong> :</p>
 <blockquote class="last">
 <div><p>(nodes_count, processes_count, plugs_count, params_count,
 links_count, enabled_nodes_count, enabled_procs_count,
@@ -481,6 +596,75 @@ enabled_links_count)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.define_pipeline_steps">
+<tt class="descname">define_pipeline_steps</tt><big>(</big><em>steps</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.define_pipeline_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.define_pipeline_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define steps in the pipeline.
+Steps are pipeline portions that form groups, and which can be enabled
+or disabled on a runtime basis (when building workflows).</p>
+<p>Once steps are defined, their activation may be accessed through the
+&#8220;step&#8221; trait, which has one boolean property for each step:</p>
+<p>Ex:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">steps</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+<span class="n">steps</span><span class="p">[</span><span class="s">&#39;preprocessings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;normalization&#39;</span><span class="p">,</span>
+    <span class="s">&#39;bias_correction&#39;</span><span class="p">,</span>
+    <span class="s">&#39;histo_analysis&#39;</span><span class="p">]</span>
+<span class="n">steps</span><span class="p">[</span><span class="s">&#39;brain_extraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;brain_segmentation&#39;</span><span class="p">,</span>
+    <span class="s">&#39;hemispheres_split&#39;</span><span class="p">]</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">define_pipeline_steps</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_steps</span><span class="o">.</span><span class="n">preprocessings</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_steps</span><span class="o">.</span><span class="n">brain_extraction</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<p>See also add_pipeline_step()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>steps: dict or preferably OrderedDict or SortedDictionary (mandatory)</strong> :</p>
+<blockquote class="last">
+<div><p>The steps dict keys are steps names, the values are lists of nodes
+names forming the step.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.disabled_pipeline_steps_nodes">
+<tt class="descname">disabled_pipeline_steps_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.disabled_pipeline_steps_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.disabled_pipeline_steps_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List nodes disabled for runtime execution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>disabled_nodes: list</strong> :</p>
+<blockquote class="last">
+<div><p>list of pipeline nodes (Node instances) which will not run in
+a workflow created from this pipeline state.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.enable_all_pipeline_steps">
+<tt class="descname">enable_all_pipeline_steps</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.enable_all_pipeline_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.enable_all_pipeline_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all defined steps (using add_step() or define_steps()) to be
+enabled. Ueful to reset the pipeline state after it has been changed.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.export_parameter">
 <tt class="descname">export_parameter</tt><big>(</big><em>node_name</em>, <em>plug_name</em>, <em>pipeline_parameter=None</em>, <em>weak_link=False</em>, <em>is_enabled=None</em>, <em>is_optional=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.export_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.export_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a node plug at the pipeline level.</p>
@@ -488,7 +672,7 @@ enabled_links_count)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>node_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>node_name: str (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the name of node containing the plug we want to export</p>
 </div></blockquote>
@@ -533,11 +717,55 @@ files internally.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>list</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>list</strong> :</p>
 <blockquote class="last">
 <div><p>Each element is a list with 3 values: node, parameter_name,
 optional</p>
 </div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.get_pipeline_step_nodes">
+<tt class="descname">get_pipeline_step_nodes</tt><big>(</big><em>step_name</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.get_pipeline_step_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.get_pipeline_step_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the nodes in the given pipeline step</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.install_links_debug_handler">
+<tt class="descname">install_links_debug_handler</tt><big>(</big><em>log_file=None</em>, <em>handler=None</em>, <em>prefix=''</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.install_links_debug_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.install_links_debug_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set callbacks when traits value change, and follow plugs links to
+debug links propagation and problems in it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>log_file: str (optional)</strong> :</p>
+<blockquote>
+<div><p>file-like object to write links propagation in.
+If none is specified, a temporary file will be created for it.</p>
+</div></blockquote>
+<p><strong>handler: function (optional)</strong> :</p>
+<blockquote>
+<div><p>Callback to be processed for debugging. If none is specified, the
+default pipeline debugging function will be used. This default
+handler prints traits changes and links to be processed in the
+log_file.
+The handler function will receive a prefix string, a node,
+and traits parameters, namely the object (process) owning the
+changed value, the trait name and value in this object.</p>
+</div></blockquote>
+<p><strong>prefix: str (optional)</strong> :</p>
+<blockquote>
+<div><p>prefix to be prepended to traits names, typically the parent
+pipeline full name</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>log_file: the file object where events will be written in</strong> :</p>
 </td>
 </tr>
 </tbody>
@@ -552,14 +780,14 @@ optional</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
 <blockquote>
 <div><p>the link description of the form
 &#8216;node_from.plug_name-&gt;node_to.plug_name&#8217;</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output: tuple</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output: tuple</strong> :</p>
 <blockquote class="last">
 <div><p>tuple containing the link description and instances</p>
 </div></blockquote>
@@ -589,13 +817,13 @@ optional</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str</strong> :</p>
 <blockquote>
 <div><p>the description plug we want to load &#8216;node.plug&#8217;</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>output: tuple</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output: tuple</strong> :</p>
 <blockquote class="last">
 <div><p>tuple containing the plug description and instances</p>
 </div></blockquote>
@@ -608,8 +836,10 @@ optional</p>
 <dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.pipeline_definition">
 <tt class="descname">pipeline_definition</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.pipeline_definition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define pipeline structure, nodes, sub-pipelines, switches, and links.</p>
-<p>This method should be overloaded in subclasses, it does nothing in the base Pipeline class.</p>
+<dd><p>Define pipeline structure, nodes, sub-pipelines, switches, and
+links.</p>
+<p>This method should be overloaded in subclasses, it does nothing in the
+base Pipeline class.</p>
 </dd></dl>
 
 <dl class="method">
@@ -623,7 +853,7 @@ a previously stored state. This is typically used in tests scripts.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>pipeline_state: dictionary</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pipeline_state: dictionary</strong> :</p>
 <blockquote class="last">
 <div><p>todo</p>
 </div></blockquote>
@@ -641,15 +871,22 @@ a previously stored state. This is typically used in tests scripts.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>link: str</strong> :</p>
 <blockquote class="last">
-<div><p>link description. Its shape should be: &#8220;node.output-&gt;other_node.input&#8221;.
+<div><p>link description. Its shape should be:
+&#8220;node.output-&gt;other_node.input&#8221;.
 If no node is specified, the pipeline itself is assumed.</p>
 </div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.remove_pipeline_step">
+<tt class="descname">remove_pipeline_step</tt><big>(</big><em>step_name</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.remove_pipeline_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.remove_pipeline_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the given step</p>
 </dd></dl>
 
 <dl class="method">
@@ -660,7 +897,7 @@ If no node is specified, the pipeline itself is assumed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
 <blockquote class="last">
 <div><p>the trait name</p>
 </div></blockquote>
@@ -671,25 +908,37 @@ If no node is specified, the pipeline itself is assumed.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="capsul.pipeline.pipeline.Pipeline.uninstall_links_debug_handler">
+<tt class="descname">uninstall_links_debug_handler</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.uninstall_links_debug_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.uninstall_links_debug_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove links debugging callbacks set by install_links_debug_handler</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.update_nodes_and_plugs_activation">
 <tt class="descname">update_nodes_and_plugs_activation</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.update_nodes_and_plugs_activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.update_nodes_and_plugs_activation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset all nodes and plugs activations according to the current state
-of the pipeline (i.e. switch selection, nodes disabled, etc.).
+<dd><p>Reset all nodes and plugs activations according to the current
+state of the pipeline (i.e. switch selection, nodes disabled, etc.).
 Activations are set according to the following rules.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.workflow_graph">
-<tt class="descname">workflow_graph</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.workflow_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.workflow_graph" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">workflow_graph</tt><big>(</big><em>remove_disabled_steps=True</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.workflow_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.workflow_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a workflow graph</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>graph: topological_sort.Graph</strong> :</p>
-<blockquote class="last">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>graph: topological_sort.Graph</strong> :</p>
+<blockquote>
 <div><p>graph representation of the workflow from the current state of
 the pipeline</p>
+</div></blockquote>
+<p><strong>remove_disabled_steps: bool (optional)</strong> :</p>
+<blockquote class="last">
+<div><p>When set, disabled steps (and their children) will not be included
+in the workflow graph.
+Default: True</p>
 </div></blockquote>
 </td>
 </tr>
@@ -699,15 +948,21 @@ the pipeline</p>
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes">
-<tt class="descname">workflow_ordered_nodes</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.workflow_ordered_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">workflow_ordered_nodes</tt><big>(</big><em>remove_disabled_steps=True</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline.html#Pipeline.workflow_ordered_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Pipeline.workflow_ordered_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a workflow: list of process node to execute</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>workflow_list: list of Process</strong> :</p>
-<blockquote class="last">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>workflow_list: list of Process</strong> :</p>
+<blockquote>
 <div><p>an ordered list of Processes to execute</p>
+</div></blockquote>
+<p><strong>remove_disabled_steps: bool (optional)</strong> :</p>
+<blockquote class="last">
+<div><p>When set, disabled steps (and their children) will not be included
+in the workflow graph.
+Default: True</p>
 </div></blockquote>
 </td>
 </tr>

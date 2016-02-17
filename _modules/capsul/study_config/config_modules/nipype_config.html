@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -150,7 +149,7 @@
 <span class="sd">    configure the nipype module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;MatlabConfig&quot;</span><span class="p">,</span> <span class="s">&quot;SPMConfig&quot;</span><span class="p">,</span> <span class="s">&quot;FSLConfig&quot;</span><span class="p">,</span> <span class="s">&quot;FreeSurferConfig&quot;</span><span class="p">]</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
     
 <div class="viewcode-block" id="NipypeConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.nipype_config.NipypeConfig.html#capsul.study_config.config_modules.nipype_config.NipypeConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the NipypeConfig class.</span>
@@ -199,7 +198,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_nipype</span> <span class="o">=</span> <span class="bp">True</span>
 </div>
 <div class="viewcode-block" id="NipypeConfig.initialize_callbacks"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.nipype_config.NipypeConfig.html#capsul.study_config.config_modules.nipype_config.NipypeConfig.initialize_callbacks">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; When the &#39;use_nipype&#39; trait changes, configure nipypr with the new</span>
+        <span class="sd">&quot;&quot;&quot; When the &#39;use_nipype&#39; trait changes, configure nipype with the new</span>
 <span class="sd">        setting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_module</span><span class="p">,</span> <span class="s">&quot;use_nipype&quot;</span><span class="p">)</span></div></div>

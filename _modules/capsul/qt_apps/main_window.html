@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -142,12 +141,12 @@
 
 <span class="c"># Soma import</span>
 <span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtWebKit</span>
+<span class="kn">from</span> <span class="nn">soma.qt_gui.controller_widget</span> <span class="kn">import</span> <span class="n">ScrollControllerWidget</span>
 
 <span class="c"># Capsul import</span>
 <span class="kn">from</span> <span class="nn">capsul.qt_apps.utils.window</span> <span class="kn">import</span> <span class="n">MyQUiLoader</span>
 <span class="kn">from</span> <span class="nn">capsul.qt_apps.utils.fill_treectrl</span> <span class="kn">import</span> <span class="n">fill_treectrl</span>
 <span class="kn">from</span> <span class="nn">capsul.qt_gui.widgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PipelineDevelopperView</span><span class="p">,</span> <span class="n">PipelineUserView</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">capsul.qt_gui.controller_widget</span> <span class="kn">import</span> <span class="n">ScrollControllerWidget</span>
 <span class="kn">from</span> <span class="nn">capsul.qt_gui.board_widget</span> <span class="kn">import</span> <span class="n">BoardWidget</span>
 <span class="kn">from</span> <span class="nn">capsul.process</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
 <span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_iterative</span> <span class="kn">import</span> <span class="n">IterativePipeline</span>
@@ -237,6 +236,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">onTreeSelectionChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionLoad</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onLoadClicked</span><span class="p">)</span>
 
+        <span class="c"># Signal for the execution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">actionRun</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">onRunClicked</span><span class="p">)</span>
+
         <span class="c"># Set default values</span>
 
         <span class="c"># Set some tooltips</span>
@@ -272,6 +274,11 @@
     <span class="c">###########################################################################</span>
     <span class="c"># Slots   </span>
     <span class="c">###########################################################################</span>
+</div>
+<div class="viewcode-block" id="CapsulMainWindow.onRunClicked"><a class="viewcode-back" href="../../../gui_tree/generated/capsul-apps/capsul.qt_apps.main_window.CapsulMainWindow.html#capsul.qt_apps.main_window.CapsulMainWindow.onRunClicked">[docs]</a>    <span class="k">def</span> <span class="nf">onRunClicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Event to execute the process/pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">executer_qc_nodes</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="CapsulMainWindow.onBrowseClicked"><a class="viewcode-back" href="../../../gui_tree/generated/capsul-apps/capsul.qt_apps.main_window.CapsulMainWindow.html#capsul.qt_apps.main_window.CapsulMainWindow.onBrowseClicked">[docs]</a>    <span class="k">def</span> <span class="nf">onBrowseClicked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Event to show / hide the browse dock widget.</span>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -127,167 +126,6 @@
             
   <div class="section" id="capsul-qt-gui-controller-widget-controllerwidget">
 <h1>capsul.qt_gui.controller_widget.ControllerWidget<a class="headerlink" href="#capsul-qt-gui-controller-widget-controllerwidget" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget">
-<em class="property">class </em><tt class="descclassname">capsul.qt_gui.controller_widget.</tt><tt class="descname">ControllerWidget</tt><big>(</big><em>controller</em>, <em>parent=None</em>, <em>name=None</em>, <em>live=False</em>, <em>hide_labels=False</em>, <em>select_controls=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class that create a widget to set the controller parameters.</p>
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>controller</em>, <em>parent=None</em>, <em>name=None</em>, <em>live=False</em>, <em>hide_labels=False</em>, <em>select_controls=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to initilaize the ControllerWidget class.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>controller: derived Controller instance (mandatory)</strong> :</p>
-<blockquote>
-<div><p>a class derived from the Controller class we want to parametrize
-with a widget.</p>
-</div></blockquote>
-<p><strong>parent: QtGui.QWidget (optional, default None)</strong> :</p>
-<blockquote>
-<div><p>the controller widget parent widget.</p>
-</div></blockquote>
-<p><strong>name: (optional, default None)</strong> :</p>
-<blockquote>
-<div><p>the name of this controller widget</p>
-</div></blockquote>
-<p><strong>live: bool (optional, default False)</strong> :</p>
-<blockquote>
-<div><p>if True, synchronize the edited values in the widget with the
-controller values on the fly,
-otherwise, wait the synchronization instruction to update the
-controller values.</p>
-</div></blockquote>
-<p><strong>hide_labels: bool (optional, default False)</strong> :</p>
-<blockquote>
-<div><p>if True, don&#8217;t show the labels associated with the controls</p>
-</div></blockquote>
-<p><strong>select_controls: str (optional, default None)</strong> :</p>
-<blockquote class="last">
-<div><p>parameter to select specific conrtoller traits. Authorized options
-are &#8216;inputs&#8217; or &#8216;outputs&#8217;.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.connect">
-<tt class="descname">connect</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Connect the controller trait and the controller widget controls</p>
-<p>At the end al control will be connected with the associated trait, and
-when a &#8216;user_traits_changed&#8217; signal is emited, the controls are updated
-(ie, deleted if necessary).</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.create_control">
-<tt class="descname">create_control</tt><big>(</big><em>trait_name</em>, <em>trait</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.create_control"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.create_control" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a control associated to a trait.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
-<blockquote>
-<div><p>the name of the trait from which we want to create a control. The
-control widget will share the same name</p>
-</div></blockquote>
-<p><strong>trait: Trait (mandatory)</strong> :</p>
-<blockquote class="last">
-<div><p>a trait item</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.disconnect">
-<tt class="descname">disconnect</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.disconnect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Disconnect the controller trait and the controller widget controls</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.get_control_class">
-<em class="property">classmethod </em><tt class="descname">get_control_class</tt><big>(</big><em>trait</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.get_control_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.get_control_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the control associated with the input trait.</p>
-<p>The mapping is defined in the global class parameter
-&#8216;_defined_controls&#8217;.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>cls: ControllerWidget (mandatory)</strong> :</p>
-<blockquote>
-<div><p>a ControllerWidget class</p>
-</div></blockquote>
-<p><strong>trait: Trait (mandatory)</strong> :</p>
-<blockquote>
-<div><p>a trait item</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>control_class: class</strong> :</p>
-<blockquote class="last">
-<div><p>the control class associated with the input trait.
-If no match has been found, return None</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.is_valid">
-<tt class="descname">is_valid</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.is_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.is_valid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that all edited fields are correct.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>valid: bool</strong> :</p>
-<blockquote class="last">
-<div><p>True if all the controller widget controls are correctly filled,
-False otherwise</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.update_controller">
-<tt class="descname">update_controller</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.update_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.update_controller" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the controller.</p>
-<p>At the end the controller traits values will match the controller
-widget user defined parameters.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.update_controller_widget">
-<tt class="descname">update_controller_widget</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.update_controller_widget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.update_controller_widget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the controller widget.</p>
-<p>At the end the controller widget user editable parameters will match
-the controller traits values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.qt_gui.controller_widget.ControllerWidget.update_controls">
-<tt class="descname">update_controls</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_gui/controller_widget.html#ControllerWidget.update_controls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.controller_widget.ControllerWidget.update_controls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event to refresh controller widget controls and intern parameters.</p>
-<p>The refresh is done off line, ie. we need first to disconnect the
-controller and the controller widget.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 

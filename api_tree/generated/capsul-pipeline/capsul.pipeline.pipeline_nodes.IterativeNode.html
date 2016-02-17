@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -127,110 +126,6 @@
             
   <div class="section" id="capsul-pipeline-pipeline-nodes-iterativenode">
 <h1>capsul.pipeline.pipeline_nodes.IterativeNode<a class="headerlink" href="#capsul-pipeline-pipeline-nodes-iterativenode" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="capsul.pipeline.pipeline_nodes.IterativeNode">
-<em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline_nodes.</tt><tt class="descname">IterativeNode</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>iterative_plugs</em>, <em>do_not_export</em>, <em>make_optional</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#IterativeNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.IterativeNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>A special node to store an iterative process.</p>
-<p>This node is dynamic and try to be updated when a trait value is modified.</p>
-<dl class="method">
-<dt id="capsul.pipeline.pipeline_nodes.IterativeNode.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>iterative_plugs</em>, <em>do_not_export</em>, <em>make_optional</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#IterativeNode.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.IterativeNode.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the IterativeNode class.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
-<blockquote>
-<div><p>the pipeline object where the node is added</p>
-</div></blockquote>
-<p><strong>name: str (mandatory)</strong> :</p>
-<blockquote>
-<div><p>the node name</p>
-</div></blockquote>
-<p><strong>process: instance or string</strong> :</p>
-<blockquote>
-<div><p>a process/interface instance or the corresponding string
-description</p>
-</div></blockquote>
-<p><strong>iterative_plugs: list of str (optional)</strong> :</p>
-<blockquote>
-<div><p>a list of plug names on which we want to iterate</p>
-</div></blockquote>
-<p><strong>do_not_export: list of str (optional)</strong> :</p>
-<blockquote>
-<div><p>a list of plug names that we do not want to export</p>
-</div></blockquote>
-<p><strong>make_optional: list of str (optional)</strong> :</p>
-<blockquote class="last">
-<div><p>a list of plug names that we do not want to export</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_pipeline">
-<tt class="descname">update_iterative_pipeline</tt><big>(</big><em>nb_of_inputs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#IterativeNode.update_iterative_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the pipeline.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>nb_of_inputs: int (mandatory)</strong> :</p>
-<blockquote class="last">
-<div><p>the number of input iterative trait items</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_process">
-<em class="property">static </em><tt class="descname">update_iterative_process</tt><big>(</big><em>iterative_node</em>, <em>parent</em>, <em>trait_name</em>, <em>old</em>, <em>new</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#IterativeNode.update_iterative_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_process" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to update the iterative process &#8216;trait_name&#8217; trait.</p>
-<p>At the end the node and iterative process will have the same value in
-their &#8216;trait_name&#8217; trait.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
-<blockquote class="last">
-<div><p>the name of the trait to synchronized.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="capsul.pipeline.pipeline_nodes.IterativeNode.update_node">
-<em class="property">static </em><tt class="descname">update_node</tt><big>(</big><em>iterative_node</em>, <em>parent</em>, <em>trait_name</em>, <em>old</em>, <em>new</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#IterativeNode.update_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.IterativeNode.update_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to update the node &#8216;trait_name&#8217; trait.</p>
-<p>At the end the node and iterative process will have the same value in
-their &#8216;trait_name&#8217; trait.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
-<blockquote class="last">
-<div><p>the name of the trait to synchronized.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 

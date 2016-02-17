@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -142,7 +141,7 @@
 <span class="c"># Caspul import</span>
 <span class="kn">from</span> <span class="nn">process</span> <span class="kn">import</span> <span class="n">Process</span>
 <span class="kn">from</span> <span class="nn">nipype_process</span> <span class="kn">import</span> <span class="n">nipype_factory</span>
-<span class="kn">from</span> <span class="nn">capsul.utils</span> <span class="kn">import</span> <span class="n">load_objects</span>
+<span class="kn">from</span> <span class="nn">capsul.utils.loader</span> <span class="kn">import</span> <span class="n">load_objects</span>
 
 <span class="c"># Nipype import</span>
 <span class="k">try</span><span class="p">:</span>
@@ -153,30 +152,43 @@
 
 
 <div class="viewcode-block" id="get_process_instance"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.loader.get_process_instance.html#capsul.process.loader.get_process_instance">[docs]</a><span class="k">def</span> <span class="nf">get_process_instance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Return a Process instance given an Process identifier.</span>
+    <span class="sd">&quot;&quot;&quot; Return a Process instance given an identifier.</span>
 
-<span class="sd">    The identifier is a derived Process class, a derived Process class</span>
-<span class="sd">    instance or a Nipype interface instance.</span>
-<span class="sd">    It can also be the string description of this class:</span>
-<span class="sd">    `&lt;module&gt;.&lt;class&gt;` e.g. `caps.pipeline.spm_preproc.PreprocClass`</span>
+<span class="sd">    The identifier is either:</span>
 
-<span class="sd">    Default values of the instance are passed as additional parameters.</span>
+<span class="sd">        * a derived Process class.</span>
+<span class="sd">        * a derived Process class instance.</span>
+<span class="sd">        * a Nipype Interface instance.</span>
+<span class="sd">        * a Nipype Interface class.</span>
+<span class="sd">        * a string description of the class `&lt;module&gt;.&lt;class&gt;`.</span>
+<span class="sd">        * a string description of a function to warp `&lt;module&gt;.&lt;function&gt;`.</span>
+<span class="sd">        * a string description of a pipeline `&lt;module&gt;.&lt;fname&gt;.xml`.</span>
+
+<span class="sd">    Default values of the process instance are passed as additional parameters.</span>
 
 <span class="sd">    .. note:</span>
 
-<span class="sd">        If the function &#39;process_or_id&#39; parameter is not valid a</span>
-<span class="sd">        ValueError error is raised.</span>
+<span class="sd">        If no process is found an ImportError is raised.</span>
+
+<span class="sd">    .. note:</span>
+
+<span class="sd">        If the &#39;process_or_id&#39; parameter is not valid a ValueError is raised.</span>
+
+<span class="sd">    .. note:</span>
+
+<span class="sd">        If the function to warp does not contain a process description in its</span>
+<span class="sd">        docstring (&#39;&lt;process&gt;...&lt;/process&gt;&#39;) a ValueError is raised.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    process_or_id: instance or class description (mandatory)</span>
-<span class="sd">        a process/nipype interface instance or its string description.</span>
+<span class="sd">        a process/nipype interface instance/class or a string description.</span>
 <span class="sd">    kwargs:</span>
-<span class="sd">        default values of the process instance.</span>
+<span class="sd">        default values of the process instance parameters.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    result: instance</span>
+<span class="sd">    result: Process</span>
 <span class="sd">        an initialized process instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># If the function &#39;process_or_id&#39; parameter is already a Process</span>
@@ -184,10 +196,20 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="n">Process</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">process_or_id</span>
 
+    <span class="c"># If the function &#39;process_or_id&#39; parameter is a Process class.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+          <span class="nb">issubclass</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="n">Process</span><span class="p">)):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">process_or_id</span><span class="p">()</span>
+
     <span class="c"># If the function &#39;process_or_id&#39; parameter is already a Nipye</span>
     <span class="c"># interface instance, wrap this structure in a Process class</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="n">Interface</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">nipype_factory</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">)</span>
+
+    <span class="c"># If the function &#39;process_or_id&#39; parameter is an Interface class.</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+          <span class="nb">issubclass</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="n">Interface</span><span class="p">)):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">nipype_factory</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">())</span>
 
     <span class="c"># If the function &#39;process_or_id&#39; parameter is a class string</span>
     <span class="c"># description</span>
@@ -195,22 +217,23 @@
 
         <span class="c"># Get the class and module names from the class string description</span>
         <span class="n">id_list</span> <span class="o">=</span> <span class="n">process_or_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span>
-        <span class="n">module_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">id_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">object_name</span> <span class="o">=</span> <span class="n">id_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">id_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;xml&quot;</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">id_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">object_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">id_list</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">module_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">id_list</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">object_name</span> <span class="o">=</span> <span class="n">id_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="c"># Try to load the class</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">module_objects</span> <span class="o">=</span> <span class="n">load_objects</span><span class="p">(</span>
-                <span class="n">module_name</span><span class="p">,</span> <span class="n">object_name</span><span class="p">,</span>
-                <span class="n">allowed_instances</span><span class="o">=</span><span class="p">[</span><span class="n">Process</span><span class="p">,</span> <span class="n">Interface</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="n">module_objects</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">module_objects</span> <span class="o">=</span> <span class="n">load_objects</span><span class="p">(</span>
+            <span class="n">module_name</span><span class="p">,</span> <span class="n">object_name</span><span class="p">,</span>
+            <span class="n">allowed_instances</span><span class="o">=</span><span class="p">[</span><span class="n">Process</span><span class="p">,</span> <span class="n">Interface</span><span class="p">])</span>
 
         <span class="c"># Expect only one Process</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">module_objects</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s">&quot;Found {0} processes declared &quot;</span>
-                <span class="s">&quot;in {1} when looking for {2} class&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s">&quot;Found &#39;{0}&#39; process(es) declared in &#39;{1}&#39; when looking for &quot;</span>
+                <span class="s">&quot;&#39;{2}&#39; class/function/pipeline.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="nb">len</span><span class="p">(</span><span class="n">module_objects</span><span class="p">),</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">object_name</span><span class="p">))</span>
 
         <span class="c"># Get the target Process</span>
@@ -224,11 +247,6 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Interface</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">nipype_factory</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-    <span class="c"># If the function &#39;process_or_id&#39; parameter is a Process</span>
-    <span class="c"># class.</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">process_or_id</span><span class="p">,</span> <span class="n">Process</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">process_or_id</span><span class="p">()</span>
-        
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid process_or_id argument. &quot;</span>
                          <span class="s">&quot;Got &#39;{0}&#39; and expect a Process instance/string &quot;</span>

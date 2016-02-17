@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -129,13 +128,13 @@
 <h1>capsul.pipeline.pipeline_workflow.workflow_from_pipeline<a class="headerlink" href="#capsul-pipeline-pipeline-workflow-workflow-from-pipeline" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_workflow.workflow_from_pipeline">
-<tt class="descclassname">capsul.pipeline.pipeline_workflow.</tt><tt class="descname">workflow_from_pipeline</tt><big>(</big><em>pipeline</em>, <em>study_config={}</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_workflow.html#workflow_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">capsul.pipeline.pipeline_workflow.</tt><tt class="descname">workflow_from_pipeline</tt><big>(</big><em>pipeline</em>, <em>study_config={}</em>, <em>disabled_nodes=None</em>, <em>jobs_priority=0</em>, <em>create_directories=True</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_workflow.html#workflow_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a soma-workflow workflow from a Capsul Pipeline</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
 <blockquote>
 <div><p>a CAPSUL pipeline</p>
 </div></blockquote>
@@ -144,9 +143,29 @@
 <div><p>holds information about file transfers and shared resource paths.
 If not specified, no translation/transfers will be used.</p>
 </div></blockquote>
+<p><strong>disabled_nodes: sequence of pipeline nodes (Node instances) (optional)</strong> :</p>
+<blockquote>
+<div><p>such nodes will be disabled on-the-fly in the pipeline, file transfers
+will be adapted accordingly (outputs may become inputs in the resulting
+workflow), and temporary files will be checked. If a disabled node was
+to produce a temporary files which is still used in an enabled node,
+then a ValueError exception will be raised.
+If disabled_nodes is not passed, they will possibly be taken from the
+pipeline (if available) using disabled steps:
+see Pipeline.define_steps()</p>
+</div></blockquote>
+<p><strong>jobs_priority: int (optional, default: 0)</strong> :</p>
+<blockquote>
+<div><p>set this priority on soma-workflow jobs.</p>
+</div></blockquote>
+<p><strong>create_directories: bool (optional, default: True)</strong> :</p>
+<blockquote>
+<div><p>if set, needed output directories (which will contain output files)
+will be created in a first job, which all other ones depend on.</p>
+</div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>workflow: Workflow</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>workflow: Workflow</strong> :</p>
 <blockquote class="last">
 <div><p>a soma-workflow workflow</p>
 </div></blockquote>

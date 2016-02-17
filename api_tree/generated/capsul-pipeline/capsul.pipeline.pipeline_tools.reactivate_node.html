@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -127,40 +126,6 @@
             
   <div class="section" id="capsul-pipeline-pipeline-tools-reactivate-node">
 <h1>capsul.pipeline.pipeline_tools.reactivate_node<a class="headerlink" href="#capsul-pipeline-pipeline-tools-reactivate-node" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="capsul.pipeline.pipeline_tools.reactivate_node">
-<tt class="descclassname">capsul.pipeline.pipeline_tools.</tt><tt class="descname">reactivate_node</tt><big>(</big><em>pipeline</em>, <em>node_name</em>, <em>direction=3</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#reactivate_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.reactivate_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Re-activate the selected node.</p>
-<p>Re-activate the selected node after disable_node_for_downhill_pipeline() or
-disable_node_for_uphill_pipeline(), and remove the corresponding temporary
-exports in otehr nodes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
-<blockquote>
-<div><p>pipeline to disbale nodes in.</p>
-</div></blockquote>
-<p><strong>node_name: str (mandatory)</strong> :</p>
-<blockquote>
-<div><p>name of the node to be reactivated.</p>
-</div></blockquote>
-<p><strong>direction: int (optional)</strong> :</p>
-<blockquote>
-<div><p>bit-wise combination of input (1) and output (2) temporary exports
-to be cleared. Default is both ways (3).</p>
-</div></blockquote>
-<p><strong>To revert disable_node_for_downhill_pipeline(), the direction parameter</strong> :</p>
-<p><strong>should strictly be 2 (output).</strong> :</p>
-<p><strong>To revert disable_node_for_uphill_pipeline(), the direction parameter</strong> :</p>
-<p class="last"><strong>should strictly be 1 (intput).</strong> :</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 
 

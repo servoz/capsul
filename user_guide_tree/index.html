@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -111,7 +110,10 @@
 
       <!-- toc tree -->
       <ul>
-<li><a class="reference internal" href="#">User Guide</a></li>
+<li><a class="reference internal" href="#">User Guide</a><ul>
+<li><a class="reference internal" href="#tutorial">Tutorial</a></li>
+</ul>
+</li>
 </ul>
 
 
@@ -128,6 +130,29 @@
   <div class="section" id="user-guide">
 <span id="capsul-guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
 <p>The main documentation of all the proposed scripts.</p>
+<div class="section" id="tutorial">
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+<p>Different tutorials are available as <a class="reference external" href="http://ipython.org/notebook.html">IPython notebooks</a>.
+Capsul may be used in two ways:</p>
+<ul class="simple">
+<li>a descriptive interface allows to develop processing bricks using simple Python functions and pipelines using a XML text description. <a class="reference download internal" href="../_downloads/capsul_descriptive_tutorial.ipynb"><tt class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></tt></a>.</li>
+<li>an object-oriented interface that uses Python classes programming. <a class="reference download internal" href="../_downloads/capsul_object_oriented_tutorial.ipynb"><tt class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></tt></a>. Note that this interface is compatible with the descriptive one, and allows more functionalities and tweak possibilities.</li>
+</ul>
+<p>To run it, the following must be done:</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="../installation.html#install-guid"><em>Installing CAPSUL</em></a>.</p>
+</li>
+<li><p class="first">have IPython installed.</p>
+</li>
+<li><p class="first">run the tutorial ipython notebook server, with Qt GUI support:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>ipython notebook --gui=qt my_tutorial.ipynb
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
 </div>
 
 

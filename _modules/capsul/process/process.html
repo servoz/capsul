@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -135,6 +134,7 @@
 
 <span class="c"># System import</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">getfqdn</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
@@ -149,16 +149,18 @@
 <span class="c"># Trait import</span>
 <span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="kn">import</span> <span class="n">_Undefined</span>
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span>
+<span class="kn">from</span> <span class="nn">traits.trait_handlers</span> <span class="kn">import</span> <span class="n">BaseTraitHandler</span>
 
 <span class="c"># Soma import</span>
 <span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">Controller</span>
 <span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">trait_ids</span>
 <span class="kn">from</span> <span class="nn">soma.utils</span> <span class="kn">import</span> <span class="n">LateBindingProperty</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">is_trait_value_defined</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">is_trait_pathname</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">get_trait_desc</span>
 
 <span class="c"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">capsul.utils</span> <span class="kn">import</span> <span class="n">get_tool_version</span>
-<span class="kn">from</span> <span class="nn">capsul.utils.trait_utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">is_trait_value_defined</span><span class="p">,</span> <span class="n">is_trait_pathname</span><span class="p">,</span> <span class="n">get_trait_desc</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">capsul.utils.version_utils</span> <span class="kn">import</span> <span class="n">get_tool_version</span>
 
 
 <span class="k">class</span> <span class="nc">ProcessMeta</span><span class="p">(</span><span class="n">Controller</span><span class="o">.</span><span class="n">__metaclass__</span><span class="p">):</span>
@@ -183,22 +185,44 @@
         <span class="c"># Get the process docstring</span>
         <span class="n">docstring</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;__doc__&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 
+        <span class="c"># we have to indent the note properly so that the docstring is</span>
+        <span class="c"># properly displayed, and correctly processed by sphinx</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">docstring</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">lstrip</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">lstrip</span><span class="p">:</span>  <span class="c"># empty lines do not influence indent</span>
+                <span class="k">continue</span>
+            <span class="n">lindent</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">indent</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">lindent</span> <span class="o">&lt;</span> <span class="n">indent</span><span class="p">:</span>
+                <span class="n">indent</span> <span class="o">=</span> <span class="n">lindent</span>
+        <span class="k">if</span> <span class="n">indent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="c"># Complete the docstring</span>
-        <span class="n">docstring</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="s">&quot;    Notes&quot;</span><span class="p">,</span>
-            <span class="s">&quot;    -----&quot;</span><span class="p">,</span>
-            <span class="s">&quot;    Type &#39;{0}.help()&#39; for a full description of &quot;</span>
+        <span class="n">docstring</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s">&quot;&quot;</span><span class="p">,</span>
+            <span class="s">&quot;.. note::&quot;</span><span class="p">,</span>
+            <span class="s">&quot;&quot;</span><span class="p">,</span>
+            <span class="s">&quot;    * Type &#39;{0}.help()&#39; for a full description of &quot;</span>
             <span class="s">&quot;this process parameters.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="s">&quot;    Type &#39;&lt;{0}&gt;.get_input_spec()&#39; for a full description of &quot;</span>
+            <span class="s">&quot;    * Type &#39;&lt;{0}&gt;.get_input_spec()&#39; for a full description of &quot;</span>
             <span class="s">&quot;this process input trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="s">&quot;    Type &#39;&lt;{0}&gt;.get_output_spec()&#39; for a full description of &quot;</span>
+            <span class="s">&quot;    * Type &#39;&lt;{0}&gt;.get_output_spec()&#39; for a full description of &quot;</span>
             <span class="s">&quot;this process output trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
             <span class="s">&quot;&quot;</span>
-        <span class="p">]</span>
+        <span class="p">]]</span>
 
         <span class="c"># Update the class docstring with the full process help</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;__doc__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">docstring</span><span class="p">)</span>
 
+        <span class="c"># Find all traits definitions in the process class and ensure that</span>
+        <span class="c"># it has a boolean value for attributes &quot;output&quot; and &quot;optional&quot;.</span>
+        <span class="c"># If no value is given at construction, False will be used.</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">possible_trait_definition</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="p">,</span> <span class="n">BaseTraitHandler</span><span class="p">):</span>
+                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
+        
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProcessMeta</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span>
             <span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 
@@ -208,11 +232,11 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    `name` : str</span>
+<span class="sd">    `name`: str</span>
 <span class="sd">        the class name.</span>
-<span class="sd">    `id` : str</span>
+<span class="sd">    `id`: str</span>
 <span class="sd">        the string description of the class location (ie., module.class).</span>
-<span class="sd">    `log_file` : str (default None)</span>
+<span class="sd">    `log_file`: str (default None)</span>
 <span class="sd">        if None, the log will be generated in the current directory</span>
 <span class="sd">        otherwise it will be written in log_file path.</span>
 
@@ -234,6 +258,7 @@
 <span class="sd">    get_outputs</span>
 <span class="sd">    set_parameter</span>
 <span class="sd">    get_parameter</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Meta class used to complete the class docstring</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ProcessMeta</span>
@@ -256,6 +281,18 @@
         <span class="c"># Initialize the log file name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
+<div class="viewcode-block" id="Process.add_trait"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.add_trait">[docs]</a>    <span class="k">def</span> <span class="nf">add_trait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensure that trait.output and trait.optional are set to a</span>
+<span class="sd">        boolean value before calling parent class add_trait.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
+        </div>
 <div class="viewcode-block" id="Process.__call__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to execute the Process.</span>
 
@@ -270,8 +307,15 @@
 
 <span class="sd">        .. note:</span>
 
-<span class="sd">            This method must not modified the class attributes in order</span>
+<span class="sd">            This method must not modify the class attributes in order</span>
 <span class="sd">            to be able to perform smart caching.</span>
+
+<span class="sd">        .. node:</span>
+
+<span class="sd">            This method should not be overloaded by Process subclasses to</span>
+<span class="sd">            perform actual processing. Instead, either the</span>
+<span class="sd">            :meth:`_run_process` method or the :meth:`get_commandline` method</span>
+<span class="sd">            should be overloaded.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -291,7 +335,8 @@
             <span class="s">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span>
             <span class="s">&quot;cwd&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
             <span class="s">&quot;returncode&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="s">&quot;environ&quot;</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+            <span class="s">&quot;environ&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+                             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]),</span>
             <span class="s">&quot;end_time&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
             <span class="s">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">getfqdn</span><span class="p">(),</span>
         <span class="p">}</span>
@@ -302,12 +347,12 @@
             <span class="c"># Go through all the extra parameters</span>
             <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
 
-                <span class="c"># If the extra parameter name do not match with a user</span>
+                <span class="c"># If the extra parameter name does not match with a user</span>
                 <span class="c"># trait paameter name, raise a TypeError</span>
                 <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">():</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                         <span class="s">&quot;Process __call__ got an unexpected keyword &quot;</span>
-                        <span class="s">&quot;argument &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">foramt</span><span class="p">(</span><span class="n">arg_name</span><span class="p">))</span>
+                        <span class="s">&quot;argument &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg_name</span><span class="p">))</span>
 
                 <span class="c"># Set the extra parameter value</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_val</span><span class="p">)</span>
@@ -389,6 +434,50 @@
                     <span class="n">log</span><span class="p">[</span><span class="n">parameter_type</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">log</span>
+
+    <span class="k">def</span> <span class="nf">_rst_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a rst formated table.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data: list of list of str (mandatory)</span>
+<span class="sd">            the table line-cell centent.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rsttable: list of str</span>
+<span class="sd">            the rst formated table containing the input data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Output rst table</span>
+        <span class="n">rsttable</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># Get the size of the largest row in order to</span>
+        <span class="c"># format properly the rst table (do not forget the &#39;+&#39; and &#39;*&#39;)</span>
+        <span class="n">row_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)]</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">row_widths</span><span class="p">)</span> <span class="o">+</span> <span class="mi">11</span>
+
+        <span class="c"># Generate the rst table</span>
+
+        <span class="c"># &gt; table synthax</span>
+        <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s">&quot;+&quot;</span><span class="p">)</span>
+        <span class="c"># &gt; go through the table lines</span>
+        <span class="k">for</span> <span class="n">table_row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="c"># &gt; go through the cell lines</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cell_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table_row</span><span class="p">):</span>
+                <span class="c"># &gt; set the parameter name in bold</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">cell_row</span><span class="p">:</span>
+                    <span class="n">delimiter_index</span> <span class="o">=</span> <span class="n">cell_row</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="n">cell_row</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;**&quot;</span> <span class="o">+</span> <span class="n">cell_row</span><span class="p">[:</span><span class="n">delimiter_index</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;**&quot;</span> <span class="o">+</span>
+                                <span class="n">cell_row</span><span class="p">[</span><span class="n">delimiter_index</span><span class="p">:])</span>
+                <span class="c"># &gt;  add table rst content</span>
+                <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="s">&quot;| | {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s">&quot;|&quot;</span><span class="p">)</span>
+            <span class="c"># &gt; close cell</span>
+            <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s">&quot;+&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rsttable</span>
 
     <span class="c">####################################################################</span>
     <span class="c"># Public methods</span>
@@ -472,11 +561,39 @@
             <span class="p">(</span><span class="s">&quot;import sys; from {0} import {1}; kwargs={2}; &quot;</span>
              <span class="s">&quot;kwargs.update(dict((sys.argv[i * 2 + 1], sys.argv[i * 2 + 2]) &quot;</span>
              <span class="s">&quot;for i in range((len(sys.argv) - 1) / 2))); &quot;</span>
-             <span class="s">&quot;{1}()(**kwargs)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                 <span class="n">module_name</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">argsdict</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s">&#39;&quot;&#39;</span><span class="p">)</span>
+             <span class="s">&quot;{1}()(**kwargs)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span>
+                                       <span class="nb">repr</span><span class="p">(</span><span class="n">argsdict</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s">&#39;&quot;&#39;</span><span class="p">)</span>
         <span class="p">]</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pathsdict</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span> <span class="p">[])</span>
 
         <span class="k">return</span> <span class="n">commandline</span>
+</div>
+<div class="viewcode-block" id="Process.make_commandline_argument"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.make_commandline_argument">[docs]</a>    <span class="k">def</span> <span class="nf">make_commandline_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This helper function may be used to build non-trivial commandline</span>
+<span class="sd">        arguments in get_commandline implementations.</span>
+<span class="sd">        Basically it concatenates arguments, but it also takes care of keeping</span>
+<span class="sd">        track of temporary file objects (if any), and converts non-string</span>
+<span class="sd">        arguments to strings (using repr()).</span>
+
+<span class="sd">        Ex:</span>
+
+<span class="sd">        &gt;&gt;&gt; process.make_commandline_argument(&#39;param=&#39;, self.param)</span>
+
+<span class="sd">        will return the same as:</span>
+
+<span class="sd">        &gt;&gt;&gt; &#39;param=&#39; + self.param</span>
+
+<span class="sd">        if self.param is a string (file name) or a temporary path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">built_arg</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&#39;pattern&#39;</span><span class="p">):</span> <span class="c"># tempfile</span>
+                <span class="n">built_arg</span> <span class="o">=</span> <span class="n">built_arg</span> <span class="o">+</span> <span class="n">arg</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">built_arg</span> <span class="o">+=</span> <span class="n">arg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">built_arg</span> <span class="o">=</span> <span class="n">built_arg</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">built_arg</span>
 </div>
 <div class="viewcode-block" id="Process.get_log"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Load the logging file.</span>
@@ -505,9 +622,11 @@
 <span class="sd">            a string representation of all the input trait specifications.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">INPUT SPECIFICATIONS</span><span class="se">\n\n</span><span class="s">&quot;</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s">&quot;{0}: {1}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)))</span>
+        <span class="c"># self.traits(output=False) skips params with no output property</span>
+        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">+=</span> <span class="s">&quot;{0}: {1}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">output</span>
 </div>
 <div class="viewcode-block" id="Process.get_output_spec"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -533,8 +652,9 @@
 <span class="sd">            a dictionary with all the input trait names and values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">output</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span>
 </div>
 <div class="viewcode-block" id="Process.get_outputs"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_outputs">[docs]</a>    <span class="k">def</span> <span class="nf">get_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -556,18 +676,51 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        returnhelp: bool (optional, default False)</span>
-<span class="sd">            if True return the help string message,</span>
-<span class="sd">            otherwise display it on the console.</span>
+<span class="sd">            if True return the help string message formatted in rst,</span>
+<span class="sd">            otherwise display the raw help string message on the console.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Create the help content variable</span>
+        <span class="n">doctring</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+
+        <span class="c"># Update the documentation with a description of the pipeline</span>
+        <span class="c"># when the xml to pipeline wrapper has been used</span>
+        <span class="k">if</span> <span class="n">returnhelp</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_pipeline_desc&quot;</span><span class="p">):</span>
+            <span class="n">str_desc</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;    {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_desc</span><span class="p">])</span>
+            <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="s">&quot;.. hidden-code-block:: python&quot;</span><span class="p">,</span>
+                <span class="s">&quot;    :starthidden: True&quot;</span><span class="p">,</span>
+                <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="n">str_desc</span><span class="p">,</span>
+                <span class="s">&quot;&quot;</span>
+            <span class="p">]</span>
+
         <span class="c"># Get the process docstring</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
-            <span class="n">doctring</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">doctring</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+            <span class="n">doctring</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+
+        <span class="c"># Update the documentation with a reference on the source function</span>
+        <span class="c"># when the function to process wrapper has been used</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_func_name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_func_module&quot;</span><span class="p">):</span>
+            <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
+                <span class="s">&quot;This process has been wrapped from {0}.{1}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_func_module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func_name</span><span class="p">),</span>
+                <span class="s">&quot;&quot;</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">returnhelp</span><span class="p">:</span>
+                <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
+                    <span class="s">&quot;.. currentmodule:: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_module</span><span class="p">),</span>
+                    <span class="s">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;.. autosummary::&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;    :toctree: ./&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;    {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_name</span><span class="p">),</span>
+                    <span class="s">&quot;&quot;</span>
+                <span class="p">]</span>
 
         <span class="c"># Append the input and output traits help</span>
-        <span class="n">full_help</span> <span class="o">=</span> <span class="p">(</span><span class="n">doctring</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_help</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">get_output_help</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">])</span>
+        <span class="n">full_help</span> <span class="o">=</span> <span class="p">(</span><span class="n">doctring</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">get_output_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">])</span>
         <span class="n">full_help</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span>
 
         <span class="c"># Return the full process help</span>
@@ -577,8 +730,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">print</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Process.get_input_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_input_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Process.get_input_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_input_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate description for process input parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rst_formating: bool (optional, default False)</span>
+<span class="sd">            if True generate a rst table witht the input descriptions.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -592,27 +750,48 @@
         <span class="n">manhelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;[Mandatory]&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
 
         <span class="c"># Get all the mandatory input traits</span>
-        <span class="n">mandatory_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">mandatory_items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span><span class="p">])</span>
+        <span class="n">mandatory_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
 
         <span class="c"># If we have mandatory inputs, get the corresponding string</span>
         <span class="c"># descriptions</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">mandatory_items</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">mandatory_items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="n">manhelpstr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                    <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">))</span>
+                <span class="n">trait_desc</span> <span class="o">=</span> <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trait_desc</span><span class="p">)</span>
+
+        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
+                <span class="n">manhelpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="c"># Otherwise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">manhelpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="c"># Markup to separate optional inputs</span>
         <span class="n">opthelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;[Optional]&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
 
         <span class="c"># Get all optional input traits</span>
         <span class="n">optional_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">optional_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
         <span class="c"># If we have optional inputs, get the corresponding string</span>
         <span class="c"># descriptions</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">optional_items</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">optional_items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="n">opthelpstr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">))</span>
+
+        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
+                <span class="n">opthelpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="c"># Otherwise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">opthelpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="c"># Add the mandatry and optional input string description if necessary</span>
         <span class="k">if</span> <span class="n">mandatory_items</span><span class="p">:</span>
@@ -622,8 +801,13 @@
 
         <span class="k">return</span> <span class="n">helpstr</span>
 </div>
-<div class="viewcode-block" id="Process.get_output_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Process.get_output_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate description for process output parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rst_formating: bool (optional, default False)</span>
+<span class="sd">            if True generate a rst table witht the input descriptions.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -642,9 +826,18 @@
 
         <span class="c"># If we have some outputs, get the corresponding string</span>
         <span class="c"># descriptions</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">helpstr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">))</span>
+
+        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
+                <span class="n">helpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="c"># Otherwise</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">helpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">helpstr</span>
 </div>
@@ -752,7 +945,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_input_traits</span><span class="p">()</span>
 
             <span class="c"># Inheritance</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span><span class="p">)</span>
 
             <span class="c"># Clean the workspace</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_clean_workspace</span><span class="p">()</span>
@@ -772,7 +966,7 @@
         <span class="k">for</span> <span class="n">to_rm_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_to_clean</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">to_rm_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rm_files</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span><span class="p">[</span><span class="n">to_rm_name</span><span class="p">])</span>
-                
+
     <span class="k">def</span> <span class="nf">_rm_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">python_object</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Remove a set of copied files from the filesystem.</span>
 
@@ -795,7 +989,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">python_object</span><span class="p">)):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">python_object</span><span class="p">)</span>      
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">python_object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_input_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Update the process input traits: input files are copied.</span>

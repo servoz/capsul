@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -398,13 +397,13 @@
                     <span class="n">atp</span> <span class="o">=</span> <span class="n">output_atp</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">atp</span> <span class="o">=</span> <span class="n">input_atp</span>
-                <span class="n">parameter_attributes</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;fom_process&#39;</span> <span class="p">]</span> \
-                    <span class="o">+</span> <span class="n">atp</span><span class="o">.</span><span class="n">find_discriminant_attributes</span><span class="p">(</span>
-                        <span class="n">fom_parameter</span><span class="o">=</span><span class="n">parameter</span> <span class="p">)</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="p">(</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span> <span class="n">i</span> <span class="p">]</span> <span class="p">)</span> \
-                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">parameter_attributes</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="p">)</span>
+                <span class="n">parameter_attributes</span> <span class="o">=</span> <span class="n">atp</span><span class="o">.</span><span class="n">find_discriminant_attributes</span><span class="p">(</span>
+                    <span class="n">fom_parameter</span><span class="o">=</span><span class="n">parameter</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> \
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">parameter_attributes</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span>
                 <span class="c">#d = dict( ( i, getattr(self, i) or self.attributes[ i ] ) \</span>
                 <span class="c">#    for i in parameter_attributes if i in self.attributes )</span>
+                <span class="n">d</span><span class="p">[</span><span class="s">&#39;fom_process&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
                 <span class="n">d</span><span class="p">[</span><span class="s">&#39;fom_parameter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parameter</span>
                 <span class="n">d</span><span class="p">[</span><span class="s">&#39;fom_format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;fom_prefered&#39;</span>
                 <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">atp</span><span class="o">.</span><span class="n">find_paths</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>

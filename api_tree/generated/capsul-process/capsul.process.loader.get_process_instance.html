@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -130,27 +129,35 @@
 <dl class="function">
 <dt id="capsul.process.loader.get_process_instance">
 <tt class="descclassname">capsul.process.loader.</tt><tt class="descname">get_process_instance</tt><big>(</big><em>process_or_id</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/loader.html#get_process_instance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.loader.get_process_instance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a Process instance given an Process identifier.</p>
-<p>The identifier is a derived Process class, a derived Process class
-instance or a Nipype interface instance.
-It can also be the string description of this class:
-<cite>&lt;module&gt;.&lt;class&gt;</cite> e.g. <cite>caps.pipeline.spm_preproc.PreprocClass</cite></p>
-<p>Default values of the instance are passed as additional parameters.</p>
+<dd><p>Return a Process instance given an identifier.</p>
+<p>The identifier is either:</p>
+<blockquote>
+<div><ul class="simple">
+<li>a derived Process class.</li>
+<li>a derived Process class instance.</li>
+<li>a Nipype Interface instance.</li>
+<li>a Nipype Interface class.</li>
+<li>a string description of the class <cite>&lt;module&gt;.&lt;class&gt;</cite>.</li>
+<li>a string description of a function to warp <cite>&lt;module&gt;.&lt;function&gt;</cite>.</li>
+<li>a string description of a pipeline <cite>&lt;module&gt;.&lt;fname&gt;.xml</cite>.</li>
+</ul>
+</div></blockquote>
+<p>Default values of the process instance are passed as additional parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>process_or_id: instance or class description (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process_or_id: instance or class description (mandatory)</strong> :</p>
 <blockquote>
-<div><p>a process/nipype interface instance or its string description.</p>
+<div><p>a process/nipype interface instance/class or a string description.</p>
 </div></blockquote>
 <p><strong>kwargs:</strong> :</p>
 <blockquote>
-<div><p>default values of the process instance.</p>
+<div><p>default values of the process instance parameters.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><strong>result: instance</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result: Process</strong> :</p>
 <blockquote class="last">
 <div><p>an initialized process instance.</p>
 </div></blockquote>

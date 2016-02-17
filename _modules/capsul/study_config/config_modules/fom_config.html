@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -132,6 +131,7 @@
 <span class="c"># for details.</span>
 <span class="c">##########################################################################</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Undefined</span>
 <span class="kn">from</span> <span class="nn">soma.fom</span> <span class="kn">import</span> <span class="n">AttributesToPaths</span><span class="p">,</span> <span class="n">PathToAttributes</span>
 <span class="kn">from</span> <span class="nn">soma.application</span> <span class="kn">import</span> <span class="n">Application</span>
@@ -148,25 +148,27 @@
 
 <div class="viewcode-block" id="FomConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.fom_config.FomConfig.html#capsul.study_config.config_modules.fom_config.FomConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FomConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;use_fom&#39;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
-            <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Use File Organization Models for file parameters completion&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;input_fom&#39;</span><span class="p">,</span> <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;input FOM&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;output_fom&#39;</span><span class="p">,</span> <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;output FOM&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;shared_fom&#39;</span><span class="p">,</span> <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;shared data FOM&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;volumes_format&#39;</span><span class="p">,</span> <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;volumes_format&#39;</span><span class="p">,</span>
+                                    <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Format used for volumes&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;meshes_format&#39;</span><span class="p">,</span> <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;meshes_format&#39;</span><span class="p">,</span>
+                                    <span class="n">Str</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Format used for meshes&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;use_fom&#39;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
+            <span class="n">Undefined</span><span class="p">,</span>
+            <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Use File Organization Models for file parameters completion&#39;</span><span class="p">))</span>
 
         <span class="c"># defaults</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">input_fom</span> <span class="o">=</span> <span class="s">&#39;morphologist-auto-1.0&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">output_fom</span> <span class="o">=</span> <span class="s">&#39;morphologist-auto-1.0&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">shared_fom</span> <span class="o">=</span> <span class="s">&#39;shared-brainvisa-1.0&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">input_fom</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">output_fom</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">shared_fom</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
         
             </div>
 <div class="viewcode-block" id="FomConfig.initialize_module"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.fom_config.FomConfig.html#capsul.study_config.config_modules.fom_config.FomConfig.initialize_module">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -177,14 +179,18 @@
             <span class="k">return</span>
         
         <span class="n">soma_app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span><span class="s">&#39;capsul&#39;</span><span class="p">,</span> <span class="n">plugin_modules</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;soma.fom&#39;</span><span class="p">])</span>
-        <span class="n">soma_app</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s">&#39;soma.fom&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">soma_app</span><span class="o">.</span><span class="n">loaded_plugin_modules</span><span class="p">:</span>
+            <span class="c"># WARNING: this is unsafe, may erase configured things, and</span>
+            <span class="c"># probably not thread-safe.</span>
+            <span class="n">soma_app</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">modules_data</span><span class="o">.</span><span class="n">foms</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">foms</span> <span class="o">=</span> <span class="p">((</span><span class="s">&#39;input&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">input_fom</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;output&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">output_fom</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&#39;shared&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">shared_fom</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">fom_type</span><span class="p">,</span> <span class="n">fom_filename</span> <span class="ow">in</span> <span class="n">foms</span><span class="p">:</span>
-            <span class="n">fom</span> <span class="o">=</span> <span class="n">soma_app</span><span class="o">.</span><span class="n">fom_manager</span><span class="o">.</span><span class="n">load_foms</span><span class="p">(</span><span class="n">fom_filename</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">modules_data</span><span class="o">.</span><span class="n">foms</span><span class="p">[</span><span class="n">fom_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">fom</span>
+            <span class="k">if</span> <span class="n">fom_filename</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">fom</span> <span class="o">=</span> <span class="n">soma_app</span><span class="o">.</span><span class="n">fom_manager</span><span class="o">.</span><span class="n">load_foms</span><span class="p">(</span><span class="n">fom_filename</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">modules_data</span><span class="o">.</span><span class="n">foms</span><span class="p">[</span><span class="n">fom_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">fom</span>
 
         <span class="c"># Create FOM completion data in self.study_config.modules_data</span>
         <span class="n">formats</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> \

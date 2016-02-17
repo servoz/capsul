@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -142,11 +141,15 @@
 <span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">find_packages</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
 
+<span class="c"># CAPSUL import</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">capsul.process</span> <span class="kn">import</span> <span class="n">Process</span>
+
 <span class="c"># Define the logger</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">find_pipelines_from_description</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_pipelines_from_description"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.find_pipelines_from_description.html#capsul.qt_apps.utils.find_pipelines.find_pipelines_from_description">[docs]</a><span class="k">def</span> <span class="nf">find_pipelines_from_description</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Function that list all the pipeline of a module.</span>
 
 <span class="sd">    Parameters</span>
@@ -195,28 +198,24 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{},</span> <span class="p">[]</span>
 
+</div>
+<div class="viewcode-block" id="find_pipeline_and_process"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.find_pipeline_and_process.html#capsul.qt_apps.utils.find_pipelines.find_pipeline_and_process">[docs]</a><span class="k">def</span> <span class="nf">find_pipeline_and_process</span><span class="p">(</span><span class="n">module_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Function that return all the Pipeline and Process classes of a module.</span>
 
-<div class="viewcode-block" id="find_pipelines"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.find_pipelines.html#capsul.qt_apps.utils.find_pipelines.find_pipelines">[docs]</a><span class="k">def</span> <span class="nf">find_pipelines</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allowed_instance</span><span class="o">=</span><span class="s">&quot;Pipeline&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Function that return all the Pipeline class of a module.</span>
-
-<span class="sd">    All the mdoule path are scanned recuresively. Any pipeline will be added</span>
-<span class="sd">    to the output.</span>
+<span class="sd">    All the mdoule path are scanned recuresively. Any pipeline or process will</span>
+<span class="sd">    be added to the output.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    module_name: str (mandatory)</span>
 <span class="sd">        the name of the module we want to go through in order to find all</span>
 <span class="sd">        pipeline classes.</span>
-<span class="sd">    url: str (optional)</span>
-<span class="sd">        the url to the module documentation</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    structured_pipelines: hierachic dict</span>
-<span class="sd">        each key is a sub module of the module. Leafs contain a list with</span>
-<span class="sd">        the url to the documentation.</span>
-<span class="sd">    pipelines: list</span>
-<span class="sd">        a list a pipeline string descriptions.</span>
+<span class="sd">    output: dict</span>
+<span class="sd">        a dictionary with a list of pipeline and process string descriptions</span>
+<span class="sd">        found in the module.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># Try to import the module</span>
@@ -228,28 +227,31 @@
 
     <span class="c"># Get the module path</span>
     <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span>
-    <span class="n">module_path</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s">&#39;__path__&#39;</span><span class="p">):</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">__file__</span><span class="p">)</span>
 
     <span class="c"># Use setuptools to go through the module</span>
     <span class="n">sub_modules</span> <span class="o">=</span> <span class="n">find_packages</span><span class="p">(</span><span class="n">where</span><span class="o">=</span><span class="n">module_path</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;doc&quot;</span><span class="p">,</span> <span class="p">))</span>
     <span class="n">sub_modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">module_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sub_modules</span><span class="p">]</span>
     <span class="n">sub_modules</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Modules found with setuptools: &#39;{0}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sub_modules</span><span class="p">))</span>
 
     <span class="c"># Shift</span>
     <span class="n">shift</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">))</span>
 
-    <span class="c"># Create a set with all pipelines</span>
-    <span class="n">pipelines</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c"># Create a set with all pipelines and process</span>
+    <span class="n">pip_and_proc</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(),</span> <span class="nb">set</span><span class="p">()]</span>
     <span class="k">for</span> <span class="n">sub_module</span> <span class="ow">in</span> <span class="n">sub_modules</span><span class="p">:</span>
         <span class="c"># Get the sub module path</span>
-        <span class="n">sub_module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span>
-                                       <span class="o">*</span><span class="n">sub_module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="n">shift</span><span class="p">:])</span>
+        <span class="n">sub_module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">module_path</span><span class="p">,</span> <span class="o">*</span><span class="n">sub_module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="n">shift</span><span class="p">:])</span>
 
         <span class="c"># List all the mdule in sub module path</span>
-        <span class="n">sub_sub_module_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">sub_module</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-                                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sub_module_path</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.py&quot;</span><span class="p">)</span> <span class="ow">and</span>
-                                    <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;_&quot;</span><span class="p">))]</span>
+        <span class="n">sub_sub_module_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">sub_module</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">sub_module_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.py&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;_&quot;</span><span class="p">))]</span>
 
         <span class="c"># Try to import the sub sub module</span>
         <span class="k">for</span> <span class="n">sub_sub_module_name</span> <span class="ow">in</span> <span class="n">sub_sub_module_names</span><span class="p">:</span>
@@ -270,19 +272,24 @@
                 <span class="k">if</span> <span class="n">tool_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;_&quot;</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">tool</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sub_sub_module</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">isclass</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span> <span class="ow">and</span>
-                        <span class="n">tool</span><span class="o">.</span><span class="n">__mro__</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="n">allowed_instance</span> <span class="ow">and</span>
-                        <span class="n">tool_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;Pipeline&quot;</span><span class="p">,</span> <span class="s">&quot;ConnProcess&quot;</span><span class="p">]):</span>
-                    <span class="n">pipelines</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sub_sub_module_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">tool_name</span><span class="p">)</span>
+                <span class="c"># Check all the authorized derived class</span>
+                <span class="n">parent_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pipeline</span><span class="p">,</span> <span class="n">Process</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">parent_class</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parent_classes</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">isclass</span><span class="p">(</span><span class="n">tool</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">parent_class</span><span class="p">))</span> \
+                            <span class="ow">and</span> <span class="n">tool</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent_classes</span><span class="p">:</span>
+                        <span class="n">pip_and_proc</span><span class="p">[</span><span class="n">cnt</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                            <span class="n">sub_sub_module_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">tool_name</span><span class="p">)</span>
+                        <span class="k">break</span>
+    <span class="c"># Format output</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;pipeline_descs&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">pip_and_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s">&quot;process_descs&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">pip_and_proc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="p">}</span>
 
-    <span class="c"># Organize the pipeline string description by module names</span>
-    <span class="n">structured_pipelines</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">lists2dict</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pipelines</span><span class="p">],</span> <span class="n">url</span><span class="p">,</span> <span class="n">structured_pipelines</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">structured_pipelines</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">pipelines</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">output</span>
 
 </div>
-<span class="k">def</span> <span class="nf">lists2dict</span><span class="p">(</span><span class="n">list_of_pipeline_description</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="lists2dict"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.lists2dict.html#capsul.qt_apps.utils.find_pipelines.lists2dict">[docs]</a><span class="k">def</span> <span class="nf">lists2dict</span><span class="p">(</span><span class="n">list_of_pipeline_description</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Convert a list of splited module names to a hierachic dictionary with</span>
 <span class="sd">    list leafs that contain the url to the module docuementation.</span>
 
@@ -314,7 +321,7 @@
                 <span class="n">d</span><span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">lists2dict</span><span class="p">([</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:]],</span> <span class="n">url</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span>
 
     <span class="k">return</span> <span class="n">d</span>
-</pre></div>
+</pre></div></div>
 
           </div>
         </div>

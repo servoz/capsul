@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -139,17 +138,21 @@
 <span class="sd">workflow = workflow_from_pipeline(pipeline)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">getfqdn</span>
+<span class="kn">import</span> <span class="nn">socket</span>
 
 <span class="kn">import</span> <span class="nn">soma_workflow.client</span> <span class="kn">as</span> <span class="nn">swclient</span>
 
 <span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">Switch</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="kn">import</span> <span class="n">pipeline_tools</span>
 <span class="kn">from</span> <span class="nn">capsul.process</span> <span class="kn">import</span> <span class="n">Process</span>
 <span class="kn">from</span> <span class="nn">capsul.pipeline.topological_sort</span> <span class="kn">import</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">soma.sorted_dictionary</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">.process_iteration</span> <span class="kn">import</span> <span class="n">ProcessIteration</span>
 
 
-<div class="viewcode-block" id="workflow_from_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.workflow_from_pipeline.html#capsul.pipeline.pipeline_workflow.workflow_from_pipeline">[docs]</a><span class="k">def</span> <span class="nf">workflow_from_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">study_config</span><span class="o">=</span><span class="p">{}):</span>
+<div class="viewcode-block" id="workflow_from_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.workflow_from_pipeline.html#capsul.pipeline.pipeline_workflow.workflow_from_pipeline">[docs]</a><span class="k">def</span> <span class="nf">workflow_from_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">study_config</span><span class="o">=</span><span class="p">{},</span> <span class="n">disabled_nodes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">jobs_priority</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">create_directories</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Create a soma-workflow workflow from a Capsul Pipeline</span>
 
 <span class="sd">    Parameters</span>
@@ -159,6 +162,20 @@
 <span class="sd">    study_config: StudyConfig (optional), or dict</span>
 <span class="sd">        holds information about file transfers and shared resource paths.</span>
 <span class="sd">        If not specified, no translation/transfers will be used.</span>
+<span class="sd">    disabled_nodes: sequence of pipeline nodes (Node instances) (optional)</span>
+<span class="sd">        such nodes will be disabled on-the-fly in the pipeline, file transfers</span>
+<span class="sd">        will be adapted accordingly (outputs may become inputs in the resulting</span>
+<span class="sd">        workflow), and temporary files will be checked. If a disabled node was</span>
+<span class="sd">        to produce a temporary files which is still used in an enabled node,</span>
+<span class="sd">        then a ValueError exception will be raised.</span>
+<span class="sd">        If disabled_nodes is not passed, they will possibly be taken from the</span>
+<span class="sd">        pipeline (if available) using disabled steps:</span>
+<span class="sd">        see Pipeline.define_steps()</span>
+<span class="sd">    jobs_priority: int (optional, default: 0)</span>
+<span class="sd">        set this priority on soma-workflow jobs.</span>
+<span class="sd">    create_directories: bool (optional, default: True)</span>
+<span class="sd">        if set, needed output directories (which will contain output files)</span>
+<span class="sd">        will be created in a first job, which all other ones depend on.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -166,10 +183,57 @@
 <span class="sd">        a soma-workflow workflow</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">TempFile</span><span class="p">(</span><span class="nb">unicode</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">TempFile</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
         <span class="c"># class needed temporary to identify temporary paths in the pipeline.</span>
         <span class="c"># must inerit a string type since it is used as a trait value</span>
-        <span class="k">pass</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">TempFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">TempFile</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">pattern</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">value</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ref</span> <span class="k">if</span> <span class="n">string</span><span class="o">.</span><span class="n">ref</span> <span class="k">else</span> <span class="n">string</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">string</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">def</span> <span class="nf">referent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="k">else</span> <span class="bp">self</span>
+
+        <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">TempFile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">TempFile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">TempFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__iadd__</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">TempFile</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">TempFile</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span> <span class="ow">is</span> <span class="n">other</span><span class="o">.</span><span class="n">referent</span><span class="p">()</span>
+
 
     <span class="k">def</span> <span class="nf">_files_group</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">merged_formats</span><span class="p">):</span>
         <span class="n">bname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -190,8 +254,31 @@
         <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s">&#39;.minf&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">paths</span>
 
+    <span class="k">def</span> <span class="nf">_translated_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span> <span class="n">trait</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="ow">is</span> <span class="n">Undefined</span> \
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">shared_paths</span> \
+                <span class="ow">or</span> <span class="p">(</span><span class="n">trait</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">File</span><span class="p">)</span> \
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">None</span> <span class="c"># not a path</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">shared_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># already in map</span>
+            <span class="k">return</span> <span class="n">item</span>
+
+        <span class="k">for</span> <span class="n">base_dir</span><span class="p">,</span> <span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span> <span class="ow">in</span> <span class="n">shared_paths</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
+                <span class="n">rel_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="c">#uuid = path</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">SharedResourcePath</span><span class="p">(</span>
+                    <span class="n">rel_path</span><span class="p">,</span> <span class="n">namespace</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="n">uuid</span><span class="p">)</span>
+                <span class="n">shared_map</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
     <span class="k">def</span> <span class="nf">build_job</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">temp_map</span><span class="o">=</span><span class="p">{},</span> <span class="n">shared_map</span><span class="o">=</span><span class="p">{},</span> <span class="n">transfers</span><span class="o">=</span><span class="p">[{},</span> <span class="p">{}],</span>
-                  <span class="n">shared_paths</span><span class="o">=</span><span class="p">{}):</span>
+                  <span class="n">shared_paths</span><span class="o">=</span><span class="p">{},</span> <span class="n">forbidden_temp</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                  <span class="n">step_name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Create a soma-workflow Job from a Capsul Process</span>
 
 <span class="sd">        Parameters</span>
@@ -207,6 +294,12 @@
 <span class="sd">            holds information about shared resource paths base dirs for</span>
 <span class="sd">            soma-workflow.</span>
 <span class="sd">            If not specified, no translation will be used.</span>
+<span class="sd">        name: string (optional)</span>
+<span class="sd">            job name. If empty, use the process name.</span>
+<span class="sd">        priority: int (optional)</span>
+<span class="sd">            priority assigned to the job</span>
+<span class="sd">        step_name: str (optional)</span>
+<span class="sd">            the step name will be stored in the job user_storage variable</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -217,11 +310,15 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rlist</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">temp_map</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">temp_map</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">pattern</span>
                     <span class="n">rlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                     <span class="n">deeperlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
                     <span class="n">_replace_in_list</span><span class="p">(</span><span class="n">deeperlist</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">)</span>
                     <span class="n">rlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">deeperlist</span>
+                <span class="k">elif</span> <span class="n">item</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
+                    <span class="n">rlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
         <span class="k">def</span> <span class="nf">_replace_transfers</span><span class="p">(</span><span class="n">rlist</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">itransfers</span><span class="p">,</span> <span class="n">otransfers</span><span class="p">):</span>
             <span class="n">param_name</span> <span class="o">=</span> <span class="bp">None</span>
@@ -246,30 +343,9 @@
                     <span class="n">param_name</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">def</span> <span class="nf">_translated_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">trait</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="ow">is</span> <span class="n">Undefined</span> \
-                    <span class="ow">or</span> <span class="ow">not</span> <span class="n">shared_paths</span> \
-                    <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">File</span><span class="p">)</span> \
-                    <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)):</span>
-                <span class="k">return</span> <span class="bp">None</span> <span class="c"># not a path</span>
-            <span class="n">item</span> <span class="o">=</span> <span class="n">shared_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span> <span class="c"># trait.output can be None</span>
-            <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="c"># already in map</span>
-                <span class="k">return</span> <span class="n">item</span>
-
-            <span class="k">for</span> <span class="n">base_dir</span><span class="p">,</span> <span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span> <span class="ow">in</span> <span class="n">shared_paths</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">):</span>
-                    <span class="n">rel_path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
-                    <span class="c">#uuid = path</span>
-                    <span class="n">item</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">SharedResourcePath</span><span class="p">(</span>
-                        <span class="n">rel_path</span><span class="p">,</span> <span class="n">namespace</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="n">uuid</span><span class="p">)</span>
-                    <span class="n">shared_map</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
-                    <span class="k">return</span> <span class="n">item</span>
-            <span class="k">return</span> <span class="bp">None</span>
-
-        <span class="c"># Get the process command line</span>
-        <span class="n">process_cmdline</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">get_commandline</span><span class="p">()</span>
+        <span class="n">job_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">job_name</span><span class="p">:</span>
+            <span class="n">job_name</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">name</span>
 
         <span class="c"># check for special modified paths in parameters</span>
         <span class="n">input_replaced_paths</span> <span class="o">=</span> <span class="p">[]</span>
@@ -278,13 +354,25 @@
             <span class="k">if</span> <span class="n">param_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;nodes_activation&#39;</span><span class="p">,</span> <span class="s">&#39;selection_changed&#39;</span><span class="p">):</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">param_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TempFile</span><span class="p">):</span>
+                    <span class="c"># duplicate swf temp and copy pattern into it</span>
+                    <span class="n">tval</span> <span class="o">=</span> <span class="n">temp_map</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                    <span class="n">tval</span> <span class="o">=</span> <span class="n">tval</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">tval</span><span class="p">)</span>
+                    <span class="n">tval</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">pattern</span>
                     <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
-                        <span class="n">output_replaced_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_map</span><span class="p">[</span><span class="n">value</span><span class="p">])</span>
+                        <span class="n">output_replaced_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tval</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">input_replaced_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_map</span><span class="p">[</span><span class="n">value</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">forbidden_temp</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s">&#39;Temporary value used cannot be generated in &#39;</span>
+                                <span class="s">&#39;the workflkow: </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span>
+                                <span class="o">%</span> <span class="p">(</span><span class="n">job_name</span><span class="p">,</span> <span class="n">param_name</span><span class="p">))</span>
+                        <span class="n">input_replaced_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tval</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_translated_path</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">)</span>
+                    <span class="n">_translated_path</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span>
+                                     <span class="n">parameter</span><span class="p">)</span>
 
+        <span class="c"># Get the process command line</span>
+        <span class="n">process_cmdline</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">get_commandline</span><span class="p">()</span>
         <span class="c"># and replace in commandline</span>
         <span class="n">iproc_transfers</span> <span class="o">=</span> <span class="n">transfers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">oproc_transfers</span> <span class="o">=</span> <span class="n">transfers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="p">{})</span>
@@ -296,14 +384,19 @@
             <span class="n">process_cmdline</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">iproc_transfers</span><span class="p">,</span> <span class="n">oproc_transfers</span><span class="p">)</span>
 
         <span class="c"># Return the soma-workflow job</span>
-        <span class="k">return</span> <span class="n">swclient</span><span class="o">.</span><span class="n">Job</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">process</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">Job</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">job_name</span><span class="p">,</span>
             <span class="n">command</span><span class="o">=</span><span class="n">process_cmdline</span><span class="p">,</span>
             <span class="n">referenced_input_files</span>
                 <span class="o">=</span><span class="n">input_replaced_paths</span> \
                     <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">iproc_transfers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
             <span class="n">referenced_output_files</span>
                 <span class="o">=</span><span class="n">output_replaced_paths</span> \
-                    <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">oproc_transfers</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+                    <span class="o">+</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">oproc_transfers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">step_name</span><span class="p">:</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">user_storage</span> <span class="o">=</span> <span class="n">step_name</span>
+        <span class="k">return</span> <span class="n">job</span>
 
     <span class="k">def</span> <span class="nf">build_group</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">jobs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Create a group of jobs</span>
@@ -373,18 +466,17 @@
     <span class="k">def</span> <span class="nf">_get_swf_paths</span><span class="p">(</span><span class="n">study_config</span><span class="p">):</span>
         <span class="n">computing_resource</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
             <span class="n">study_config</span><span class="p">,</span> <span class="s">&#39;somaworkflow_computing_resource&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">computing_resource</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">computing_resource</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">{}</span>
         <span class="n">resources_conf</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
             <span class="n">study_config</span><span class="p">,</span> <span class="s">&#39;somaworkflow_computing_resources_config&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">resources_conf</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">resources_conf</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">{}</span>
-        <span class="n">resource_conf</span> <span class="o">=</span> <span class="n">resources_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">computing_resource</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">resource_conf</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">resource_conf</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">resources_conf</span><span class="p">,</span> <span class="n">computing_resource</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resource_conf</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">{}</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">resource_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;transfer_paths&#39;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">resource_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;path_translations&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">resource_conf</span><span class="o">.</span><span class="n">transfer_paths</span><span class="p">,</span>
+                <span class="n">resource_conf</span><span class="o">.</span><span class="n">path_translations</span><span class="o">.</span><span class="n">export_to_dict</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_propagate_transfer</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
                             <span class="n">transfer_item</span><span class="p">):</span>
@@ -459,40 +551,287 @@
 <span class="sd">        transfer_paths: list</span>
 <span class="sd">            paths basedirs for translations from soma-worflow config</span>
 
-<span class="sd">        Return</span>
-<span class="sd">        ------</span>
-<span class="sd">            [in_transfers, out_transfers]</span>
-<span class="sd">            each of which is a dict: { Process: proc_dict }</span>
-<span class="sd">                proc_dict is a dict: { file_path : FileTransfer object }</span>
-<span class="sd">            FileTransfer objects are reused when referring to the same path used</span>
-<span class="sd">            from different processes within the pipeline.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        [in_transfers, out_transfers]</span>
+<span class="sd">        each of which is a dict: { Process: proc_dict }</span>
+<span class="sd">            proc_dict is a dict: { file_path : FileTransfer object }</span>
+<span class="sd">        FileTransfer objects are reused when referring to the same path</span>
+<span class="sd">        used from different processes within the pipeline.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">in_transfers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">out_transfers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">transfers</span> <span class="o">=</span> <span class="p">[</span><span class="n">in_transfers</span><span class="p">,</span> <span class="n">out_transfers</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">File</span><span class="p">)</span> \
-                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)</span> \
-                    <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Any</span><span class="p">:</span>
-                <span class="c"># is value in paths</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">tpath</span> <span class="ow">in</span> <span class="n">transfer_paths</span><span class="p">:</span>
+        <span class="n">todo_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">todo_nodes</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">todo_nodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">):</span>
+                <span class="n">process</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">process</span> <span class="o">=</span> <span class="n">node</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">File</span><span class="p">)</span> \
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)</span> \
+                        <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Any</span><span class="p">:</span>
+                    <span class="c"># is value in paths</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
+                        <span class="k">continue</span>
                     <span class="n">output</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tpath</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)):</span>
-                        <span class="n">transfer_item</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">FileTransfer</span><span class="p">(</span>
-                            <span class="n">is_input</span><span class="o">=</span><span class="ow">not</span> <span class="n">output</span><span class="p">,</span>
-                            <span class="n">client_path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
-                            <span class="n">client_paths</span><span class="o">=</span><span class="n">_files_group</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">merged_formats</span><span class="p">))</span>
-                        <span class="n">_propagate_transfer</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span>
-                                            <span class="n">path</span><span class="p">,</span> <span class="ow">not</span> <span class="n">output</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
-                                            <span class="n">transfer_item</span><span class="p">)</span>
-                        <span class="k">break</span>
+                    <span class="n">existing_transfers</span> <span class="o">=</span> <span class="n">transfers</span><span class="p">[</span><span class="n">output</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="n">existing_transfer</span> <span class="o">=</span> <span class="n">existing_transfers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">existing_transfer</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">tpath</span> <span class="ow">in</span> <span class="n">transfer_paths</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tpath</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)):</span>
+                            <span class="n">transfer_item</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">FileTransfer</span><span class="p">(</span>
+                                <span class="n">is_input</span><span class="o">=</span><span class="ow">not</span> <span class="n">output</span><span class="p">,</span>
+                                <span class="n">client_path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                                <span class="n">client_paths</span><span class="o">=</span><span class="n">_files_group</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
+                                                          <span class="n">merged_formats</span><span class="p">))</span>
+                            <span class="n">_propagate_transfer</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span>
+                                                <span class="n">path</span><span class="p">,</span> <span class="ow">not</span> <span class="n">output</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
+                                                <span class="n">transfer_item</span><span class="p">)</span>
+                            <span class="k">break</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">):</span>
+                <span class="n">todo_nodes</span> <span class="o">+=</span> <span class="p">[</span><span class="n">sub_node</span>
+                               <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sub_node</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+                               <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span>
+                                  <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_node</span><span class="p">,</span> <span class="n">Switch</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">transfers</span>
 
+    <span class="k">def</span> <span class="nf">_expand_nodes</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Expands the nodes list or set to leaf nodes by replacing pipeline</span>
+<span class="sd">        nodes by their children list.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        set of leaf nodes.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">nodes_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">expanded_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">nodes_list</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">nodes_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">):</span>
+                <span class="k">continue</span> <span class="c"># switch or something</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
+                <span class="n">nodes_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">itervalues</span><span class="p">()</span>
+                                   <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">expanded_nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">expanded_nodes</span>
+
+    <span class="k">def</span> <span class="nf">_handle_disable_nodes</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Take into account disabled nodes by changing FileTransfer outputs</span>
+<span class="sd">        for such nodes to inputs, and recording output temporary files, so as</span>
+<span class="sd">        to ensure that missing temporary outputs will not be used later in</span>
+<span class="sd">        the workflow.</span>
+
+<span class="sd">        disabled_nodes should be a list, or preferably a set, of leaf process</span>
+<span class="sd">        nodes. Use _expand_nodes() if needed before calling</span>
+<span class="sd">        _handle_disable_nodes().</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">move_to_input</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">remove_temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">):</span>
+                <span class="k">continue</span> <span class="c"># switch or something else</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
+            <span class="n">otrans</span> <span class="o">=</span> <span class="n">transfers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">File</span><span class="p">)</span> \
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)</span> \
+                        <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">)</span> <span class="ow">is</span> <span class="n">Any</span><span class="p">):</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">otrans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">transfer</span><span class="p">,</span> <span class="n">path2</span> <span class="o">=</span> <span class="n">otrans</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">transfer</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">if</span> <span class="n">transfer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="k">print</span> <span class="s">&#39;transfered output path:&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> \
+                            <span class="s">&#39;from: </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s"> changes to input.&#39;</span> \
+                            <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                        <span class="n">move_to_input</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">transfer</span>
+                        <span class="n">transfer</span><span class="o">.</span><span class="n">initial_status</span> \
+                            <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">FILES_ON_CLIENT</span>
+                    <span class="k">elif</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">temp_map</span><span class="p">:</span>
+                        <span class="k">print</span> <span class="s">&#39;temp path in: </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s"> will not be produced.&#39;</span> \
+                            <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                        <span class="n">remove_temp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">move_to_input</span><span class="p">,</span> <span class="n">remove_temp</span>
+
+    <span class="k">def</span> <span class="nf">iter_to_workflow</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span>
+                         <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span>
+                         <span class="n">disabled_nodes</span><span class="p">,</span> <span class="n">remove_temp</span><span class="p">,</span>
+                         <span class="n">steps</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build a workflow for a single iteration step of a process/sub-pipeline</span>
+
+<span class="sd">        is called for each iteration by build_iteration()</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (jobs, dependencies, groups, root_jobs)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
+            <span class="n">temp_map2</span> <span class="o">=</span> <span class="n">assign_temporary_filenames</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
+            <span class="n">temp_subst_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="ow">in</span> <span class="n">temp_map2</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
+            <span class="n">temp_subst_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">temp_subst_list</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">graph</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">workflow_graph</span><span class="p">()</span>
+                <span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="p">)</span> <span class="o">=</span> \
+                    <span class="n">workflow_from_graph</span><span class="p">(</span>
+                        <span class="n">graph</span><span class="p">,</span> <span class="n">temp_subst_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
+                        <span class="n">shared_paths</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="o">=</span><span class="n">disabled_nodes</span><span class="p">,</span>
+                        <span class="n">forbidden_temp</span><span class="o">=</span><span class="n">remove_temp</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span>
+                        <span class="n">study_config</span><span class="o">=</span><span class="n">study_config</span><span class="p">)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">build_group</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">groups</span><span class="p">[(</span><span class="n">process</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)]</span> <span class="o">=</span> <span class="n">group</span>
+                <span class="n">root_jobs</span> <span class="o">=</span> <span class="p">{(</span><span class="n">process</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span> <span class="n">group</span><span class="p">}</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">restore_empty_filenames</span><span class="p">(</span><span class="n">temp_map2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ProcessIteration</span><span class="p">):</span>
+            <span class="c"># sub-iteration</span>
+            <span class="k">return</span> <span class="n">build_iteration</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">study_config</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># single process</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">build_job</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span>
+                            <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span>
+                            <span class="n">forbidden_temp</span><span class="o">=</span><span class="n">remove_temp</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">node_name</span><span class="p">,</span>
+                            <span class="n">priority</span><span class="o">=</span><span class="n">jobs_priority</span><span class="p">,</span>
+                            <span class="n">step_name</span><span class="o">=</span><span class="n">step_name</span><span class="p">)</span>
+            <span class="n">jobs</span> <span class="o">=</span> <span class="p">{(</span><span class="n">process</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span> <span class="n">job</span><span class="p">}</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">root_jobs</span> <span class="o">=</span> <span class="p">{(</span><span class="n">process</span><span class="p">,</span> <span class="n">iteration</span><span class="p">):</span> <span class="n">job</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_jobs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_iteration</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span>
+                        <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">,</span>
+                        <span class="n">remove_temp</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">study_config</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Build workflow for an iterative process: the process / sub-pipeline is</span>
+<span class="sd">        filled with appropriate parameters for each iteration, and its</span>
+<span class="sd">        workflow is generated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        (jobs, dependencies, groups, root_jobs)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">no_output_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">size_error</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">:</span>
+            <span class="n">trait</span> <span class="o">=</span> <span class="n">it_process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+            <span class="n">psize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">psize</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">size</span> <span class="o">=</span> <span class="n">psize</span>
+                <span class="k">elif</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">psize</span><span class="p">:</span>
+                    <span class="n">size_error</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">no_output_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">no_output_value</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">elif</span> <span class="n">no_output_value</span><span class="p">:</span>
+                        <span class="n">size_error</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">no_output_value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">no_output_value</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">no_output_value</span><span class="p">:</span>
+                        <span class="n">size_error</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                        <span class="n">size</span> <span class="o">=</span> <span class="n">psize</span>
+                    <span class="k">elif</span> <span class="n">size</span> <span class="o">!=</span> <span class="n">psize</span><span class="p">:</span>
+                        <span class="n">size_error</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">size_error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Iterative parameter values must be lists of the &#39;</span>
+                <span class="s">&#39;same size: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">=</span><span class="si">%d</span><span class="s">&#39;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">n</span><span class="p">)))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">workflows</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">regular_parameters</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">))</span>
+
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">root_jobs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">no_output_value</span><span class="p">:</span>
+            <span class="c"># this case is a &quot;really&quot; dynamic iteration, the number of</span>
+            <span class="c"># iterations and parameters are determined in runtime, so we</span>
+            <span class="c"># cannot handle it at the moment.</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Dynamic iteration is not handled in this &#39;</span>
+                <span class="s">&#39;version of CAPSUL / Soma-Workflow&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">:</span>
+                <span class="n">trait</span> <span class="o">=</span> <span class="n">it_process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">no_output_value</span> \
+                            <span class="ow">or</span> <span class="ow">not</span> <span class="n">it_process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span>
+                                <span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)[</span><span class="n">iteration</span><span class="p">])</span>
+
+                <span class="c"># TODO FIXME: operate completion... how ?</span>
+
+                <span class="c">#workflow = workflow_from_pipeline(it_process.process,</span>
+                                                  <span class="c">#study_config=study_config)</span>
+                <span class="c">#workflows.append(workflow)</span>
+
+                <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">:</span>
+                    <span class="n">trait</span> <span class="o">=</span> <span class="n">it_process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                        <span class="n">outputs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+                            <span class="n">parameter</span><span class="p">,[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
+                                                         <span class="n">parameter</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">outputs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">it_process</span><span class="o">.</span><span class="n">iterative_parameters</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span>
+                            <span class="nb">getattr</span><span class="p">(</span><span class="n">it_process</span><span class="p">,</span> <span class="n">parameter</span><span class="p">)[</span><span class="n">iteration</span><span class="p">])</span>
+
+                <span class="c"># TODO FIXME: operate completion... how ?</span>
+
+                <span class="n">process_name</span> <span class="o">=</span> <span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&#39;_</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">iteration</span>
+                <span class="p">(</span><span class="n">sub_jobs</span><span class="p">,</span> <span class="n">sub_dependencies</span><span class="p">,</span> <span class="n">sub_groups</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="p">)</span> <span class="o">=</span> \
+                    <span class="n">iter_to_workflow</span><span class="p">(</span><span class="n">it_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">process_name</span><span class="p">,</span>
+                        <span class="n">step_name</span><span class="p">,</span>
+                        <span class="n">temp_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
+                        <span class="n">shared_paths</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">,</span> <span class="n">remove_temp</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span>
+                        <span class="n">study_config</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
+                <span class="n">jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">([((</span><span class="n">p</span><span class="p">,</span> <span class="n">iteration</span><span class="p">),</span> <span class="n">j</span><span class="p">)</span>
+                                  <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">sub_jobs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]))</span>
+                <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_dependencies</span><span class="p">)</span>
+                <span class="n">groups</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_groups</span><span class="p">)</span>
+                <span class="n">root_jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_root_jobs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_jobs</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">workflow_from_graph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">temp_map</span><span class="o">=</span><span class="p">{},</span> <span class="n">shared_map</span><span class="o">=</span><span class="p">{},</span>
-                            <span class="n">transfers</span><span class="o">=</span><span class="p">[{},</span> <span class="p">{}],</span> <span class="n">shared_paths</span><span class="o">=</span><span class="p">{}):</span>
+                            <span class="n">transfers</span><span class="o">=</span><span class="p">[{},</span> <span class="p">{}],</span> <span class="n">shared_paths</span><span class="o">=</span><span class="p">{},</span>
+                            <span class="n">disabled_nodes</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span> <span class="n">forbidden_temp</span><span class="o">=</span><span class="nb">set</span><span class="p">(),</span>
+                            <span class="n">jobs_priority</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="p">{},</span> <span class="n">current_step</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+                            <span class="n">study_config</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot; Convert a CAPSUL graph to a soma-workflow workflow</span>
 
 <span class="sd">        Parameters</span>
@@ -511,18 +850,31 @@
 <span class="sd">            holds information about shared resource paths from soma-worflow</span>
 <span class="sd">            section in study config.</span>
 <span class="sd">            If not specified, no translation will be used.</span>
+<span class="sd">        jobs_priority: int (optional, default: 0)</span>
+<span class="sd">            set this priority on soma-workflow jobs.</span>
+<span class="sd">        steps: dict (optional)</span>
+<span class="sd">            node name -&gt; step name dict</span>
+<span class="sd">        current_step: str (optional)</span>
+<span class="sd">            the parent node step name</span>
+<span class="sd">        study_config: StydyConfig instance (optional)</span>
+<span class="sd">            used only for iterative nodes, to be passed to create sub-workflows</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        workflow: Workflow</span>
-<span class="sd">            the corresponding soma-workflow workflow</span>
+<span class="sd">        workflow: tuple (jobs, dependencies, groups, root_jobs)</span>
+<span class="sd">            the corresponding soma-workflow workflow definition (to be passed</span>
+<span class="sd">            to Workflow constructor)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">jobs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">root_jobs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">root_groups</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">dependencies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">group_nodes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">ordered_nodes</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">topological_sort</span><span class="p">()</span>
+        <span class="n">proc_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Graph</span><span class="p">)</span>
+                              <span class="k">else</span> <span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ordered_nodes</span><span class="p">)])</span>
 
         <span class="c"># Go through all graph nodes</span>
         <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
@@ -534,46 +886,132 @@
                 <span class="n">sub_jobs</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">for</span> <span class="n">pipeline_node</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">:</span>
                     <span class="n">process</span> <span class="o">=</span> <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="k">if</span> <span class="n">pipeline_node</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">step_name</span> <span class="o">=</span> <span class="n">current_step</span> <span class="ow">or</span> <span class="n">steps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pipeline_node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">ProcessIteration</span><span class="p">):</span>
+                        <span class="c"># iterative node</span>
+                        <span class="n">group_nodes</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span>
+                            <span class="n">node_name</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pipeline_node</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)</span> <span class="ow">and</span>
                             <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Process</span><span class="p">)):</span>
                         <span class="n">job</span> <span class="o">=</span> <span class="n">build_job</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span>
-                                        <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">)</span>
+                                        <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span>
+                                        <span class="n">forbidden_temp</span><span class="o">=</span><span class="n">forbidden_temp</span><span class="p">,</span>
+                                        <span class="n">name</span><span class="o">=</span><span class="n">pipeline_node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                        <span class="n">priority</span><span class="o">=</span><span class="n">jobs_priority</span><span class="p">,</span>
+                                        <span class="n">step_name</span><span class="o">=</span><span class="n">step_name</span><span class="p">)</span>
                         <span class="n">sub_jobs</span><span class="p">[</span><span class="n">process</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span>
-                        <span class="n">root_jobs</span><span class="p">[</span><span class="n">process</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span>
-                       <span class="c">#node.job = job</span>
+                        <span class="n">root_jobs</span><span class="p">[</span><span class="n">process</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">job</span><span class="p">]</span>
+                        <span class="c">#node.job = job</span>
                 <span class="n">jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
 
-        <span class="c"># Recurence on graph node</span>
+        <span class="c"># Recurrence on graph node</span>
         <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">group_nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">wf_graph</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">meta</span>
-            <span class="p">(</span><span class="n">sub_jobs</span><span class="p">,</span> <span class="n">sub_deps</span><span class="p">,</span> <span class="n">sub_groups</span><span class="p">,</span> <span class="n">sub_root_groups</span><span class="p">,</span>
-                       <span class="n">sub_root_jobs</span><span class="p">)</span> <span class="o">=</span> <span class="n">workflow_from_graph</span><span class="p">(</span>
-                          <span class="n">wf_graph</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
-                          <span class="n">shared_paths</span><span class="p">)</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="n">build_group</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span>
-                <span class="n">sub_root_groups</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="o">+</span> <span class="n">sub_root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-            <span class="n">groups</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
-            <span class="n">root_groups</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
-            <span class="n">jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
-            <span class="n">groups</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_groups</span><span class="p">)</span>
-            <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_deps</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="c"># iterative nodes</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">it_node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+                    <span class="n">process</span> <span class="o">=</span> <span class="n">it_node</span><span class="o">.</span><span class="n">process</span>
+                    <span class="n">sub_workflows</span> <span class="o">=</span> <span class="n">build_iteration</span><span class="p">(</span>
+                        <span class="n">process</span><span class="p">,</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span>
+                        <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">,</span>
+                        <span class="p">{},</span> <span class="n">steps</span><span class="p">,</span> <span class="n">study_config</span><span class="o">=</span><span class="p">{})</span>
+                    <span class="p">(</span><span class="n">sub_jobs</span><span class="p">,</span> <span class="n">sub_deps</span><span class="p">,</span> <span class="n">sub_groups</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="p">)</span> <span class="o">=</span> \
+                        <span class="n">sub_workflows</span>
+                    <span class="n">group</span> <span class="o">=</span> <span class="n">build_group</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                    <span class="n">groups</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                    <span class="n">root_jobs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                    <span class="n">groups</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_groups</span><span class="p">)</span>
+                    <span class="n">jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
+                    <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_deps</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># sub-pipeline</span>
+                <span class="n">wf_graph</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">meta</span>
+                <span class="n">step_name</span> <span class="o">=</span> <span class="n">current_step</span> <span class="ow">or</span> <span class="n">steps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">sub_jobs</span><span class="p">,</span> <span class="n">sub_deps</span><span class="p">,</span> <span class="n">sub_groups</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="p">)</span> \
+                    <span class="o">=</span> <span class="n">workflow_from_graph</span><span class="p">(</span>
+                        <span class="n">wf_graph</span><span class="p">,</span> <span class="n">temp_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span>
+                        <span class="n">shared_paths</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">,</span>
+                        <span class="n">jobs_priority</span><span class="o">=</span><span class="n">jobs_priority</span><span class="p">,</span>
+                        <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span> <span class="n">current_step</span><span class="o">=</span><span class="n">step_name</span><span class="p">)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">build_group</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">sub_root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">groups</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+                <span class="n">root_jobs</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">group</span><span class="p">]</span>
+                <span class="n">jobs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
+                <span class="n">groups</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_groups</span><span class="p">)</span>
+                <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_deps</span><span class="p">)</span>
 
         <span class="c"># Add dependencies between a source job and destination jobs</span>
         <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="c"># Source job</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
-                <span class="n">sjob</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">ProcessIteration</span><span class="p">):</span>
+                    <span class="n">sjobs</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">sjobs</span><span class="p">:</span>
+                        <span class="k">continue</span> <span class="c"># disabled</span>
+                <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+                    <span class="n">sjobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">jobs</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">]]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">continue</span> <span class="c"># disabled node</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">sjob</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span>
+                <span class="n">sjobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">meta</span><span class="p">]]</span>
             <span class="c"># Destination jobs</span>
             <span class="k">for</span> <span class="n">dnode</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">links_to</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
-                    <span class="n">djob</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">[</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">ProcessIteration</span><span class="p">):</span>
+                        <span class="n">djobs</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">djobs</span><span class="p">:</span>
+                            <span class="k">continue</span> <span class="c"># disabled</span>
+                    <span class="k">elif</span> <span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+                        <span class="n">djobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">jobs</span><span class="p">[</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">]]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">continue</span> <span class="c"># disabled node</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">djob</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span>
-                <span class="n">dependencies</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">sjob</span><span class="p">,</span> <span class="n">djob</span><span class="p">))</span>
+                    <span class="n">djobs</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="n">dnode</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">djobs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="n">djobs</span> <span class="o">=</span> <span class="p">[</span><span class="n">djobs</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">djob</span> <span class="ow">in</span> <span class="n">djobs</span><span class="p">:</span>
+                    <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">([(</span><span class="n">sjob</span><span class="p">,</span> <span class="n">djob</span><span class="p">)</span> <span class="k">for</span> <span class="n">sjob</span> <span class="ow">in</span> <span class="n">sjobs</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_groups</span><span class="p">,</span> <span class="n">root_jobs</span>
+        <span class="c"># sort root jobs/groups</span>
+        <span class="n">root_jobs_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">js</span> <span class="ow">in</span> <span class="n">root_jobs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">root_jobs_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">proc_keys</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">p</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">js</span><span class="p">])</span>
+        <span class="n">root_jobs_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">root_jobs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">root_jobs_list</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_jobs</span>
+
+    <span class="k">def</span> <span class="nf">_create_directories_job</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">shared_map</span><span class="o">=</span><span class="p">{},</span> <span class="n">shared_paths</span><span class="o">=</span><span class="p">{},</span>
+                                <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transfer_paths</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="k">def</span> <span class="nf">_is_transfer</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">transfer_paths</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">transfer_paths</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)):</span>
+                    <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="bp">False</span>
+
+        <span class="n">directories</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span>
+                       <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">pipeline_tools</span><span class="o">.</span><span class="n">get_output_directories</span><span class="p">(</span>
+                          <span class="n">pipeline</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                       <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_transfer</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">transfer_paths</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">directories</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span> <span class="c"># no dirs to create.</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># check for path translations</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">directories</span><span class="p">:</span>
+            <span class="n">new_path</span> <span class="o">=</span> <span class="n">_translated_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="p">)</span>
+            <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_path</span> <span class="ow">or</span> <span class="n">path</span><span class="p">)</span>
+        <span class="c"># use a python command to avoid the shell command mkdir</span>
+        <span class="n">cmdline</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;python&#39;</span><span class="p">,</span> <span class="s">&#39;-c&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;import sys, os; [os.makedirs(p) if not os.path.exists(p) &#39;</span>
+                   <span class="s">&#39;else None &#39;</span>
+                   <span class="s">&#39;for p in sys.argv[1:]]&#39;</span><span class="p">]</span> \
+                  <span class="o">+</span> <span class="n">paths</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">Job</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s">&#39;output directories creation&#39;</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="n">cmdline</span><span class="p">,</span>
+            <span class="n">priority</span><span class="o">=</span><span class="n">priority</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">job</span>
 
     <span class="c"># TODO: handle formats in a separate, centralized place</span>
     <span class="c"># formats: {name: ext_props}</span>
@@ -593,26 +1031,75 @@
     <span class="k">for</span> <span class="n">format</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">formats</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="n">merged_formats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
+        <span class="c"># &quot;pipeline&quot; is actally a single process (or should, if it is not a</span>
+        <span class="c"># pipeline). Get it into a pipeine (with a single node) to make the</span>
+        <span class="c"># workflow.</span>
+        <span class="n">new_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">()</span>
+        <span class="n">new_pipeline</span><span class="o">.</span><span class="n">add_process</span><span class="p">(</span><span class="s">&#39;main&#39;</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">)</span>
+        <span class="n">new_pipeline</span><span class="o">.</span><span class="n">autoexport_nodes_parameters</span><span class="p">()</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">new_pipeline</span>
     <span class="n">temp_map</span> <span class="o">=</span> <span class="n">assign_temporary_filenames</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
     <span class="n">temp_subst_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="ow">in</span> <span class="n">temp_map</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
     <span class="n">temp_subst_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">temp_subst_list</span><span class="p">)</span>
     <span class="n">shared_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">swf_paths</span> <span class="o">=</span> <span class="n">_get_swf_paths</span><span class="p">(</span><span class="n">study_config</span><span class="p">)</span>
     <span class="n">transfers</span> <span class="o">=</span> <span class="n">_get_transfers</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">swf_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">merged_formats</span><span class="p">)</span>
+    <span class="c">#print &#39;disabling nodes:&#39;, disabled_nodes</span>
+    <span class="c"># get complete list of disabled leaf nodes</span>
+    <span class="k">if</span> <span class="n">disabled_nodes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">disabled_nodes</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">disabled_pipeline_steps_nodes</span><span class="p">()</span>
+    <span class="n">disabled_nodes</span> <span class="o">=</span> <span class="n">_expand_nodes</span><span class="p">(</span><span class="n">disabled_nodes</span><span class="p">)</span>
+    <span class="n">move_to_input</span><span class="p">,</span> <span class="n">remove_temp</span> <span class="o">=</span> <span class="n">_handle_disable_nodes</span><span class="p">(</span>
+        <span class="n">pipeline</span><span class="p">,</span> <span class="n">temp_subst_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">disabled_nodes</span><span class="p">)</span>
+    <span class="c">#print &#39;changed transfers:&#39;, move_to_input</span>
+    <span class="c">#print &#39;removed temp:&#39;, remove_temp</span>
+    <span class="c">#print &#39;temp_map:&#39;, temp_map</span>
+    <span class="c">#print &#39;SWF transfers:&#39;, swf_paths[0]</span>
+    <span class="c">#print &#39;shared paths:&#39;, swf_paths[1]</span>
+
+    <span class="k">if</span> <span class="n">create_directories</span><span class="p">:</span>
+        <span class="c"># create job</span>
+        <span class="n">dirs_job</span> <span class="o">=</span> <span class="n">_create_directories_job</span><span class="p">(</span>
+            <span class="n">pipeline</span><span class="p">,</span> <span class="n">shared_map</span><span class="o">=</span><span class="n">shared_map</span><span class="p">,</span> <span class="n">shared_paths</span><span class="o">=</span><span class="n">swf_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">transfer_paths</span><span class="o">=</span><span class="n">swf_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c"># build steps map</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="s">&#39;pipeline_steps&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">step_name</span><span class="p">,</span> <span class="n">step</span> \
+                <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="n">step</span><span class="o">.</span><span class="n">nodes</span>
+            <span class="n">steps</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">([(</span><span class="n">node</span><span class="p">,</span> <span class="n">step_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]))</span>
 
     <span class="c"># Get a graph</span>
-    <span class="n">graph</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">workflow_graph</span><span class="p">()</span>
-    <span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_groups</span><span class="p">,</span>
-           <span class="n">root_jobs</span><span class="p">)</span> <span class="o">=</span> <span class="n">workflow_from_graph</span><span class="p">(</span>
-              <span class="n">graph</span><span class="p">,</span> <span class="n">temp_subst_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">swf_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">workflow_graph</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">jobs</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">root_jobs</span><span class="p">)</span> <span class="o">=</span> <span class="n">workflow_from_graph</span><span class="p">(</span>
+            <span class="n">graph</span><span class="p">,</span> <span class="n">temp_subst_map</span><span class="p">,</span> <span class="n">shared_map</span><span class="p">,</span> <span class="n">transfers</span><span class="p">,</span> <span class="n">swf_paths</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">disabled_nodes</span><span class="o">=</span><span class="n">disabled_nodes</span><span class="p">,</span> <span class="n">forbidden_temp</span><span class="o">=</span><span class="n">remove_temp</span><span class="p">,</span>
+            <span class="n">steps</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span> <span class="n">study_config</span><span class="o">=</span><span class="n">study_config</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">restore_empty_filenames</span><span class="p">(</span><span class="n">temp_map</span><span class="p">)</span>
 
-    <span class="n">restore_empty_filenames</span><span class="p">(</span><span class="n">temp_map</span><span class="p">)</span>
+    <span class="n">all_jobs</span> <span class="o">=</span> <span class="n">jobs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="n">root_jobs</span> <span class="o">=</span> <span class="n">root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
-    <span class="c"># TODO: root_group would need reordering according to dependencies</span>
-    <span class="c"># (maybe using topological_sort)</span>
-    <span class="n">workflow</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">Workflow</span><span class="p">(</span><span class="n">jobs</span><span class="o">=</span><span class="n">jobs</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+    <span class="c"># if directories have to be created, all other primary jobs will depend</span>
+    <span class="c"># on this first one</span>
+    <span class="k">if</span> <span class="n">create_directories</span> <span class="ow">and</span> <span class="n">dirs_job</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">dependend_jobs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">dependend_jobs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dependency</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">new_deps</span> <span class="o">=</span> <span class="p">[(</span><span class="n">dirs_job</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">all_jobs</span>
+                    <span class="k">if</span> <span class="n">job</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dependend_jobs</span><span class="p">]</span>
+        <span class="n">dependencies</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_deps</span><span class="p">)</span>
+        <span class="n">all_jobs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dirs_job</span><span class="p">)</span>
+        <span class="n">root_jobs</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dirs_job</span><span class="p">)</span>
+
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">Workflow</span><span class="p">(</span><span class="n">jobs</span><span class="o">=</span><span class="n">all_jobs</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
-        <span class="n">root_group</span><span class="o">=</span><span class="n">root_groups</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="o">+</span> <span class="n">root_jobs</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+        <span class="n">root_group</span><span class="o">=</span><span class="n">root_jobs</span><span class="p">,</span>
         <span class="n">name</span><span class="o">=</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">workflow</span>
@@ -628,7 +1115,7 @@
 <span class="sd">    workflow: Workflow (mandatory)</span>
 <span class="sd">        the soma-workflow workflow</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">localhost</span> <span class="o">=</span> <span class="n">getfqdn</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">localhost</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span>
     <span class="n">controller</span> <span class="o">=</span> <span class="n">swclient</span><span class="o">.</span><span class="n">WorkflowController</span><span class="p">(</span><span class="n">localhost</span><span class="p">)</span>
     <span class="n">wf_id</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">submit_workflow</span><span class="p">(</span><span class="n">workflow</span><span class="o">=</span><span class="n">workflow</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">workflow_name</span><span class="p">)</span>
     <span class="n">swclient</span><span class="o">.</span><span class="n">Helper</span><span class="o">.</span><span class="n">wait_workflow</span><span class="p">(</span><span class="n">wf_id</span><span class="p">,</span> <span class="n">controller</span><span class="p">)</span>

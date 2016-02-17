@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -157,7 +156,7 @@
 <span class="kn">from</span> <span class="nn">run</span> <span class="kn">import</span> <span class="n">run_process</span>
 <span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_workflow</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">workflow_from_pipeline</span><span class="p">,</span> <span class="n">local_workflow_run</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_nodes</span> <span class="kn">import</span> <span class="n">IterativeNode</span><span class="p">,</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_nodes</span> <span class="kn">import</span> <span class="n">Node</span>
 
 
 <div class="viewcode-block" id="StudyConfig"><a class="viewcode-back" href="../../../api_tree/generated/capsul-studyconfig/capsul.study_config.study_config.StudyConfig.html#capsul.study_config.study_config.StudyConfig">[docs]</a><span class="k">class</span> <span class="nc">StudyConfig</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
@@ -209,7 +208,7 @@
 
     <span class="n">default_modules</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;FSLConfig&#39;</span><span class="p">,</span> <span class="s">&#39;MatlabConfig&#39;</span><span class="p">,</span> <span class="s">&#39;SmartCachingConfig&#39;</span><span class="p">,</span>
                        <span class="s">&#39;SomaWorkflowConfig&#39;</span><span class="p">,</span> <span class="s">&#39;SPMConfig&#39;</span><span class="p">]</span>
-    <span class="n">_user_config_directory</span> <span class="o">=</span> <span class="s">&quot;~/.config/capsul&quot;</span>
+    <span class="n">_user_config_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&quot;~&quot;</span><span class="p">,</span> <span class="s">&quot;.config&quot;</span><span class="p">,</span> <span class="s">&quot;capsul&quot;</span><span class="p">)</span>
 
     <span class="n">study_name</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span>
         <span class="bp">None</span><span class="p">,</span>
@@ -408,7 +407,7 @@
 
             <span class="c"># Check the output directory is valid</span>
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span> <span class="ow">is</span> <span class="n">Undefined</span> <span class="ow">or</span>
-                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s">&quot;&#39;{0}&#39; is not a valid directory. A valid output &quot;</span>
                     <span class="s">&quot;directory is expected to run the process or &quot;</span>
@@ -439,31 +438,8 @@
 
             <span class="c"># Execute each process node element</span>
             <span class="k">for</span> <span class="n">process_node</span> <span class="ow">in</span> <span class="n">execution_list</span><span class="p">:</span>
-
-                <span class="c"># Special case: an iterative node</span>
-                <span class="c"># Execute each element of the iterative pipeline</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_node</span><span class="p">,</span> <span class="n">IterativeNode</span><span class="p">):</span>
-
-                    <span class="c"># Get the iterative pipeline</span>
-                    <span class="n">iterative_pipeline</span> <span class="o">=</span> <span class="n">process_node</span><span class="o">.</span><span class="n">process</span>
-
-                    <span class="c"># Generate ordered execution list</span>
-                    <span class="n">iterative_execution_list</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">iterative_pipeline</span><span class="o">.</span><span class="n">workflow_ordered_nodes</span><span class="p">())</span>
-
-                    <span class="c"># Filter process nodes if necessary</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">executer_qc_nodes</span><span class="p">:</span>
-                        <span class="n">iterative_execution_list</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">iterative_execution_list</span>
-                            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">node_type</span> <span class="o">!=</span> <span class="s">&quot;view_node&quot;</span><span class="p">]</span>
-
-                    <span class="c"># Execute the iterative process instances</span>
-                    <span class="k">for</span> <span class="n">iterative_process_node</span> <span class="ow">in</span> <span class="n">iterative_execution_list</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">iterative_process_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
-                                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
                 <span class="c"># Execute the process instance contained in the node</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process_node</span><span class="p">,</span> <span class="n">Node</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">process_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
                 <span class="c"># Execute the process instance</span>
@@ -530,14 +506,16 @@
 
         <span class="c"># First read global options</span>
         <span class="n">global_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;CAPSUL_CONFIG&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">global_config_file</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">)):</span>
+
             <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">global_config_file</span> <span class="o">=</span> <span class="n">global_config_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">global_config_file</span> <span class="o">=</span> \
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_config_directory</span><span class="p">,</span>
                                                 <span class="s">&quot;config.json&quot;</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">):</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">global_config_file</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">global_config_file</span> <span class="o">=</span> <span class="n">global_config_file</span>
             <span class="k">else</span><span class="p">:</span>
@@ -558,7 +536,7 @@
             <span class="n">study_config_file</span> <span class="o">=</span> \
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_config_directory</span><span class="p">,</span>
-                                 <span class="s">&quot;</span><span class="si">%s</span><span class="s">/config.json&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_name</span><span class="p">))</span>
+                                 <span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">&quot;config.json&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_name</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">study_config_file</span><span class="p">):</span>
                 <span class="n">study_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">study_config_file</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">study_config_file</span> <span class="o">=</span> <span class="n">study_config_file</span>
@@ -577,14 +555,9 @@
         <span class="sd">&quot;&quot;&quot; Returns a json compatible dictionary containing current</span>
 <span class="sd">        configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">transient</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">config</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_to_dict</span><span class="p">(</span><span class="n">exclude_transient</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                     <span class="n">exclude_undefined</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                     <span class="n">exclude_none</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">config</span>
 </div>
 <div class="viewcode-block" id="StudyConfig.save_configuration"><a class="viewcode-back" href="../../../api_tree/generated/capsul-studyconfig/capsul.study_config.study_config.StudyConfig.html#capsul.study_config.study_config.StudyConfig.save_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">save_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
@@ -654,9 +627,14 @@
 <span class="sd">            the structure that contain the default study configuration:</span>
 <span class="sd">            see the class attributes to build this structure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Go through the configuration structure</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_value</span> <span class="ow">in</span> <span class="n">new_config</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-
+        <span class="c"># Go through the configuration structure, respecting the traits</span>
+        <span class="c"># declaration order</span>
+        <span class="k">for</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">trait_value</span> <span class="o">=</span> <span class="n">new_config</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c"># not specified in new_config</span>
+                <span class="k">continue</span>
             <span class="c"># Try to update the &#39;trait_name&#39; configuration element</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_trait_value</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_value</span><span class="p">)</span>

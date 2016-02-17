@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -134,28 +133,27 @@
 <span class="c">##########################################################################</span>
 
 <span class="c"># System import</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="c"># Define the logger</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 <span class="c"># Trait import</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">traits.api</span> <span class="kn">as</span> <span class="nn">traits</span>
-    <span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span>
-        <span class="n">Instance</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">CTrait</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">enthought.traits.api</span> <span class="kn">as</span> <span class="nn">traits</span>
-    <span class="kn">from</span> <span class="nn">enthought.traits.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">File</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span>
-        <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Instance</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Event</span><span class="p">,</span> <span class="n">CTrait</span><span class="p">,</span> <span class="n">Directory</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">traits.api</span> <span class="kn">as</span> <span class="nn">traits</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Str</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Bool</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Undefined</span>
 
 <span class="c"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">capsul.process</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
-<span class="kn">from</span> <span class="nn">capsul.utils.trait_utils</span> <span class="kn">import</span> <span class="n">clone_trait</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">clone_trait</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">trait_ids</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">build_expression</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">eval_trait</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">is_trait_pathname</span>
 
 <span class="c"># Soma import</span>
-<span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">trait_ids</span>
 <span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">Controller</span>
 <span class="kn">from</span> <span class="nn">soma.sorted_dictionary</span> <span class="kn">import</span> <span class="n">SortedDictionary</span>
 <span class="kn">from</span> <span class="nn">soma.utils.functiontools</span> <span class="kn">import</span> <span class="n">SomaPartial</span>
@@ -210,7 +208,7 @@
 <span class="sd">    name : str</span>
 <span class="sd">        the node name</span>
 <span class="sd">    full_name : str</span>
-<span class="sd">        a unique name among all nodes and sub-nodes of the top level pipeline </span>
+<span class="sd">        a unique name among all nodes and sub-nodes of the top level pipeline</span>
 <span class="sd">    enabled : bool</span>
 <span class="sd">        user parameter to control the node activation</span>
 <span class="sd">    activated : bool</span>
@@ -287,19 +285,87 @@
         <span class="c"># add an event on the Node instance traits to validate the pipeline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">update_nodes_and_plugs_activation</span><span class="p">,</span>
                              <span class="s">&quot;enabled&quot;</span><span class="p">)</span>
-    
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">parent_pipeline</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="o">.</span><span class="n">full_name</span> <span class="o">+</span> <span class="s">&#39;.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>    
-    
-    <span class="k">def</span> <span class="nf">_value_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">_value_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span>
+                        <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Spread the source plug value to the destination plug.</span>
-<span class="sd">        &quot;&quot;&quot;</span>     
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dest_node</span><span class="o">.</span><span class="n">set_plug_value</span><span class="p">(</span><span class="n">dest_plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-    
+
+    <span class="k">def</span> <span class="nf">_value_callback_with_logging</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">log_stream</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span>
+            <span class="n">dest_plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Spread the source plug value to the destination plug, and log it in</span>
+<span class="sd">        a stream for debugging.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#print &#39;(debug) value changed:&#39;, self, self.name, source_plug_name, dest_node, dest_plug_name, repr(value), &#39;, stream:&#39;, log_stream, prefix</span>
+
+        <span class="n">plug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plug</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">def</span> <span class="nf">_link_name</span><span class="p">(</span><span class="n">dest_node</span><span class="p">,</span> <span class="n">plug</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span>
+                       <span class="n">source_node_or_process</span><span class="p">):</span>
+            <span class="n">external</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">sibling</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="c"># check if it is an external link: if source is not a parent of dest</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source_node_or_process</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">)</span> \
+                    <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source_node_or_process</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">):</span>
+                <span class="n">source_process</span> <span class="o">=</span> <span class="n">source_node_or_process</span>
+                <span class="n">source_node</span> <span class="o">=</span> <span class="n">source_node_or_process</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pipeline_node</span>
+                <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">source_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">dest_node</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                    <span class="n">external</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="c"># check if it is a sibling node:</span>
+            <span class="c"># if external and source is not in dest</span>
+            <span class="k">if</span> <span class="n">external</span><span class="p">:</span>
+                <span class="n">sibling</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="c">#print &gt;&gt; open(&#39;/tmp/linklog.txt&#39;, &#39;a&#39;), &#39;check sibling, prefix:&#39;, prefix, &#39;source:&#39;, source_node_or_process, &#39;, dest_plug_name:&#39;, dest_plug_name, &#39;dest_node:&#39;, dest_node, dest_node.name</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dest_node</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">)</span> \
+                        <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dest_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s">&#39;nodes&#39;</span><span class="p">):</span>
+                    <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">source_node_or_process</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                        <span class="n">sibling</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
+                            <span class="n">x</span><span class="o">.</span><span class="n">process</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">children</span> \
+                            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s">&#39;process&#39;</span><span class="p">)]</span>
+                    <span class="k">if</span> <span class="n">source_node_or_process</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+                        <span class="n">sibling</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="c">#print &#39;sibling:&#39;, sibling</span>
+            <span class="k">if</span> <span class="n">external</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sibling</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> \
+                        <span class="o">+</span> <span class="p">[</span><span class="n">dest_node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">dest_plug_name</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c"># internal connection in a (sub) pipeline</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+                  <span class="n">name</span> <span class="o">+=</span> <span class="s">&#39;.&#39;</span>
+                <span class="n">name</span> <span class="o">+=</span> <span class="n">dest_plug_name</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="n">dest_plug</span> <span class="o">=</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">dest_plug_name</span><span class="p">]</span>
+        <span class="c">#print &gt;&gt; open(&#39;/tmp/linklog.txt&#39;, &#39;a&#39;), &#39;link_name:&#39;,  self, repr(self.name), &#39;, prefix:&#39;, repr(prefix), &#39;, source_plug_name:&#39;, source_plug_name, &#39;dest:&#39;, dest_plug, repr(dest_plug_name), &#39;dest node:&#39;, dest_node, repr(dest_node.name)</span>
+        <span class="k">print</span> <span class="o">&gt;&gt;</span> <span class="n">log_stream</span><span class="p">,</span> <span class="s">&#39;value link:&#39;</span><span class="p">,</span> \
+            <span class="s">&#39;from:&#39;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">source_plug_name</span><span class="p">,</span> \
+            <span class="s">&#39;to:&#39;</span><span class="p">,</span> <span class="n">_link_name</span><span class="p">(</span><span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="p">),</span> \
+            <span class="s">&#39;, value:&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c">#, &#39;self:&#39;, self, repr(self.name), &#39;, prefix:&#39;,repr(prefix), &#39;, source_plug_name:&#39;, source_plug_name, &#39;dest:&#39;, dest_plug, repr(dest_plug_name), &#39;dest node:&#39;, dest_node, repr(dest_node.name)</span>
+        <span class="n">log_stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+        <span class="c"># actually propagate</span>
+        <span class="n">dest_node</span><span class="o">.</span><span class="n">set_plug_value</span><span class="p">(</span><span class="n">dest_plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Connect linked plugs of two nodes</span>
 
@@ -313,7 +379,7 @@
 <span class="sd">            the destination plug name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># add a callback to spread the source plug value</span>
-        <span class="n">value_callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> 
+        <span class="n">value_callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span>
                                      <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span>
                          <span class="n">dest_plug_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value_callback</span>
@@ -334,20 +400,21 @@
         <span class="c"># remove the callback to spread the source plug value</span>
         <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">((</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span>
                                         <span class="n">dest_plug_name</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_callback_from_plug</span><span class="p">(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Remove the callbacks from the default __getstate__ result because</span>
+        <span class="sd">&quot;&quot;&quot; Remove the callbacks from the default __getstate__ result because</span>
 <span class="sd">        they prevent Node instance from being used with pickle.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">state</span>
-     
+
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Restore the callbacks that have been removed by __getstate__.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span><span class="o">*</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">])</span>
+        <span class="sd">&quot;&quot;&quot; Restore the callbacks that have been removed by __getstate__.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="o">*</span><span class="n">i</span><span class="p">))</span>
+                                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s">&#39;_callbacks&#39;</span><span class="p">])</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">callback_key</span><span class="p">,</span> <span class="n">value_callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_callback_on_plug</span><span class="p">(</span><span class="n">callback_key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value_callback</span><span class="p">)</span>
@@ -363,6 +430,18 @@
 <span class="sd">            a callback function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove_callback_from_plug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Remove an event when a plug change</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        plug_name: str (mandatory)</span>
+<span class="sd">            a plug name</span>
+<span class="sd">        callback: @f (mandatory)</span>
+<span class="sd">            a callback function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_plug_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the plug value</span>
@@ -428,16 +507,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pipeline: Pipeline (mandatory)</span>
-<span class="sd">            the pipeline object where the node is added</span>
+<span class="sd">            the pipeline object where the node is added.</span>
 <span class="sd">        name: str (mandatory)</span>
-<span class="sd">            the node name</span>
-<span class="sd">        process: instance or string</span>
-<span class="sd">            a process/interface instance or the corresponding string</span>
-<span class="sd">            description</span>
+<span class="sd">            the node name.</span>
+<span class="sd">        process: instance</span>
+<span class="sd">            a process/interface instance.</span>
 <span class="sd">        kwargs: dict</span>
-<span class="sd">            process default values</span>
+<span class="sd">            process default values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">process</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -465,6 +543,18 @@
 <span class="sd">            a callback function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessNode.remove_callback_from_plug"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode.remove_callback_from_plug">[docs]</a>    <span class="k">def</span> <span class="nf">remove_callback_from_plug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Remove an event when a plug change</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        plug_name: str (mandatory)</span>
+<span class="sd">            a plug name</span>
+<span class="sd">        callback: @f (mandatory)</span>
+<span class="sd">            a callback function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="ProcessNode.get_plug_value"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_plug_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the plug value</span>
@@ -495,9 +585,10 @@
 <span class="sd">        value: object (mandatory)</span>
 <span class="sd">            the plug value we want to set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="kn">import</span> <span class="n">_Undefined</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;&lt;undefined&gt;&quot;</span><span class="p">]:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">_Undefined</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">elif</span> <span class="n">is_trait_pathname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">plug_name</span><span class="p">))</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">Undefined</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="ProcessNode.get_trait"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode.get_trait">[docs]</a>    <span class="k">def</span> <span class="nf">get_trait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">):</span>
@@ -520,358 +611,58 @@
     <span class="sd">&quot;&quot;&quot; A special node to store the pipeline user-parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
-
 </div>
-<div class="viewcode-block" id="IterativeNode"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.IterativeNode.html#capsul.pipeline.pipeline_nodes.IterativeNode">[docs]</a><span class="k">class</span> <span class="nc">IterativeNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A special node to store an iterative process.</span>
-
-<span class="sd">    This node is dynamic and try to be updated when a trait value is modified.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="IterativeNode.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.IterativeNode.html#capsul.pipeline.pipeline_nodes.IterativeNode.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">iterative_plugs</span><span class="p">,</span> <span class="n">do_not_export</span><span class="p">,</span>
-                 <span class="n">make_optional</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize the IterativeNode class.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        pipeline: Pipeline (mandatory)</span>
-<span class="sd">            the pipeline object where the node is added</span>
-<span class="sd">        name: str (mandatory)</span>
-<span class="sd">            the node name</span>
-<span class="sd">        process: instance or string</span>
-<span class="sd">            a process/interface instance or the corresponding string</span>
-<span class="sd">            description</span>
-<span class="sd">        iterative_plugs: list of str (optional)</span>
-<span class="sd">            a list of plug names on which we want to iterate</span>
-<span class="sd">        do_not_export: list of str (optional)</span>
-<span class="sd">            a list of plug names that we do not want to export</span>
-<span class="sd">        make_optional: list of str (optional)</span>
-<span class="sd">            a list of plug names that we do not want to export</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Class parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterative_plugs</span> <span class="o">=</span> <span class="n">iterative_plugs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span> <span class="o">=</span> <span class="n">process</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">do_not_export</span> <span class="o">=</span> <span class="n">do_not_export</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">make_optional</span> <span class="o">=</span> <span class="n">make_optional</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_node_callbacks</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_process_callbacks</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="c"># Get the traits splited by type: input or output</span>
-        <span class="c"># If an iterative trait is found add an extra trait List level.</span>
-        <span class="c"># &gt; inputs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">trait_name</span><span class="p">,</span>
-             <span class="n">trait</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-
-                <span class="c"># Get the trait string description</span>
-                <span class="n">trait_description</span> <span class="o">=</span> <span class="n">trait_ids</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
-
-                <span class="c"># An iterative trait is found add an extra trait List level.</span>
-                <span class="k">if</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_plugs</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span>
-                        <span class="s">&quot;List_&quot;</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">trait_description</span><span class="p">],</span> <span class="n">trait</span><span class="p">)</span>
-
-                <span class="c"># Otherwise just store the string trrait description</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-
-        <span class="c"># &gt; outputs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_iterative_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">trait_name</span><span class="p">,</span>
-             <span class="n">trait</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-
-            <span class="c"># Get the trait string description</span>
-            <span class="n">trait_description</span> <span class="o">=</span> <span class="n">trait_ids</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
-
-            <span class="c"># An iterative trait is found add an extra trait List level.</span>
-            <span class="k">if</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_plugs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_iterative_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span>
-                    <span class="s">&quot;List_&quot;</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">trait_description</span><span class="p">],</span> <span class="n">trait</span><span class="p">)</span>
-
-            <span class="c"># Otherwise just store the string trrait description</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-
-        <span class="c"># No regular output traits accepted in an iterative node</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_traits</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s">&quot;No regular output traits accepted in an iterative node, got &quot;</span>
-                <span class="s">&quot;{0}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_traits</span><span class="p">))</span>
-
-        <span class="c"># Inherit from node class</span>
-        <span class="n">input_traits</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">trait_name</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
-        <span class="n">output_traits</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">trait_name</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">IterativeNode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
-            <span class="n">pipeline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">input_traits</span><span class="p">,</span> <span class="n">output_traits</span><span class="p">)</span>
-
-        <span class="c"># Add a trait for each input and each output</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">trait</span> <span class="o">=</span> <span class="n">clone_trait</span><span class="p">(</span><span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">trait</span> <span class="o">=</span> <span class="n">clone_trait</span><span class="p">(</span><span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="nb">setattr</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_anytrait_changed</span><span class="p">(</span>
-                <span class="n">trait_name</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_iterative_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">trait</span> <span class="o">=</span> <span class="n">clone_trait</span><span class="p">(</span><span class="n">trait_description</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">True</span>
-
-        <span class="c"># Generate / update the iterative pipeline</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_iterative_pipeline</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</div>
-    <span class="k">def</span> <span class="nf">_anytrait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Add an event that enables us to create process on the fly when an </span>
-<span class="sd">        iterative input trait value has changed.</span>
-
-<span class="sd">        .. note ::</span>
-
-<span class="sd">            Wait to have the same number of items in iterative input traits</span>
-<span class="sd">            to update the iterative pipeline.            </span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name: str (mandatory)</span>
-<span class="sd">            the trait name</span>
-<span class="sd">        old: str (mandatory)</span>
-<span class="sd">            the old value</span>
-<span class="sd">        new: str (mandatory)</span>
-<span class="sd">            the new value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># If an iterative plug has changed</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;input_iterative_traits&quot;</span><span class="p">)</span> <span class="ow">and</span>
-            <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span><span class="p">):</span>
-
-            <span class="c"># To refresh the iterative pipeline, need to have the same number</span>
-            <span class="c"># of items in iterative traits</span>
-            <span class="n">input_size</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
-                <span class="nb">len</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">trait_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_size</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">nb_of_inputs</span> <span class="o">=</span> <span class="n">input_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">is_valid</span> <span class="o">=</span> <span class="p">(</span><span class="n">input_size</span> <span class="o">==</span> <span class="n">nb_of_inputs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">nb_of_inputs</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">is_valid</span> <span class="o">=</span> <span class="bp">True</span>        
-
-            <span class="c"># Generate / update the iterative pipeline</span>
-            <span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">update_iterative_pipeline</span><span class="p">(</span><span class="n">nb_of_inputs</span><span class="p">)</span>
-
-<div class="viewcode-block" id="IterativeNode.update_iterative_pipeline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.IterativeNode.html#capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_pipeline">[docs]</a>    <span class="k">def</span> <span class="nf">update_iterative_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_of_inputs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Update the pipeline.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        nb_of_inputs: int (mandatory)</span>
-<span class="sd">            the number of input iterative trait items</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Local import</span>
-        <span class="kn">from</span> <span class="nn">pipeline_iterative</span> <span class="kn">import</span> <span class="n">IterativePipeline</span><span class="p">,</span> <span class="n">IterativeManager</span>
-
-        <span class="c"># Create / recreate the iterative pipeline</span>
-        <span class="c"># &gt; disconnect the iterative process if already crerated</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            
-            <span class="c"># Disconnect all iterative process traits and corresponding node</span>
-            <span class="c">#traits</span>
-            <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_node_callbacks</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_process_callbacks</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-           
-        <span class="c"># &gt; create the iterative pipeline</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">IterativePipeline</span><span class="p">()</span>       
-
-        <span class="c"># Go through all input regular traits</span>
-        <span class="n">pipeline_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">trait</span> <span class="o">=</span> <span class="n">clone_trait</span><span class="p">(</span><span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-            <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-            <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s">&quot;a regular trait that will be repeted&quot;</span><span class="p">)</span>
-            <span class="nb">setattr</span><span class="p">(</span>
-                <span class="n">pipeline_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-
-        <span class="c"># Create the dynamic input output iterative traits manager subpipelines</span>
-        <span class="n">iterative_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_iterative_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">iterative_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">trait_description</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-        <span class="n">regular_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">regular_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">trait_description</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-        <span class="n">input_manager</span> <span class="o">=</span> <span class="n">IterativeManager</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">iterative_traits</span><span class="p">,</span>
-            <span class="n">regular_traits</span><span class="p">,</span> <span class="n">is_input_traits</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">iterative_traits</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_iterative_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-            <span class="n">iterative_traits</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">trait_description</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">nb_of_inputs</span><span class="p">)</span>
-        <span class="n">output_manager</span> <span class="o">=</span> <span class="n">IterativeManager</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">iterative_traits</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="n">is_input_traits</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-
-        <span class="c"># Add manager node to the pipeline</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_process</span><span class="p">(</span><span class="s">&quot;input_manager&quot;</span><span class="p">,</span> <span class="n">input_manager</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_process</span><span class="p">(</span><span class="s">&quot;output_manager&quot;</span><span class="p">,</span> <span class="n">output_manager</span><span class="p">)</span>
-
-        <span class="c"># Add processing nodes to the pipeline: only attached to input manager</span>
-        <span class="k">for</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="n">input_manager</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_process</span><span class="p">(</span>
-                <span class="n">node_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">do_not_export</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_optional</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c"># Add link to manager</span>
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">input_manager</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">output_manager</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">link</span><span class="p">)</span>
-
-        <span class="c"># Auto export nodes parameters</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">autoexport_nodes_parameters</span><span class="p">()</span>
-
-        <span class="c"># Connect the iterative pipeline</span>
-        <span class="c"># &gt; For input traits, connect the node traits to the iterative pipeline</span>
-        <span class="c"># traits</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-
-            <span class="c"># Unpack the trait item</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-
-            <span class="c"># Update the iterative process trait.</span>
-            <span class="c"># Hook: function that will be called to update the iterative</span>
-            <span class="c"># process trait when the &#39;trait_name&#39; node trait is modified.</span>
-            <span class="n">callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="n">IterativeNode</span><span class="o">.</span><span class="n">update_iterative_process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-            <span class="c"># When the &#39;trait_name&#39; node trait value is modified,</span>
-            <span class="c"># update the underlying corresponding iterative process trait</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">trait_name</span><span class="p">)</span>
-
-            <span class="c"># Store the created callback</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_node_callbacks</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span>
-
-        <span class="c"># &gt; For output traits, connect the iterative pipeline traits to the node </span>
-        <span class="c"># traits</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_iterative_traits</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-
-            <span class="c"># Unpack the trait item</span>
-            <span class="n">trait_description</span><span class="p">,</span> <span class="n">trait</span> <span class="o">=</span> <span class="n">trait_item</span>
-
-            <span class="c"># Update the node trait.</span>
-            <span class="c"># Hook: function that will be called to update the node trait</span>
-            <span class="c"># when the &#39;trait_name&#39; iterative pipeline trait is modified.</span>
-            <span class="n">callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="n">IterativeNode</span><span class="o">.</span><span class="n">update_node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-            <span class="c"># When the &#39;trait_name&#39; iterative process trait value is modified,</span>
-            <span class="c"># update the corresponding node trait</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">trait_name</span><span class="p">)</span>
-
-            <span class="c"># Store the created callback</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_process_callbacks</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">callback</span>
-
-        <span class="c"># Get the largest element size</span>
-        <span class="n">element_sizes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">element_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">node_name</span><span class="p">))</span>
-            <span class="n">element_sizes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">])</span>
-        <span class="n">fixed_width</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">element_sizes</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mf">10.</span>
-
-        <span class="c"># Get the number of elements in the processing node</span>
-        <span class="n">fixed_height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterative_process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">())</span> <span class="o">*</span> <span class="mf">50.</span>
-
-        <span class="c"># Set iterative pipeline node positions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">node_position</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span> <span class="o">*</span> <span class="n">fixed_width</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-            <span class="s">&quot;input_manager&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="n">fixed_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s">&quot;output_manager&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">fixed_width</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-            <span class="s">&quot;outputs&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">fixed_width</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-        <span class="p">}</span>
-        <span class="n">shift</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_manager</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">cnt</span><span class="p">,</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_manager</span><span class="o">.</span><span class="n">nodes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">node_position</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="mi">2</span> <span class="o">*</span> <span class="n">fixed_width</span><span class="p">,</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">-</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">fixed_height</span><span class="p">)</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="IterativeNode.update_iterative_process"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.IterativeNode.html#capsul.pipeline.pipeline_nodes.IterativeNode.update_iterative_process">[docs]</a>    <span class="k">def</span> <span class="nf">update_iterative_process</span><span class="p">(</span><span class="n">iterative_node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Method to update the iterative process &#39;trait_name&#39; trait.</span>
-
-<span class="sd">        At the end the node and iterative process will have the same value in</span>
-<span class="sd">        their &#39;trait_name&#39; trait.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        trait_name: str (mandatory)</span>
-<span class="sd">            the name of the trait to synchronized.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">iterative_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> 
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">iterative_node</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="IterativeNode.update_node"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.IterativeNode.html#capsul.pipeline.pipeline_nodes.IterativeNode.update_node">[docs]</a>    <span class="k">def</span> <span class="nf">update_node</span><span class="p">(</span><span class="n">iterative_node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Method to update the node &#39;trait_name&#39; trait.</span>
-
-<span class="sd">        At the end the node and iterative process will have the same value in</span>
-<span class="sd">        their &#39;trait_name&#39; trait.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        trait_name: str (mandatory)</span>
-<span class="sd">            the name of the trait to synchronized.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">iterative_node</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">,</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">iterative_node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span> 
-</div></div>
 <div class="viewcode-block" id="Switch"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Switch.html#capsul.pipeline.pipeline_nodes.Switch">[docs]</a><span class="k">class</span> <span class="nc">Switch</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Switch node to select a specific Process.</span>
 
-<span class="sd">    A switch commutes a group of inputs to its outputs, according to its &quot;switch&quot; trait value. Each group may be typically linked to a different process. Processes not &quot;selected&quot; by the switch are disabled, if possible.</span>
-<span class="sd">    Values are also propagated through inputs/outputs of the switch (see below).</span>
+<span class="sd">    A switch commutes a group of inputs to its outputs, according to its</span>
+<span class="sd">    &quot;switch&quot; trait value. Each group may be typically linked to a different</span>
+<span class="sd">    process. Processes not &quot;selected&quot; by the switch are disabled, if possible.</span>
+<span class="sd">    Values are also propagated through inputs/outputs of the switch</span>
+<span class="sd">    (see below).</span>
 
 <span class="sd">    Inputs / outputs:</span>
 
-<span class="sd">    Say the switch &quot;my_switch&quot; has 2 outputs, &quot;param1&quot; and &quot;param2&quot;. It will be connected to the outputs of 2 processing nodes, &quot;node1&quot; and &quot;node2&quot;, both having 2 outputs: node1.out1, node1.out2, node2.out1, node2.out2.</span>
-<span class="sd">    The switch will thus have 4 entries, in 2 groups, named for instance &quot;node1&quot; and &quot;node2&quot;. The switch will link the outputs of node1 or node2 to its outputs. The switch inputs will be named as follows:</span>
+<span class="sd">    Say the switch &quot;my_switch&quot; has 2 outputs, &quot;param1&quot; and &quot;param2&quot;. It will</span>
+<span class="sd">    be connected to the outputs of 2 processing nodes, &quot;node1&quot; and &quot;node2&quot;,</span>
+<span class="sd">    both having 2 outputs: node1.out1, node1.out2, node2.out1, node2.out2.</span>
+<span class="sd">    The switch will thus have 4 entries, in 2 groups, named for instance</span>
+<span class="sd">    &quot;node1&quot; and &quot;node2&quot;. The switch will link the outputs of node1 or</span>
+<span class="sd">    node2 to its outputs. The switch inputs will be named as follows:</span>
 
 <span class="sd">    * 1st group: &quot;node1_switch_param1&quot;, &quot;node1_switch_param2&quot;</span>
 <span class="sd">    * 2nd group: &quot;node2_switch_param1&quot;, &quot;node2_switch_param2&quot;</span>
 
-<span class="sd">    * When my_switch.switch value is &quot;node1&quot;, my_switch.node1_switch_param1 is connected to my_switch.param1 and my_switch.node1_switch_param2 is connected to my_switch.param2. The processing node node2 is disabled (unselected).</span>
-<span class="sd">    * When my_switch.switch value is &quot;node2&quot;, my_switch.node2_switch_param1 is connected to my_switch.param1 and my_switch.node2_switch_param2 is connected to my_switch.param2. The processing node node1 is disabled (unselected).</span>
+<span class="sd">    * When my_switch.switch value is &quot;node1&quot;, my_switch.node1_switch_param1</span>
+<span class="sd">      is connected to my_switch.param1 and my_switch.node1_switch_param2 is</span>
+<span class="sd">      connected to my_switch.param2. The processing node node2 is disabled</span>
+<span class="sd">      (unselected).</span>
+<span class="sd">    * When my_switch.switch value is &quot;node2&quot;, my_switch.node2_switch_param1</span>
+<span class="sd">      is connected to my_switch.param1 and my_switch.node2_switch_param2 is</span>
+<span class="sd">      connected to my_switch.param2. The processing node node1 is disabled</span>
+<span class="sd">      (unselected).</span>
 
 <span class="sd">    Values propagation:</span>
 
-<span class="sd">    * When a switch is activated (its switch parameter is changed), the outputs will reflect the selected inputs, which means their values will be the same as the corresponding inputs.</span>
+<span class="sd">    * When a switch is activated (its switch parameter is changed), the</span>
+<span class="sd">      outputs will reflect the selected inputs, which means their values will</span>
+<span class="sd">      be the same as the corresponding inputs.</span>
 
-<span class="sd">    * But in many cases, parameters values will be given from the output (if the switch output is one of the pipeline outputs, this one will be visible from the &quot;outside world, not the switch inputs). In this case, values set as a switch input propagate to its inputs.</span>
+<span class="sd">    * But in many cases, parameters values will be given from the output</span>
+<span class="sd">      (if the switch output is one of the pipeline outputs, this one will be</span>
+<span class="sd">      visible from the &quot;outside world, not the switch inputs). In this case,</span>
+<span class="sd">      values set as a switch input propagate to its inputs.</span>
 
-<span class="sd">    * An exception is when a switch input is linked to the parent pipeline inputs: its value is also visible from &quot;outside&quot; and should not be set via output values via the switch. In this specific case, output values are not propagated to such inputs.</span>
+<span class="sd">    * An exception is when a switch input is linked to the parent pipeline</span>
+<span class="sd">      inputs: its value is also visible from &quot;outside&quot; and should not be set</span>
+<span class="sd">      via output values via the switch. In this specific case, output values</span>
+<span class="sd">      are not propagated to such inputs.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Switch is normally not instantiated directly, but from a pipeline :py:meth:`pipeline_definition &lt;capsul.pipeline.pipeline.Pipeline.pipeline_definition&gt;` method</span>
+<span class="sd">    Switch is normally not instantiated directly, but from a pipeline</span>
+<span class="sd">    :py:meth:`pipeline_definition</span>
+<span class="sd">    &lt;capsul.pipeline.pipeline.Pipeline.pipeline_definition&gt;` method</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -908,8 +699,8 @@
 <span class="sd">            a list of output parameters</span>
 <span class="sd">        make_optional: sequence (optional)</span>
 <span class="sd">            list of optional outputs.</span>
-<span class="sd">            These outputs will be made optional in the switch output. By default</span>
-<span class="sd">            they are mandatory.</span>
+<span class="sd">            These outputs will be made optional in the switch output. By</span>
+<span class="sd">            default they are mandatory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># if the user pass a simple element, create a list and add this</span>
         <span class="c"># element</span>
@@ -927,7 +718,6 @@
         <span class="c"># private copy of outputs and inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outputs</span> <span class="o">=</span> <span class="n">outputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span> <span class="o">=</span> <span class="n">inputs</span>
-
 
         <span class="c"># format inputs and outputs to inherit from Node class</span>
         <span class="n">flat_inputs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -949,9 +739,9 @@
 
         <span class="c"># add a trait for each input and each output</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">flat_inputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Any</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Any</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Any</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Any</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
         <span class="c"># activate the switch first Process</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -984,18 +774,30 @@
         <span class="c"># refresh the pipeline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">update_nodes_and_plugs_activation</span><span class="p">()</span>
 
-        <span class="c"># refresh the links to the output plugs</span>
+        <span class="c"># Refresh the links to the output plugs</span>
         <span class="k">for</span> <span class="n">output_plug_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outputs</span><span class="p">:</span>
+            <span class="c"># Get the associated input name</span>
             <span class="n">corresponding_input_plug_name</span> <span class="o">=</span> <span class="s">&quot;{0}_switch_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">new_selection</span><span class="p">,</span> <span class="n">output_plug_name</span><span class="p">)</span>
+
+            <span class="c"># Update the output value</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_plug_name</span><span class="p">,</span>
                     <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">corresponding_input_plug_name</span><span class="p">))</span>
+
+            <span class="c"># Propagate the associated trait description</span>
+            <span class="n">out_trait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">output_plug_name</span><span class="p">)</span>
+            <span class="n">in_trait</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">corresponding_input_plug_name</span><span class="p">)</span>
+            <span class="n">out_trait</span><span class="o">.</span><span class="n">desc</span> <span class="o">=</span> <span class="n">in_trait</span><span class="o">.</span><span class="n">desc</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">restore_update_nodes_and_plugs_activation</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">_anytrait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add an event to the switch trait that enables us to select</span>
 <span class="sd">        the desired option.</span>
+
+<span class="sd">        Propagates value through the switch, from in put to output if the</span>
+<span class="sd">        switch state corresponds to this input, or from output to inputs.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1016,8 +818,8 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_outputs&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> \
                 <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outputs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="n">flat_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;{0}_switch_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">switch_name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> \
-                <span class="k">for</span> <span class="n">switch_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">]</span>
+            <span class="n">flat_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;{0}_switch_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">switch_name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">switch_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="n">flat_inputs</span><span class="p">:</span>
                 <span class="c"># check if input is connected to a pipeline input</span>
                 <span class="n">plug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">input_name</span><span class="p">]</span>
@@ -1029,18 +831,19 @@
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="c"># if the change is in an input, change the corresponding output</span>
-        <span class="c"># accordingly.</span>
+        <span class="c"># accordingly, if the current switch selection is on this input.</span>
         <span class="n">spliter</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;_switch_&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spliter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">spliter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">:</span>
             <span class="n">switch_selection</span><span class="p">,</span> <span class="n">output_plug_name</span> <span class="o">=</span> <span class="n">spliter</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_plug_name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">switch</span> <span class="o">==</span> <span class="n">switch_selection</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_plug_name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Switch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-</pre></div></div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Switch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+</pre></div>
 
           </div>
         </div>

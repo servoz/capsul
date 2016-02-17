@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -131,29 +130,51 @@
 <dt id="capsul.pipeline.pipeline_nodes.Switch">
 <em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline_nodes.</tt><tt class="descname">Switch</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switch node to select a specific Process.</p>
-<p>A switch commutes a group of inputs to its outputs, according to its &#8220;switch&#8221; trait value. Each group may be typically linked to a different process. Processes not &#8220;selected&#8221; by the switch are disabled, if possible.
-Values are also propagated through inputs/outputs of the switch (see below).</p>
+<p>A switch commutes a group of inputs to its outputs, according to its
+&#8220;switch&#8221; trait value. Each group may be typically linked to a different
+process. Processes not &#8220;selected&#8221; by the switch are disabled, if possible.
+Values are also propagated through inputs/outputs of the switch
+(see below).</p>
 <p>Inputs / outputs:</p>
-<p>Say the switch &#8220;my_switch&#8221; has 2 outputs, &#8220;param1&#8221; and &#8220;param2&#8221;. It will be connected to the outputs of 2 processing nodes, &#8220;node1&#8221; and &#8220;node2&#8221;, both having 2 outputs: node1.out1, node1.out2, node2.out1, node2.out2.
-The switch will thus have 4 entries, in 2 groups, named for instance &#8220;node1&#8221; and &#8220;node2&#8221;. The switch will link the outputs of node1 or node2 to its outputs. The switch inputs will be named as follows:</p>
+<p>Say the switch &#8220;my_switch&#8221; has 2 outputs, &#8220;param1&#8221; and &#8220;param2&#8221;. It will
+be connected to the outputs of 2 processing nodes, &#8220;node1&#8221; and &#8220;node2&#8221;,
+both having 2 outputs: node1.out1, node1.out2, node2.out1, node2.out2.
+The switch will thus have 4 entries, in 2 groups, named for instance
+&#8220;node1&#8221; and &#8220;node2&#8221;. The switch will link the outputs of node1 or
+node2 to its outputs. The switch inputs will be named as follows:</p>
 <ul class="simple">
 <li>1st group: &#8220;node1_switch_param1&#8221;, &#8220;node1_switch_param2&#8221;</li>
 <li>2nd group: &#8220;node2_switch_param1&#8221;, &#8220;node2_switch_param2&#8221;</li>
-<li>When my_switch.switch value is &#8220;node1&#8221;, my_switch.node1_switch_param1 is connected to my_switch.param1 and my_switch.node1_switch_param2 is connected to my_switch.param2. The processing node node2 is disabled (unselected).</li>
-<li>When my_switch.switch value is &#8220;node2&#8221;, my_switch.node2_switch_param1 is connected to my_switch.param1 and my_switch.node2_switch_param2 is connected to my_switch.param2. The processing node node1 is disabled (unselected).</li>
+<li>When my_switch.switch value is &#8220;node1&#8221;, my_switch.node1_switch_param1
+is connected to my_switch.param1 and my_switch.node1_switch_param2 is
+connected to my_switch.param2. The processing node node2 is disabled
+(unselected).</li>
+<li>When my_switch.switch value is &#8220;node2&#8221;, my_switch.node2_switch_param1
+is connected to my_switch.param1 and my_switch.node2_switch_param2 is
+connected to my_switch.param2. The processing node node1 is disabled
+(unselected).</li>
 </ul>
 <p>Values propagation:</p>
 <ul class="simple">
-<li>When a switch is activated (its switch parameter is changed), the outputs will reflect the selected inputs, which means their values will be the same as the corresponding inputs.</li>
-<li>But in many cases, parameters values will be given from the output (if the switch output is one of the pipeline outputs, this one will be visible from the &#8220;outside world, not the switch inputs). In this case, values set as a switch input propagate to its inputs.</li>
-<li>An exception is when a switch input is linked to the parent pipeline inputs: its value is also visible from &#8220;outside&#8221; and should not be set via output values via the switch. In this specific case, output values are not propagated to such inputs.</li>
+<li>When a switch is activated (its switch parameter is changed), the
+outputs will reflect the selected inputs, which means their values will
+be the same as the corresponding inputs.</li>
+<li>But in many cases, parameters values will be given from the output
+(if the switch output is one of the pipeline outputs, this one will be
+visible from the &#8220;outside world, not the switch inputs). In this case,
+values set as a switch input propagate to its inputs.</li>
+<li>An exception is when a switch input is linked to the parent pipeline
+inputs: its value is also visible from &#8220;outside&#8221; and should not be set
+via output values via the switch. In this specific case, output values
+are not propagated to such inputs.</li>
 </ul>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-obj docutils literal"><span class="pre">_switch_changed</span></tt>, <tt class="xref py py-obj docutils literal"><span class="pre">_anytrait_changed</span></tt>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.add_switch" title="capsul.pipeline.pipeline.Pipeline.add_switch"><tt class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.add_switch</span></tt></a>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.pipeline_definition</span></tt></a></p>
 </div>
 <p class="rubric">Notes</p>
-<p>Switch is normally not instantiated directly, but from a pipeline <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition</span></tt></a> method</p>
+<p>Switch is normally not instantiated directly, but from a pipeline
+<a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition</span></tt></a> method</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -180,7 +201,7 @@ The switch will thus have 4 entries, in 2 groups, named for instance &#8220;node
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
 <blockquote>
 <div><p>the pipeline object where the node is added</p>
 </div></blockquote>
@@ -199,8 +220,8 @@ The switch will thus have 4 entries, in 2 groups, named for instance &#8220;node
 <p><strong>make_optional: sequence (optional)</strong> :</p>
 <blockquote class="last">
 <div><p>list of optional outputs.
-These outputs will be made optional in the switch output. By default
-they are mandatory.</p>
+These outputs will be made optional in the switch output. By
+default they are mandatory.</p>
 </div></blockquote>
 </td>
 </tr>

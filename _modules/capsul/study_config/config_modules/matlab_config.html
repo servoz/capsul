@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -96,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -140,14 +139,14 @@
 <div class="viewcode-block" id="MatlabConfig"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.matlab_config.MatlabConfig.html#capsul.study_config.config_modules.matlab_config.MatlabConfig">[docs]</a><span class="k">class</span> <span class="nc">MatlabConfig</span><span class="p">(</span><span class="n">StudyConfigModule</span><span class="p">):</span>
 <div class="viewcode-block" id="MatlabConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.matlab_config.MatlabConfig.html#capsul.study_config.config_modules.matlab_config.MatlabConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MatlabConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;use_matlab&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
-            <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;If True, Matlab configuration is set up on startup&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;matlab_exec&#39;</span><span class="p">,</span> <span class="n">File</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
             <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Matlab command path&#39;</span><span class="p">,</span>
             <span class="n">exists</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;use_matlab&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
+            <span class="n">Undefined</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;If True, Matlab configuration is set up on startup&quot;</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="MatlabConfig.initialize_module"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.matlab_config.MatlabConfig.html#capsul.study_config.config_modules.matlab_config.MatlabConfig.initialize_module">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set up Matlab environment according to current</span>
@@ -156,32 +155,32 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
             <span class="c"># Configuration is explicitely asking not to use SPM</span>
             <span class="k">return</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
             <span class="c"># If use_matlab is not defined, Matlab configuration will</span>
             <span class="c"># be done if possible but there will be no error if it cannot be</span>
             <span class="c"># done.</span>
-            <span class="n">force_configuration</span> <span class="o">=</span> <span class="bp">False</span>            
+            <span class="n">force_configuration</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># If use_matlab is True configuration must be valid otherwise</span>
             <span class="c"># an EnvironmentError is raised</span>
             <span class="n">force_configuration</span> <span class="o">=</span> <span class="bp">True</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">matlab_exec</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
             <span class="c"># matlab_exec is not set, it will not be possible to activate</span>
             <span class="c">#Matlab</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s">&#39;matlab_exec must be defined in order &#39;</span>
                                        <span class="s">&#39;to use Matlab&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">return</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">matlab_exec</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot; does not exists. Matlab &#39;</span>
                                        <span class="s">&#39;configuration is not valid.&#39;</span> <span class="o">%</span> \
                                        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">matlab_exec</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">return</span>
 
 </div>

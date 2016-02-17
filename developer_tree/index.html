@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -21,7 +20,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -95,7 +94,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 0.0.1</strong>
+           This documentation is for CAPSUL <strong>version 1.1.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -113,17 +112,11 @@
       <ul>
 <li><a class="reference internal" href="#">Contributing Documentation</a><ul>
 <li><a class="reference internal" href="#capsul-pipeline-pipeline"><tt class="docutils literal"><span class="pre">capsul.pipeline</span></tt>: Pipeline</a><ul>
-<li><a class="reference internal" href="#workflow-definition">Workflow Definition</a><ul>
+<li><a class="reference internal" href="#workflow-definition">Workflow Definition</a></li>
+<li><a class="reference internal" href="#nodes">Nodes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#nodes">Nodes</a><ul>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#capsul-process-process"><tt class="docutils literal"><span class="pre">capsul.process</span></tt>: Process</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#capsul-process-process"><tt class="docutils literal"><span class="pre">capsul.process</span></tt>: Process</a></li>
 <li><a class="reference internal" href="#capsul-study-config-study-configuration"><tt class="docutils literal"><span class="pre">capsul.study_config</span></tt>: Study Configuration</a><ul>
 </ul>
 </li>
@@ -161,7 +154,7 @@
 <td>Simple Graph Node Structure</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.topological_sort.Graph.html#capsul.pipeline.topological_sort.Graph" title="capsul.pipeline.topological_sort.Graph"><tt class="xref py py-obj docutils literal"><span class="pre">topological_sort.Graph</span></tt></a>()</td>
-<td>Simple Graph Structure on which we want to perform a</td>
+<td>Simple Graph Structure on which we want to perform a topological tree (no cycle).</td>
 </tr>
 </tbody>
 </table>
@@ -179,7 +172,7 @@
 <td>Process to handle automatically the iterative input or output traits.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_iterative.IterativePipeline.html#capsul.pipeline.pipeline_iterative.IterativePipeline" title="capsul.pipeline.pipeline_iterative.IterativePipeline"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_iterative.IterativePipeline</span></tt></a>([...])</td>
-<td>Dummy class to store an iterative pipeline   ..</td>
+<td>Dummy class to store an iterative pipeline</td>
 </tr>
 </tbody>
 </table>
@@ -222,7 +215,7 @@
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_utils.environment.html#capsul.study_config.config_utils.environment" title="capsul.study_config.config_utils.environment"><tt class="xref py py-obj docutils literal"><span class="pre">config_utils.environment</span></tt></a>([sh_file,&nbsp;env])</td>
-<td>Function that return a dictionary containing the environment</td>
+<td>Function that return a dictionary containing the environment needed by a program (for instance FSL or FreeSurfer).</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.run.run_process.html#capsul.study_config.run.run_process" title="capsul.study_config.run.run_process"><tt class="xref py py-obj docutils literal"><span class="pre">run.run_process</span></tt></a>(output_dir,&nbsp;process_instance)</td>
 <td>Execute a capsul process in a specific directory.</td>
