@@ -4,7 +4,7 @@ import unittest
 
 # Capsul import
 from capsul.api import Process, Pipeline
-from capsul.pipeline.pipeline_nodes import JoinFilenameNode
+from capsul.pipeline.pipeline_nodes import JoinFilenameNode, CallbackNode
 
 # Trait import
 from traits.api import Float, File, Int, List, Str, Undefined

@@ -742,3 +742,9 @@ class Switch(Node):
     def __setstate__(self, state):
         self.__block_output_propagation = True
         super(Switch, self).__setstate__(state)
+
+
+class CallbackNode(Node):
+    def __init__(self, *args, **kwargs):
+        super(CallbackNode, self).__init__(*args, **kwargs)
+        self.on_trait_change(self.callback)
