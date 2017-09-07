@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,17 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
   
    
        <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
@@ -55,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -95,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -120,32 +120,32 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for capsul.study_config.config_modules.spm_config</h1><div class="highlight"><pre>
-<span class="c">##########################################################################</span>
-<span class="c"># CAPSUL - Copyright (C) CEA, 2013</span>
-<span class="c"># Distributed under the terms of the CeCILL-B license, as published by</span>
-<span class="c"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
-<span class="c"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
-<span class="c"># for details.</span>
-<span class="c">##########################################################################</span>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c1"># for details.</span>
+<span class="c1">##########################################################################</span>
 
-<span class="c"># System import</span>
+<span class="c1"># System import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
-<span class="c"># TRAITS import</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Undefined</span>
+<span class="c1"># TRAITS import</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Undefined</span>
 
-<span class="c"># CAPSUL import</span>
-<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="kn">import</span> <span class="n">StudyConfigModule</span>
+<span class="c1"># CAPSUL import</span>
+<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="k">import</span> <span class="n">StudyConfigModule</span>
 
-<span class="c"># Define the logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="c1"># Define the logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<div class="viewcode-block" id="find_spm"><a class="viewcode-back" href="../../../../developer_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.find_spm.html#capsul.study_config.config_modules.spm_config.find_spm">[docs]</a><span class="k">def</span> <span class="nf">find_spm</span><span class="p">(</span><span class="n">matlab</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">matlab_path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="find_spm"><a class="viewcode-back" href="../../../../developer_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.find_spm.html#capsul.study_config.config_modules.spm_config.find_spm">[docs]</a><span class="k">def</span> <span class="nf">find_spm</span><span class="p">(</span><span class="n">matlab</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">matlab_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Function to return the root directory of SPM.</span>
 
 <span class="sd">    Parameters</span>
@@ -160,43 +160,43 @@
 <span class="sd">    last_line: str</span>
 <span class="sd">        the SPM root directory</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Script to execute with matlab in order to find SPM root dir</span>
-    <span class="n">script</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;spm8;&quot;</span>
-              <span class="s">&quot;fprintf(1, &#39;</span><span class="si">%s</span><span class="s">&#39;, spm(&#39;dir&#39;));&quot;</span>
-              <span class="s">&quot;exit();&quot;</span><span class="p">)</span>
+    <span class="c1"># Script to execute with matlab in order to find SPM root dir</span>
+    <span class="n">script</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;spm8;&quot;</span>
+              <span class="s2">&quot;fprintf(1, &#39;</span><span class="si">%s</span><span class="s2">&#39;, spm(&#39;dir&#39;));&quot;</span>
+              <span class="s2">&quot;exit();&quot;</span><span class="p">)</span>
 
-    <span class="c"># Add matlab path if necessary</span>
+    <span class="c1"># Add matlab path if necessary</span>
     <span class="k">if</span> <span class="n">matlab_path</span><span class="p">:</span>
-        <span class="n">script</span> <span class="o">=</span> <span class="s">&quot;addpath({0});&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matlab_path</span><span class="p">)</span> <span class="o">+</span> <span class="n">script</span>
+        <span class="n">script</span> <span class="o">=</span> <span class="s2">&quot;addpath(</span><span class="si">{0}</span><span class="s2">);&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matlab_path</span><span class="p">)</span> <span class="o">+</span> <span class="n">script</span>
 
-    <span class="c"># Generate the matlab command</span>
-    <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">matlab</span> <span class="ow">or</span> <span class="s">&quot;matlab&quot;</span><span class="p">,</span>
-               <span class="s">&quot;-nodisplay&quot;</span><span class="p">,</span> <span class="s">&quot;-nosplash&quot;</span><span class="p">,</span> <span class="s">&quot;-nojvm&quot;</span><span class="p">,</span>
-               <span class="s">&quot;-r&quot;</span><span class="p">,</span> <span class="n">script</span><span class="p">]</span>
+    <span class="c1"># Generate the matlab command</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">matlab</span> <span class="ow">or</span> <span class="s2">&quot;matlab&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;-nodisplay&quot;</span><span class="p">,</span> <span class="s2">&quot;-nosplash&quot;</span><span class="p">,</span> <span class="s2">&quot;-nojvm&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="n">script</span><span class="p">]</span>
 
-    <span class="c"># Try to execute the command</span>
+    <span class="c1"># Try to execute the command</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-        <span class="c"># Matlab is not present</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Could not find SPM.&quot;</span><span class="p">)</span>
+        <span class="c1"># Matlab is not present</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Could not find SPM.&quot;</span><span class="p">)</span>
     <span class="n">stdout</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">last_line</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">last_line</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="c"># Do not consider weird data at the end of the line</span>
-    <span class="k">if</span> <span class="s">&#39;</span><span class="se">\x1b</span><span class="s">&#39;</span> <span class="ow">in</span> <span class="n">last_line</span><span class="p">:</span>
-        <span class="n">last_line</span> <span class="o">=</span> <span class="n">last_line</span><span class="p">[:</span><span class="n">last_line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x1b</span><span class="s">&#39;</span><span class="p">)]</span>
+    <span class="c1"># Do not consider weird data at the end of the line</span>
+    <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">last_line</span><span class="p">:</span>
+        <span class="n">last_line</span> <span class="o">=</span> <span class="n">last_line</span><span class="p">[:</span><span class="n">last_line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x1b</span><span class="s1">&#39;</span><span class="p">)]</span>
 
-    <span class="c"># If the last line is empty, SPM not found</span>
-    <span class="k">if</span> <span class="n">last_line</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Could not find SPM.&quot;</span><span class="p">)</span>
+    <span class="c1"># If the last line is empty, SPM not found</span>
+    <span class="k">if</span> <span class="n">last_line</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Could not find SPM.&quot;</span><span class="p">)</span>
 
-    <span class="c"># Debug message</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;SPM found at location &#39;{0}&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">last_line</span><span class="p">))</span>
+    <span class="c1"># Debug message</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SPM found at location &#39;</span><span class="si">{0}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">last_line</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">last_line</span>
+    <span class="k">return</span> <span class="n">last_line</span></div>
 
-</div>
+
 <div class="viewcode-block" id="SPMConfig"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig">[docs]</a><span class="k">class</span> <span class="nc">SPMConfig</span><span class="p">(</span><span class="n">StudyConfigModule</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; SPM configuration.</span>
 
@@ -207,94 +207,94 @@
 <span class="sd">          to set the spm executable directory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;MatlabConfig&quot;</span><span class="p">]</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MatlabConfig&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="SPMConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the SPMConfig class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SPMConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;spm_standalone&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
-            <span class="bp">False</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;If True, use the standalone version of SPM.&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;spm_directory&quot;</span><span class="p">,</span> <span class="n">Directory</span><span class="p">(</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SPMConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s2">&quot;spm_standalone&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
+            <span class="kc">False</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;If True, use the standalone version of SPM.&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s2">&quot;spm_directory&quot;</span><span class="p">,</span> <span class="n">Directory</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;Directory containing SPM.&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;spm_exec&quot;</span><span class="p">,</span> <span class="n">File</span><span class="p">(</span>
+            <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Directory containing SPM.&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s2">&quot;spm_exec&quot;</span><span class="p">,</span> <span class="n">File</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;SPM standalone (MCR) command path.&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&quot;use_spm&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
+            <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;SPM standalone (MCR) command path.&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s2">&quot;use_spm&quot;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&quot;If True, SPM configuration is set up on startup.&quot;</span><span class="p">))</span>
-</div>
+            <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;If True, SPM configuration is set up on startup.&quot;</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="SPMConfig.initialize_module"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig.initialize_module">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set up SPM environment according to current configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
-            <span class="c"># Configuration is explicitely asking not to use SPM</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># Configuration is explicitely asking not to use SPM</span>
             <span class="k">return</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="c"># If use_spm is True configuration must be valid otherwise</span>
-            <span class="c"># an EnvironmentError is raised</span>
-            <span class="n">force_configuration</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># If use_spm is True configuration must be valid otherwise</span>
+            <span class="c1"># an EnvironmentError is raised</span>
+            <span class="n">force_configuration</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># If use_spm is not defined, SPM configuration will</span>
-            <span class="c"># be done if possible but there will be no error if it cannot be</span>
-            <span class="c"># done.</span>
-            <span class="n">force_configuration</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="c1"># If use_spm is not defined, SPM configuration will</span>
+            <span class="c1"># be done if possible but there will be no error if it cannot be</span>
+            <span class="c1"># done.</span>
+            <span class="n">force_configuration</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="c"># If we need to check spm configuration</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="c1"># If we need to check spm configuration</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
 
-            <span class="c"># If standalone</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_standalone</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="c1"># If standalone</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_standalone</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
 
-                <span class="c"># Check that a valid file has been set for the stanalone</span>
-                <span class="c"># version of spm</span>
+                <span class="c1"># Check that a valid file has been set for the stanalone</span>
+                <span class="c1"># version of spm</span>
                 <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_exec</span> <span class="ow">is</span> <span class="n">Undefined</span> <span class="ow">or</span> 
                         <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_exec</span><span class="p">)):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s">&quot;&#39;spm_exec&#39; must be defined in &quot;</span>
-                                               <span class="s">&quot;order to use SPM-standalone.&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s2">&quot;&#39;spm_exec&#39; must be defined in &quot;</span>
+                                               <span class="s2">&quot;order to use SPM-standalone.&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">return</span>
 
-            <span class="c"># If not standalone</span>
+            <span class="c1"># If not standalone</span>
             <span class="k">else</span><span class="p">:</span>
 
-                <span class="c"># Check that Matlab is activated</span>
+                <span class="c1"># Check that Matlab is activated</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_matlab</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span>
-                            <span class="s">&quot;Matlab is disabled. Cannot use SPM via Matlab.&quot;</span><span class="p">)</span>
+                            <span class="s2">&quot;Matlab is disabled. Cannot use SPM via Matlab.&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">return</span>
 
-                <span class="c"># If the spm sources are not set, try to find them automaticaly</span>
+                <span class="c1"># If the spm sources are not set, try to find them automaticaly</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_directory</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_directory</span> <span class="o">=</span> <span class="n">find_spm</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">matlab_exec</span><span class="p">)</span>
 
-                <span class="c"># Check that a valid directory has been set for spm sources</span>
+                <span class="c1"># Check that a valid directory has been set for spm sources</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_directory</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_spm</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span>
-                            <span class="s">&quot;&#39;{0}&#39; is not a valid SPM directory.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; is not a valid SPM directory.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">spm_directory</span><span class="p">))</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">return</span>
-</div>
+                        <span class="k">return</span></div>
+
 <div class="viewcode-block" id="SPMConfig.initialize_callbacks"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig.initialize_callbacks">[docs]</a>    <span class="k">def</span> <span class="nf">initialize_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; When the &#39;use_spm&#39; trait changes, configure spm with the new</span>
 <span class="sd">        setting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_module</span><span class="p">,</span> <span class="s">&quot;use_spm&quot;</span><span class="p">)</span>
-   </div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_module</span><span class="p">,</span> <span class="s2">&quot;use_spm&quot;</span><span class="p">)</span></div></div>
+   
 </pre></div>
 
           </div>
@@ -307,7 +307,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,17 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -55,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -95,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -120,50 +120,51 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for capsul.process.process</h1><div class="highlight"><pre>
-<span class="c">#! /usr/bin/env python</span>
-<span class="c">##########################################################################</span>
-<span class="c"># CAPSUL - Copyright (C) CEA, 2013</span>
-<span class="c"># Distributed under the terms of the CeCILL-B license, as published by</span>
-<span class="c"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
-<span class="c"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
-<span class="c"># for details.</span>
-<span class="c">##########################################################################</span>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1">##########################################################################</span>
+<span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c1"># for details.</span>
+<span class="c1">##########################################################################</span>
 
-<span class="c"># System import</span>
+<span class="c1"># System import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">from</span> <span class="nn">socket</span> <span class="kn">import</span> <span class="n">getfqdn</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">getfqdn</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">six</span>
 
-<span class="c"># Define the logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="c1"># Define the logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="c"># Trait import</span>
-<span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="kn">import</span> <span class="n">_Undefined</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span>
-<span class="kn">from</span> <span class="nn">traits.trait_handlers</span> <span class="kn">import</span> <span class="n">BaseTraitHandler</span>
+<span class="c1"># Trait import</span>
+<span class="kn">from</span> <span class="nn">traits.trait_base</span> <span class="k">import</span> <span class="n">_Undefined</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span>
+<span class="kn">from</span> <span class="nn">traits.trait_handlers</span> <span class="k">import</span> <span class="n">BaseTraitHandler</span>
 
-<span class="c"># Soma import</span>
-<span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">Controller</span>
-<span class="kn">from</span> <span class="nn">soma.controller</span> <span class="kn">import</span> <span class="n">trait_ids</span>
-<span class="kn">from</span> <span class="nn">soma.utils</span> <span class="kn">import</span> <span class="n">LateBindingProperty</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">is_trait_value_defined</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">is_trait_pathname</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="kn">import</span> <span class="n">get_trait_desc</span>
+<span class="c1"># Soma import</span>
+<span class="kn">from</span> <span class="nn">soma.controller</span> <span class="k">import</span> <span class="n">Controller</span>
+<span class="kn">from</span> <span class="nn">soma.controller</span> <span class="k">import</span> <span class="n">trait_ids</span>
+<span class="kn">from</span> <span class="nn">soma.utils</span> <span class="k">import</span> <span class="n">LateBindingProperty</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">is_trait_value_defined</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">is_trait_pathname</span>
+<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">get_trait_desc</span>
 
-<span class="c"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">capsul.utils.version_utils</span> <span class="kn">import</span> <span class="n">get_tool_version</span>
+<span class="c1"># Capsul import</span>
+<span class="kn">from</span> <span class="nn">capsul.utils.version_utils</span> <span class="k">import</span> <span class="n">get_tool_version</span>
 
 
-<span class="k">class</span> <span class="nc">ProcessMeta</span><span class="p">(</span><span class="n">Controller</span><span class="o">.</span><span class="n">__metaclass__</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ProcessMeta</span><span class="p">(</span><span class="n">Controller</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Class used to complete a process docstring</span>
 
 <span class="sd">    Use a class and not a function for inheritance.</span>
@@ -182,15 +183,15 @@
 <span class="sd">        attrs: dict (mandatory)</span>
 <span class="sd">            a dictionnary with the class attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Get the process docstring</span>
-        <span class="n">docstring</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;__doc__&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="c1"># Get the process docstring</span>
+        <span class="n">docstring</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;__doc__&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c"># we have to indent the note properly so that the docstring is</span>
-        <span class="c"># properly displayed, and correctly processed by sphinx</span>
+        <span class="c1"># we have to indent the note properly so that the docstring is</span>
+        <span class="c1"># properly displayed, and correctly processed by sphinx</span>
         <span class="n">indent</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">docstring</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="n">lstrip</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">lstrip</span><span class="p">:</span>  <span class="c"># empty lines do not influence indent</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">lstrip</span><span class="p">:</span>  <span class="c1"># empty lines do not influence indent</span>
                 <span class="k">continue</span>
             <span class="n">lindent</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">indent</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">lindent</span> <span class="o">&lt;</span> <span class="n">indent</span><span class="p">:</span>
@@ -198,36 +199,36 @@
         <span class="k">if</span> <span class="n">indent</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">indent</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="c"># Complete the docstring</span>
-        <span class="n">docstring</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="s">&quot;&quot;</span><span class="p">,</span>
-            <span class="s">&quot;.. note::&quot;</span><span class="p">,</span>
-            <span class="s">&quot;&quot;</span><span class="p">,</span>
-            <span class="s">&quot;    * Type &#39;{0}.help()&#39; for a full description of &quot;</span>
-            <span class="s">&quot;this process parameters.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="s">&quot;    * Type &#39;&lt;{0}&gt;.get_input_spec()&#39; for a full description of &quot;</span>
-            <span class="s">&quot;this process input trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="s">&quot;    * Type &#39;&lt;{0}&gt;.get_output_spec()&#39; for a full description of &quot;</span>
-            <span class="s">&quot;this process output trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="s">&quot;&quot;</span>
+        <span class="c1"># Complete the docstring</span>
+        <span class="n">docstring</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;.. note::&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;    * Type &#39;</span><span class="si">{0}</span><span class="s2">.help()&#39; for a full description of &quot;</span>
+            <span class="s2">&quot;this process parameters.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">&quot;    * Type &#39;&lt;</span><span class="si">{0}</span><span class="s2">&gt;.get_input_spec()&#39; for a full description of &quot;</span>
+            <span class="s2">&quot;this process input trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">&quot;    * Type &#39;&lt;</span><span class="si">{0}</span><span class="s2">&gt;.get_output_spec()&#39; for a full description of &quot;</span>
+            <span class="s2">&quot;this process output trait types.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">&quot;&quot;</span>
         <span class="p">]]</span>
 
-        <span class="c"># Update the class docstring with the full process help</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s">&quot;__doc__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">docstring</span><span class="p">)</span>
+        <span class="c1"># Update the class docstring with the full process help</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;__doc__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">docstring</span><span class="p">)</span>
 
-        <span class="c"># Find all traits definitions in the process class and ensure that</span>
-        <span class="c"># it has a boolean value for attributes &quot;output&quot; and &quot;optional&quot;.</span>
-        <span class="c"># If no value is given at construction, False will be used.</span>
+        <span class="c1"># Find all traits definitions in the process class and ensure that</span>
+        <span class="c1"># it has a boolean value for attributes &quot;output&quot; and &quot;optional&quot;.</span>
+        <span class="c1"># If no value is given at construction, False will be used.</span>
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">possible_trait_definition</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="p">,</span> <span class="n">BaseTraitHandler</span><span class="p">):</span>
-                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
+                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+                <span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">possible_trait_definition</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
         
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProcessMeta</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProcessMeta</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span>
             <span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Process"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process">[docs]</a><span class="k">class</span> <span class="nc">Process</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+<div class="viewcode-block" id="Process"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process">[docs]</a><span class="k">class</span> <span class="nc">Process</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">ProcessMeta</span><span class="p">,</span> <span class="n">Controller</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot; A process is an atomic component that contains a processing.</span>
 
 <span class="sd">    Attributes</span>
@@ -260,39 +261,37 @@
 <span class="sd">    get_parameter</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Meta class used to complete the class docstring</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ProcessMeta</span>
 
 <div class="viewcode-block" id="Process.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the Process class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Inheritance</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="c1"># Inheritance</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="c"># Initialize the process identifiers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__module__</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># Initialize the process identifiers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-        <span class="c"># Parameter to store which tools will be used dusring the processing</span>
+        <span class="c1"># Parameter to store which tools will be used dusring the processing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">versions</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&quot;capsul&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s">&quot;capsul&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;capsul&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s2">&quot;capsul&quot;</span><span class="p">)</span>
         <span class="p">}</span>
 
-        <span class="c"># Initialize the log file name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="bp">None</span>
-</div>
+        <span class="c1"># Initialize the log file name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="Process.add_trait"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.add_trait">[docs]</a>    <span class="k">def</span> <span class="nf">add_trait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Ensure that trait.output and trait.optional are set to a</span>
 <span class="sd">        boolean value before calling parent class add_trait.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+            <span class="n">trait</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;optional&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">trait</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
             <span class="n">trait</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">optional</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
-        </div>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span></div>
+        
 <div class="viewcode-block" id="Process.__call__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to execute the Process.</span>
 
@@ -327,56 +326,56 @@
 <span class="sd">        results:  ProcessResult object</span>
 <span class="sd">            contains all execution information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Get the process class</span>
-        <span class="n">process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span>
+        <span class="c1"># Get the process class</span>
+        <span class="n">process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
 
-        <span class="c"># Initialize the execution report</span>
+        <span class="c1"># Initialize the execution report</span>
         <span class="n">runtime</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span>
-            <span class="s">&quot;cwd&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
-            <span class="s">&quot;returncode&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="s">&quot;environ&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+            <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()),</span>
+            <span class="s2">&quot;cwd&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
+            <span class="s2">&quot;returncode&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;environ&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">unicode</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
                              <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]),</span>
-            <span class="s">&quot;end_time&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="s">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">getfqdn</span><span class="p">(),</span>
+            <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">getfqdn</span><span class="p">(),</span>
         <span class="p">}</span>
 
-        <span class="c"># Set process parameters if extra arguments are passed</span>
+        <span class="c1"># Set process parameters if extra arguments are passed</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
 
-            <span class="c"># Go through all the extra parameters</span>
+            <span class="c1"># Go through all the extra parameters</span>
             <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
 
-                <span class="c"># If the extra parameter name does not match with a user</span>
-                <span class="c"># trait paameter name, raise a TypeError</span>
+                <span class="c1"># If the extra parameter name does not match with a user</span>
+                <span class="c1"># trait paameter name, raise a TypeError</span>
                 <span class="k">if</span> <span class="n">arg_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">():</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                        <span class="s">&quot;Process __call__ got an unexpected keyword &quot;</span>
-                        <span class="s">&quot;argument &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg_name</span><span class="p">))</span>
+                        <span class="s2">&quot;Process __call__ got an unexpected keyword &quot;</span>
+                        <span class="s2">&quot;argument &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg_name</span><span class="p">))</span>
 
-                <span class="c"># Set the extra parameter value</span>
+                <span class="c1"># Set the extra parameter value</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_val</span><span class="p">)</span>
 
-        <span class="c"># Execute the process</span>
+        <span class="c1"># Execute the process</span>
         <span class="n">returncode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_process</span><span class="p">()</span>
 
-        <span class="c"># Set the execution stop time in the execution report</span>
-        <span class="n">runtime</span><span class="p">[</span><span class="s">&quot;end_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+        <span class="c1"># Set the execution stop time in the execution report</span>
+        <span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
 
-        <span class="c"># Set the dependencies versions in the execution report</span>
-        <span class="n">runtime</span><span class="p">[</span><span class="s">&quot;versions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">versions</span>
+        <span class="c1"># Set the dependencies versions in the execution report</span>
+        <span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;versions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">versions</span>
 
-        <span class="c"># Generate a process result that is returned</span>
+        <span class="c1"># Generate a process result that is returned</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">ProcessResult</span><span class="p">(</span>
             <span class="n">process</span><span class="p">,</span> <span class="n">runtime</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">(),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_outputs</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="n">results</span>
+        <span class="k">return</span> <span class="n">results</span></div>
 
-    <span class="c">####################################################################</span>
-    <span class="c"># Private methods</span>
-    <span class="c">####################################################################</span>
-</div>
+    <span class="c1">####################################################################</span>
+    <span class="c1"># Private methods</span>
+    <span class="c1">####################################################################</span>
+
 <div class="viewcode-block" id="Process._run_process"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process._run_process">[docs]</a>    <span class="k">def</span> <span class="nf">_run_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method that contains the processings.</span>
 
@@ -388,19 +387,19 @@
 <span class="sd">            If both methods are not defined in the derived class a</span>
 <span class="sd">            NotImplementedError error is raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Check if get_commandline() method is specialized</span>
-        <span class="c"># If yes, we can make use of it to execute the process</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">get_commandline</span> <span class="o">!=</span> <span class="n">Process</span><span class="o">.</span><span class="n">get_commandline</span><span class="p">:</span>
+        <span class="c1"># Check if get_commandline() method is specialized</span>
+        <span class="c1"># If yes, we can make use of it to execute the process</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">get_commandline</span> <span class="o">!=</span> <span class="n">Process</span><span class="o">.</span><span class="n">get_commandline</span><span class="p">:</span>
             <span class="n">commandline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_commandline</span><span class="p">()</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">commandline</span><span class="p">)</span>
 
-        <span class="c"># Otherwise raise an error</span>
+        <span class="c1"># Otherwise raise an error</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s">&quot;Either get_commandline() or _run_process() should be &quot;</span>
-                <span class="s">&quot;redefined in process ({0})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
-</div>
+                <span class="s2">&quot;Either get_commandline() or _run_process() should be &quot;</span>
+                <span class="s2">&quot;redefined in process (</span><span class="si">{0}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+
     <span class="k">def</span> <span class="nf">_get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exec_info</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method that generate the logging structure from the execution</span>
 <span class="sd">        information and class attributes.</span>
@@ -416,19 +415,19 @@
 <span class="sd">        log: dict</span>
 <span class="sd">            the logging information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Set all the execution runtime information in the log</span>
+        <span class="c1"># Set all the execution runtime information in the log</span>
         <span class="n">log</span> <span class="o">=</span> <span class="n">exec_info</span><span class="o">.</span><span class="n">runtime</span>
 
-        <span class="c"># Add the process identifiaction class attribute</span>
-        <span class="n">log</span><span class="p">[</span><span class="s">&quot;process&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="c1"># Add the process identifiaction class attribute</span>
+        <span class="n">log</span><span class="p">[</span><span class="s2">&quot;process&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
-        <span class="c"># Add the process inputs and outputs</span>
-        <span class="n">log</span><span class="p">[</span><span class="s">&quot;inputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_info</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">log</span><span class="p">[</span><span class="s">&quot;outputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_info</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># Add the process inputs and outputs</span>
+        <span class="n">log</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_info</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">log</span><span class="p">[</span><span class="s2">&quot;outputs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exec_info</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="c"># Need to take the representation of undefined input or outputs</span>
-        <span class="c"># traits</span>
-        <span class="k">for</span> <span class="n">parameter_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;inputs&quot;</span><span class="p">,</span> <span class="s">&quot;outputs&quot;</span><span class="p">]:</span>
+        <span class="c1"># Need to take the representation of undefined input or outputs</span>
+        <span class="c1"># traits</span>
+        <span class="k">for</span> <span class="n">parameter_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;outputs&quot;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">log</span><span class="p">[</span><span class="n">parameter_type</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
                     <span class="n">log</span><span class="p">[</span><span class="n">parameter_type</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -448,40 +447,40 @@
 <span class="sd">        rsttable: list of str</span>
 <span class="sd">            the rst formated table containing the input data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Output rst table</span>
+        <span class="c1"># Output rst table</span>
         <span class="n">rsttable</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c"># Get the size of the largest row in order to</span>
-        <span class="c"># format properly the rst table (do not forget the &#39;+&#39; and &#39;*&#39;)</span>
-        <span class="n">row_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)]</span>
+        <span class="c1"># Get the size of the largest row in order to</span>
+        <span class="c1"># format properly the rst table (do not forget the &#39;+&#39; and &#39;*&#39;)</span>
+        <span class="n">row_widths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)]</span>
         <span class="n">width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">row_widths</span><span class="p">)</span> <span class="o">+</span> <span class="mi">11</span>
 
-        <span class="c"># Generate the rst table</span>
+        <span class="c1"># Generate the rst table</span>
 
-        <span class="c"># &gt; table synthax</span>
-        <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s">&quot;+&quot;</span><span class="p">)</span>
-        <span class="c"># &gt; go through the table lines</span>
+        <span class="c1"># &gt; table synthax</span>
+        <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;+&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
+        <span class="c1"># &gt; go through the table lines</span>
         <span class="k">for</span> <span class="n">table_row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="c"># &gt; go through the cell lines</span>
+            <span class="c1"># &gt; go through the cell lines</span>
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cell_row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">table_row</span><span class="p">):</span>
-                <span class="c"># &gt; set the parameter name in bold</span>
-                <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">cell_row</span><span class="p">:</span>
-                    <span class="n">delimiter_index</span> <span class="o">=</span> <span class="n">cell_row</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&quot;:&quot;</span><span class="p">)</span>
-                    <span class="n">cell_row</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;**&quot;</span> <span class="o">+</span> <span class="n">cell_row</span><span class="p">[:</span><span class="n">delimiter_index</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;**&quot;</span> <span class="o">+</span>
+                <span class="c1"># &gt; set the parameter name in bold</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">cell_row</span><span class="p">:</span>
+                    <span class="n">delimiter_index</span> <span class="o">=</span> <span class="n">cell_row</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+                    <span class="n">cell_row</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;**&quot;</span> <span class="o">+</span> <span class="n">cell_row</span><span class="p">[:</span><span class="n">delimiter_index</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;**&quot;</span> <span class="o">+</span>
                                 <span class="n">cell_row</span><span class="p">[</span><span class="n">delimiter_index</span><span class="p">:])</span>
-                <span class="c"># &gt;  add table rst content</span>
+                <span class="c1"># &gt;  add table rst content</span>
                 <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="s">&quot;| | {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">+</span>
-                    <span class="s">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span>
-                    <span class="s">&quot;|&quot;</span><span class="p">)</span>
-            <span class="c"># &gt; close cell</span>
-            <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;+&quot;</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s">&quot;+&quot;</span><span class="p">)</span>
+                    <span class="s2">&quot;| | </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_row</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="s2">&quot;|&quot;</span><span class="p">)</span>
+            <span class="c1"># &gt; close cell</span>
+            <span class="n">rsttable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;+&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rsttable</span>
 
-    <span class="c">####################################################################</span>
-    <span class="c"># Public methods</span>
-    <span class="c">####################################################################</span>
+    <span class="c1">####################################################################</span>
+    <span class="c1"># Public methods</span>
+    <span class="c1">####################################################################</span>
 
 <div class="viewcode-block" id="Process.save_log"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returncode</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to save process execution informations in json format.</span>
@@ -494,23 +493,23 @@
 <span class="sd">        returncode: ProcessResult</span>
 <span class="sd">            the process result return code.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Build the logging information</span>
+        <span class="c1"># Build the logging information</span>
         <span class="n">exec_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_log</span><span class="p">(</span><span class="n">returncode</span><span class="p">)</span>
 
-        <span class="c"># Generate an output log file name if necessary</span>
+        <span class="c1"># Generate an output log file name if necessary</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exec_info</span><span class="p">[</span><span class="s">&quot;cwd&quot;</span><span class="p">],</span> <span class="s">&quot;log.json&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exec_info</span><span class="p">[</span><span class="s2">&quot;cwd&quot;</span><span class="p">],</span> <span class="s2">&quot;log.json&quot;</span><span class="p">)</span>
 
-        <span class="c"># Dump the log</span>
-        <span class="n">json_struct</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">exec_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                 <span class="n">check_circular</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="c1"># Dump the log</span>
+        <span class="n">json_struct</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">exec_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">check_circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-        <span class="c"># Save the json structure</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">unicode</span><span class="p">(</span><span class="n">json_struct</span><span class="p">))</span>
-</div>
+        <span class="c1"># Save the json structure</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">unicode</span><span class="p">(</span><span class="n">json_struct</span><span class="p">))</span></div>
+
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Process.help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Process.help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to print the full help.</span>
 
 <span class="sd">        Parameters</span>
@@ -521,28 +520,28 @@
 <span class="sd">            if True return the help string message,</span>
 <span class="sd">            otherwise display it on the console.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cls_instance</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">cls_instance</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span>
+        <span class="n">cls_instance</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cls_instance</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span></div>
 
-    <span class="c">####################################################################</span>
-    <span class="c"># Accessors</span>
-    <span class="c">####################################################################</span>
-</div>
+    <span class="c1">####################################################################</span>
+    <span class="c1"># Accessors</span>
+    <span class="c1">####################################################################</span>
+
 <div class="viewcode-block" id="Process.get_commandline"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_commandline">[docs]</a>    <span class="k">def</span> <span class="nf">get_commandline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to generate a comandline representation of the process.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Get command line arguments (ie., the process user traits)</span>
-        <span class="n">reserved_params</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;nodes_activation&quot;</span><span class="p">,</span> <span class="s">&quot;selection_changed&quot;</span><span class="p">)</span>
+        <span class="c1"># Get command line arguments (ie., the process user traits)</span>
+        <span class="n">reserved_params</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;nodes_activation&quot;</span><span class="p">,</span> <span class="s2">&quot;selection_changed&quot;</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">is_trait_pathname</span><span class="p">(</span><span class="n">trait</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">trait_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reserved_params</span> <span class="ow">and</span>
                 <span class="n">is_trait_value_defined</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">)))]</span>
 
-        <span class="c"># Build the python call expression, keeping apart file names.</span>
-        <span class="c"># File names are given separately since they might be modified</span>
-        <span class="c"># externally afterwards, typically to handle temporary files, or</span>
-        <span class="c"># file transfers with Soma-Workflow.</span>
+        <span class="c1"># Build the python call expression, keeping apart file names.</span>
+        <span class="c1"># File names are given separately since they might be modified</span>
+        <span class="c1"># externally afterwards, typically to handle temporary files, or</span>
+        <span class="c1"># file transfers with Soma-Workflow.</span>
         <span class="n">argsdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">is_pathname</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">is_pathname</span><span class="p">)</span>
@@ -550,23 +549,23 @@
             <span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">is_pathname</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">is_pathname</span><span class="p">)</span>
 
-        <span class="c"># Get the module and class names</span>
-        <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__module__</span>
+        <span class="c1"># Get the module and class names</span>
+        <span class="n">module_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
-        <span class="c"># Construct the command line</span>
+        <span class="c1"># Construct the command line</span>
         <span class="n">commandline</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s">&quot;python&quot;</span><span class="p">,</span>
-            <span class="s">&quot;-c&quot;</span><span class="p">,</span>
-            <span class="p">(</span><span class="s">&quot;import sys; from {0} import {1}; kwargs={2}; &quot;</span>
-             <span class="s">&quot;kwargs.update(dict((sys.argv[i * 2 + 1], sys.argv[i * 2 + 2]) &quot;</span>
-             <span class="s">&quot;for i in range((len(sys.argv) - 1) / 2))); &quot;</span>
-             <span class="s">&quot;{1}()(**kwargs)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span>
-                                       <span class="nb">repr</span><span class="p">(</span><span class="n">argsdict</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s">&#39;&quot;&#39;</span><span class="p">)</span>
+            <span class="s2">&quot;python&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s2">&quot;import sys; from </span><span class="si">{0}</span><span class="s2"> import </span><span class="si">{1}</span><span class="s2">; kwargs=</span><span class="si">{2}</span><span class="s2">; &quot;</span>
+             <span class="s2">&quot;kwargs.update(dict((sys.argv[i * 2 + 1], sys.argv[i * 2 + 2]) &quot;</span>
+             <span class="s2">&quot;for i in range((len(sys.argv) - 1) / 2))); &quot;</span>
+             <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">()(**kwargs)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span>
+                                       <span class="nb">repr</span><span class="p">(</span><span class="n">argsdict</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
         <span class="p">]</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pathsdict</span><span class="o">.</span><span class="n">items</span><span class="p">()],</span> <span class="p">[])</span>
 
-        <span class="k">return</span> <span class="n">commandline</span>
-</div>
+        <span class="k">return</span> <span class="n">commandline</span></div>
+
 <div class="viewcode-block" id="Process.make_commandline_argument"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.make_commandline_argument">[docs]</a>    <span class="k">def</span> <span class="nf">make_commandline_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This helper function may be used to build non-trivial commandline</span>
 <span class="sd">        arguments in get_commandline implementations.</span>
@@ -584,17 +583,17 @@
 
 <span class="sd">        if self.param is a string (file name) or a temporary path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">built_arg</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-        <span class="n">temp</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">built_arg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&#39;pattern&#39;</span><span class="p">):</span> <span class="c"># tempfile</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s1">&#39;pattern&#39;</span><span class="p">):</span> <span class="c1"># tempfile</span>
                 <span class="n">built_arg</span> <span class="o">=</span> <span class="n">built_arg</span> <span class="o">+</span> <span class="n">arg</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">basestring</span><span class="p">):</span>
                 <span class="n">built_arg</span> <span class="o">+=</span> <span class="n">arg</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">built_arg</span> <span class="o">=</span> <span class="n">built_arg</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">built_arg</span>
-</div>
+        <span class="k">return</span> <span class="n">built_arg</span></div>
+
 <div class="viewcode-block" id="Process.get_log"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_log">[docs]</a>    <span class="k">def</span> <span class="nf">get_log</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Load the logging file.</span>
 
@@ -611,8 +610,8 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-</div>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="Process.get_input_spec"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_input_spec">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to access the process input specifications.</span>
 
@@ -621,14 +620,14 @@
 <span class="sd">        outputs: str</span>
 <span class="sd">            a string representation of all the input trait specifications.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">INPUT SPECIFICATIONS</span><span class="se">\n\n</span><span class="s">&quot;</span>
-        <span class="c"># self.traits(output=False) skips params with no output property</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">INPUT SPECIFICATIONS</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="c1"># self.traits(output=False) skips params with no output property</span>
         <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">+=</span> <span class="s">&quot;{0}: {1}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">output</span>
-</div>
+        <span class="k">return</span> <span class="n">output</span></div>
+
 <div class="viewcode-block" id="Process.get_output_spec"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_spec">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to access the process output specifications.</span>
 
@@ -637,12 +636,12 @@
 <span class="sd">        outputs: str</span>
 <span class="sd">            a string representation of all the output trait specifications.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">OUTPUT SPECIFICATIONS</span><span class="se">\n\n</span><span class="s">&quot;</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">output</span> <span class="o">+=</span> <span class="s">&quot;{0}: {1}</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">OUTPUT SPECIFICATIONS</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">trait_name</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">output</span>
-</div>
+        <span class="k">return</span> <span class="n">output</span></div>
+
 <div class="viewcode-block" id="Process.get_inputs"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_inputs">[docs]</a>    <span class="k">def</span> <span class="nf">get_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to access the process inputs.</span>
 
@@ -655,8 +654,8 @@
         <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
                 <span class="n">output</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-</div>
+        <span class="k">return</span> <span class="n">output</span></div>
+
 <div class="viewcode-block" id="Process.get_outputs"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_outputs">[docs]</a>    <span class="k">def</span> <span class="nf">get_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to access the process outputs.</span>
 
@@ -666,11 +665,11 @@
 <span class="sd">            a dictionary with all the output trait names and values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">output</span><span class="p">[</span><span class="n">trait_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-</div>
-<div class="viewcode-block" id="Process.get_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="Process.get_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate description of a process parameters.</span>
 
 <span class="sd">        Parameters</span>
@@ -679,58 +678,58 @@
 <span class="sd">            if True return the help string message formatted in rst,</span>
 <span class="sd">            otherwise display the raw help string message on the console.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Create the help content variable</span>
-        <span class="n">doctring</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Create the help content variable</span>
+        <span class="n">doctring</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Update the documentation with a description of the pipeline</span>
-        <span class="c"># when the xml to pipeline wrapper has been used</span>
-        <span class="k">if</span> <span class="n">returnhelp</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_pipeline_desc&quot;</span><span class="p">):</span>
-            <span class="n">str_desc</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;    {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Update the documentation with a description of the pipeline</span>
+        <span class="c1"># when the xml to pipeline wrapper has been used</span>
+        <span class="k">if</span> <span class="n">returnhelp</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_pipeline_desc&quot;</span><span class="p">):</span>
+            <span class="n">str_desc</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;    </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pipeline_desc</span><span class="p">])</span>
             <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="s">&quot;.. hidden-code-block:: python&quot;</span><span class="p">,</span>
-                <span class="s">&quot;    :starthidden: True&quot;</span><span class="p">,</span>
-                <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;.. hidden-code-block:: python&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;    :starthidden: True&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;&quot;</span><span class="p">,</span>
                 <span class="n">str_desc</span><span class="p">,</span>
-                <span class="s">&quot;&quot;</span>
+                <span class="s2">&quot;&quot;</span>
             <span class="p">]</span>
 
-        <span class="c"># Get the process docstring</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
-            <span class="n">doctring</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Get the process docstring</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">:</span>
+            <span class="n">doctring</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Update the documentation with a reference on the source function</span>
-        <span class="c"># when the function to process wrapper has been used</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_func_name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_func_module&quot;</span><span class="p">):</span>
+        <span class="c1"># Update the documentation with a reference on the source function</span>
+        <span class="c1"># when the function to process wrapper has been used</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_func_name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_func_module&quot;</span><span class="p">):</span>
             <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
-                <span class="s">&quot;This process has been wrapped from {0}.{1}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;This process has been wrapped from </span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_func_module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_func_name</span><span class="p">),</span>
-                <span class="s">&quot;&quot;</span>
+                <span class="s2">&quot;&quot;</span>
             <span class="p">]</span>
             <span class="k">if</span> <span class="n">returnhelp</span><span class="p">:</span>
                 <span class="n">doctring</span> <span class="o">+=</span> <span class="p">[</span>
-                    <span class="s">&quot;.. currentmodule:: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_module</span><span class="p">),</span>
-                    <span class="s">&quot;&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;.. autosummary::&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;    :toctree: ./&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;&quot;</span><span class="p">,</span>
-                    <span class="s">&quot;    {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_name</span><span class="p">),</span>
-                    <span class="s">&quot;&quot;</span>
+                    <span class="s2">&quot;.. currentmodule:: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_module</span><span class="p">),</span>
+                    <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;.. autosummary::&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;    :toctree: ./&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;    </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_func_name</span><span class="p">),</span>
+                    <span class="s2">&quot;&quot;</span>
                 <span class="p">]</span>
 
-        <span class="c"># Append the input and output traits help</span>
-        <span class="n">full_help</span> <span class="o">=</span> <span class="p">(</span><span class="n">doctring</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">get_output_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">])</span>
-        <span class="n">full_help</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span>
+        <span class="c1"># Append the input and output traits help</span>
+        <span class="n">full_help</span> <span class="o">=</span> <span class="p">(</span><span class="n">doctring</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_input_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">get_output_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+        <span class="n">full_help</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span>
 
-        <span class="c"># Return the full process help</span>
+        <span class="c1"># Return the full process help</span>
         <span class="k">if</span> <span class="n">returnhelp</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">full_help</span>
-        <span class="c"># Print the full process help</span>
+        <span class="c1"># Print the full process help</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Process.get_input_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_input_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">full_help</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Process.get_input_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_input_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate description for process input parameters.</span>
 
 <span class="sd">        Parameters</span>
@@ -743,65 +742,65 @@
 <span class="sd">        helpstr: str</span>
 <span class="sd">            the class input traits help</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Generate an input section</span>
-        <span class="n">helpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Inputs&quot;</span><span class="p">,</span> <span class="s">&quot;~&quot;</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Generate an input section</span>
+        <span class="n">helpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Markup to separate mandatory inputs</span>
-        <span class="n">manhelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;[Mandatory]&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Markup to separate mandatory inputs</span>
+        <span class="n">manhelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;[Mandatory]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Get all the mandatory input traits</span>
+        <span class="c1"># Get all the mandatory input traits</span>
         <span class="n">mandatory_items</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
                                 <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span><span class="p">])</span>
-        <span class="n">mandatory_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+        <span class="n">mandatory_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
-        <span class="c"># If we have mandatory inputs, get the corresponding string</span>
-        <span class="c"># descriptions</span>
+        <span class="c1"># If we have mandatory inputs, get the corresponding string</span>
+        <span class="c1"># descriptions</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">mandatory_items</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">mandatory_items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="n">trait_desc</span> <span class="o">=</span> <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trait_desc</span><span class="p">)</span>
 
-        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="c1"># If we want to format the output nicely (rst)</span>
         <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
                 <span class="n">manhelpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="c"># Otherwise</span>
+            <span class="c1"># Otherwise</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">manhelpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">manhelpstr</span> <span class="o">+=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-        <span class="c"># Markup to separate optional inputs</span>
-        <span class="n">opthelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;[Optional]&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Markup to separate optional inputs</span>
+        <span class="n">opthelpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;[Optional]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Get all optional input traits</span>
-        <span class="n">optional_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">optional_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+        <span class="c1"># Get all optional input traits</span>
+        <span class="n">optional_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">optional_items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
-        <span class="c"># If we have optional inputs, get the corresponding string</span>
-        <span class="c"># descriptions</span>
+        <span class="c1"># If we have optional inputs, get the corresponding string</span>
+        <span class="c1"># descriptions</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">optional_items</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">optional_items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">))</span>
 
-        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="c1"># If we want to format the output nicely (rst)</span>
         <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
                 <span class="n">opthelpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="c"># Otherwise</span>
+            <span class="c1"># Otherwise</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">opthelpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">opthelpstr</span> <span class="o">+=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-        <span class="c"># Add the mandatry and optional input string description if necessary</span>
+        <span class="c1"># Add the mandatry and optional input string description if necessary</span>
         <span class="k">if</span> <span class="n">mandatory_items</span><span class="p">:</span>
             <span class="n">helpstr</span> <span class="o">+=</span> <span class="n">manhelpstr</span>
         <span class="k">if</span> <span class="n">optional_items</span><span class="p">:</span>
             <span class="n">helpstr</span> <span class="o">+=</span> <span class="n">opthelpstr</span>
 
-        <span class="k">return</span> <span class="n">helpstr</span>
-</div>
-<div class="viewcode-block" id="Process.get_output_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">helpstr</span></div>
+
+<div class="viewcode-block" id="Process.get_output_help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_output_help">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rst_formating</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate description for process output parameters.</span>
 
 <span class="sd">        Parameters</span>
@@ -814,33 +813,33 @@
 <span class="sd">        helpstr: str</span>
 <span class="sd">            the trait output help descriptions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Generate an output section</span>
-        <span class="n">helpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Outputs&quot;</span><span class="p">,</span> <span class="s">&quot;~&quot;</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">]</span>
+        <span class="c1"># Generate an output section</span>
+        <span class="n">helpstr</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Outputs&quot;</span><span class="p">,</span> <span class="s2">&quot;~&quot;</span> <span class="o">*</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># Get all the process output traits</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c1"># Get all the process output traits</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c"># If we have no output trait, return no string description</span>
+        <span class="c1"># If we have no output trait, return no string description</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">items</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="s">&quot;&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
 
-        <span class="c"># If we have some outputs, get the corresponding string</span>
-        <span class="c"># descriptions</span>
+        <span class="c1"># If we have some outputs, get the corresponding string</span>
+        <span class="c1"># descriptions</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">get_trait_desc</span><span class="p">(</span><span class="n">trait_name</span><span class="p">,</span> <span class="n">trait</span><span class="p">))</span>
 
-        <span class="c"># If we want to format the output nicely (rst)</span>
+        <span class="c1"># If we want to format the output nicely (rst)</span>
         <span class="k">if</span> <span class="n">data</span> <span class="o">!=</span> <span class="p">[]:</span>
             <span class="k">if</span> <span class="n">rst_formating</span><span class="p">:</span>
                 <span class="n">helpstr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rst_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="c"># Otherwise</span>
+            <span class="c1"># Otherwise</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">helpstr</span> <span class="o">+=</span> <span class="nb">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">helpstr</span> <span class="o">+=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">helpstr</span>
-</div>
+        <span class="k">return</span> <span class="n">helpstr</span></div>
+
 <div class="viewcode-block" id="Process.set_parameter"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.set_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to set a process instance trait value.</span>
 
@@ -854,15 +853,15 @@
 <span class="sd">        value: object (mandatory)</span>
 <span class="sd">            the trait value we want to set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Detect File and Directory trait types with None value</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">is_trait_pathname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">name</span><span class="p">)):</span>
+        <span class="c1"># Detect File and Directory trait types with None value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_trait_pathname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">name</span><span class="p">)):</span>
 
-            <span class="c"># The None trait value is _Undefined, do the replacement</span>
+            <span class="c1"># The None trait value is _Undefined, do the replacement</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">_Undefined</span><span class="p">()</span>
 
-        <span class="c"># Set the new trait value</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-</div>
+        <span class="c1"># Set the new trait value</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Process.get_parameter"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process.get_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to access the value of a process instance.</span>
 
@@ -876,13 +875,13 @@
 <span class="sd">        value: object</span>
 <span class="sd">            the trait value we want to access</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-</div>
-    <span class="n">run</span> <span class="o">=</span> <span class="n">LateBindingProperty</span><span class="p">(</span>
-        <span class="n">_run_process</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
-        <span class="s">&quot;Processing method that has to be defined in derived classes&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
-</div>
+    <span class="n">run</span> <span class="o">=</span> <span class="n">LateBindingProperty</span><span class="p">(</span>
+        <span class="n">_run_process</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;Processing method that has to be defined in derived classes&quot;</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FileCopyProcess"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess">[docs]</a><span class="k">class</span> <span class="nc">FileCopyProcess</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A specific process that copies all the input files.</span>
 
@@ -898,8 +897,8 @@
 <span class="sd">    _get_process_arguments</span>
 <span class="sd">    _copy_input_files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="FileCopyProcess.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate_copy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inputs_to_copy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">inputs_to_clean</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FileCopyProcess.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">activate_copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inputs_to_copy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">inputs_to_clean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the FileCopyProcess class.</span>
 
 <span class="sd">        Parameters</span>
@@ -917,48 +916,48 @@
 <span class="sd">            If None, files are copied in a &#39;_workspace&#39; folder included in the</span>
 <span class="sd">            image folder.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Inheritance</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="c1"># Inheritance</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-        <span class="c"># Class parameters</span>
+        <span class="c1"># Class parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activate_copy</span> <span class="o">=</span> <span class="n">activate_copy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">=</span> <span class="n">destination</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_copy</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs_to_clean</span> <span class="o">=</span> <span class="n">inputs_to_clean</span> <span class="ow">or</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">inputs_to_copy</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs_to_copy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">inputs_to_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">inputs_to_copy</span> <span class="o">=</span> <span class="n">inputs_to_copy</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span> <span class="o">=</span> <span class="bp">None</span>
-</div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 <div class="viewcode-block" id="FileCopyProcess.__call__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to execute the FileCopyProcess.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># The copy option is activated</span>
+        <span class="c1"># The copy option is activated</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">activate_copy</span><span class="p">:</span>
 
-            <span class="c"># Set the process inputs</span>
+            <span class="c1"># Set the process inputs</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-            <span class="c"># Copy the desired items</span>
+            <span class="c1"># Copy the desired items</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_input_traits</span><span class="p">()</span>
 
-            <span class="c"># Inheritance</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span>
+            <span class="c1"># Inheritance</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span><span class="p">)</span>
 
-            <span class="c"># Clean the workspace</span>
+            <span class="c1"># Clean the workspace</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_clean_workspace</span><span class="p">()</span>
 
             <span class="k">return</span> <span class="n">result</span>
 
-        <span class="c"># Transparent class, call the Process class method</span>
+        <span class="c1"># Transparent class, call the Process class method</span>
         <span class="k">else</span><span class="p">:</span>
 
-            <span class="c"># Inheritance</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
+            <span class="c1"># Inheritance</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_clean_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Removed som copied inputs that can be deleted at the end of the</span>
 <span class="sd">        processing.</span>
@@ -975,26 +974,26 @@
 <span class="sd">        python_object: object</span>
 <span class="sd">            a generic python object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Deal with dictionary</span>
+        <span class="c1"># Deal with dictionary</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">python_object</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rm_files</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-        <span class="c"># Deal with tuple and list</span>
+        <span class="c1"># Deal with tuple and list</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">python_object</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rm_files</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-        <span class="c"># Otherwise start the deletion if the object is a file</span>
+        <span class="c1"># Otherwise start the deletion if the object is a file</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span> <span class="ow">and</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">python_object</span><span class="p">)):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">python_object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_input_traits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Update the process input traits: input files are copied.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Get the new trait values</span>
+        <span class="c1"># Get the new trait values</span>
         <span class="n">input_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_process_arguments</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copied_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_input_files</span><span class="p">(</span><span class="n">input_parameters</span><span class="p">)</span>
 
@@ -1011,18 +1010,18 @@
 <span class="sd">        out: object</span>
 <span class="sd">            the copied-file input object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Deal with dictionary</span>
-        <span class="c"># Create an output dict that will contain the copied file locations</span>
-        <span class="c"># and the other values</span>
+        <span class="c1"># Deal with dictionary</span>
+        <span class="c1"># Create an output dict that will contain the copied file locations</span>
+        <span class="c1"># and the other values</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">python_object</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Undefined</span><span class="p">:</span>
                     <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_input_files</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-        <span class="c"># Deal with tuple and list</span>
-        <span class="c"># Create an output list or tuple that will contain the copied file</span>
-        <span class="c"># locations and the other values</span>
+        <span class="c1"># Deal with tuple and list</span>
+        <span class="c1"># Create an output list or tuple that will contain the copied file</span>
+        <span class="c1"># locations and the other values</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">python_object</span><span class="p">:</span>
@@ -1031,16 +1030,16 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                 <span class="n">out</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 
-        <span class="c"># Otherwise start the copy (with metadata cp -p) if the object is</span>
-        <span class="c"># a file</span>
+        <span class="c1"># Otherwise start the copy (with metadata cp -p) if the object is</span>
+        <span class="c1"># a file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">python_object</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">python_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Undefined</span> <span class="ow">and</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">python_object</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span> <span class="ow">and</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">python_object</span><span class="p">)):</span>
                 <span class="n">srcdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">python_object</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                    <span class="n">destdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">srcdir</span><span class="p">,</span> <span class="s">&quot;_workspace&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">destdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">srcdir</span><span class="p">,</span> <span class="s2">&quot;_workspace&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">destdir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">destination</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">destdir</span><span class="p">):</span>
@@ -1062,32 +1061,32 @@
 <span class="sd">        input_parameters: dict</span>
 <span class="sd">            the process input parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Store for input parameters</span>
+        <span class="c1"># Store for input parameters</span>
         <span class="n">input_parameters</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c"># Go through all the user traits</span>
+        <span class="c1"># Go through all the user traits</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
 
-            <span class="c"># Check if the target parameter is in the check list</span>
+            <span class="c1"># Check if the target parameter is in the check list</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_to_copy</span><span class="p">:</span>
 
-                <span class="c"># Get the trait value</span>
+                <span class="c1"># Get the trait value</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-                <span class="c"># Split input and output traits</span>
-                <span class="n">is_input</span> <span class="o">=</span> <span class="bp">True</span>
-                <span class="k">if</span> <span class="s">&quot;output&quot;</span> <span class="ow">in</span> <span class="n">trait</span><span class="o">.</span><span class="n">__dict__</span> <span class="ow">and</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
-                    <span class="n">is_input</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="c1"># Split input and output traits</span>
+                <span class="n">is_input</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="s2">&quot;output&quot;</span> <span class="ow">in</span> <span class="n">trait</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">and</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                    <span class="n">is_input</span> <span class="o">=</span> <span class="kc">False</span>
 
-                <span class="c"># Skip undefined trait attributes and outputs</span>
+                <span class="c1"># Skip undefined trait attributes and outputs</span>
                 <span class="k">if</span> <span class="n">is_input</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Undefined</span><span class="p">:</span>
 
-                    <span class="c"># Store the input parameter</span>
+                    <span class="c1"># Store the input parameter</span>
                     <span class="n">input_parameters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-        <span class="k">return</span> <span class="n">input_parameters</span>
+        <span class="k">return</span> <span class="n">input_parameters</span></div>
 
-</div>
+
 <div class="viewcode-block" id="NipypeProcess"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess">[docs]</a><span class="k">class</span> <span class="nc">NipypeProcess</span><span class="p">(</span><span class="n">FileCopyProcess</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Base class used to wrap nipype interfaces.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1115,49 +1114,49 @@
 <span class="sd">        _nipype_interface_name : str</span>
 <span class="sd">            private attribute to store the nipye interface name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Set some class attributes that characterize the nipype interface</span>
+        <span class="c1"># Set some class attributes that characterize the nipype interface</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span> <span class="o">=</span> <span class="n">nipype_instance</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span> <span class="o">=</span> <span class="n">nipype_instance</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__module__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_class</span> <span class="o">=</span> <span class="n">nipype_instance</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span> <span class="o">=</span> <span class="n">nipype_instance</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_class</span> <span class="o">=</span> <span class="n">nipype_instance</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
 
-        <span class="c"># Inheritance: activate input files copy for spm interfaces.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s">&quot;spm&quot;</span><span class="p">:</span>
-            <span class="c"># Copy only &#39;copyfile&#39; nipype traits</span>
+        <span class="c1"># Inheritance: activate input files copy for spm interfaces.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s2">&quot;spm&quot;</span><span class="p">:</span>
+            <span class="c1"># Copy only &#39;copyfile&#39; nipype traits</span>
             <span class="n">inputs_to_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">traits</span><span class="p">(</span>
-                <span class="n">copyfile</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
-                <span class="n">activate_copy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inputs_to_copy</span><span class="o">=</span><span class="n">inputs_to_copy</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                <span class="n">copyfile</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">activate_copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inputs_to_copy</span><span class="o">=</span><span class="n">inputs_to_copy</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
-                <span class="n">activate_copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">activate_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c"># Replace the process name and identification attributes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_class</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="c1"># Replace the process name and identification attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_nipype_module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_class</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
-        <span class="c"># Set the nipype and nipype interface versions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">!=</span> <span class="s">&quot;spm&quot;</span><span class="p">:</span>
+        <span class="c1"># Set the nipype and nipype interface versions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">!=</span> <span class="s2">&quot;spm&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-                <span class="s">&quot;nipype&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s">&quot;nipype&quot;</span><span class="p">),</span>
+                <span class="s2">&quot;nipype&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s2">&quot;nipype&quot;</span><span class="p">),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">version</span>
             <span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">nipype.interfaces.spm</span> <span class="kn">import</span> <span class="n">SPMCommand</span>
-            <span class="kn">from</span> <span class="nn">nipype.interfaces.matlab</span> <span class="kn">import</span> <span class="n">MatlabCommand</span>
+            <span class="kn">from</span> <span class="nn">nipype.interfaces.spm</span> <span class="k">import</span> <span class="n">SPMCommand</span>
+            <span class="kn">from</span> <span class="nn">nipype.interfaces.matlab</span> <span class="k">import</span> <span class="n">MatlabCommand</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">versions</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
-                <span class="s">&quot;nipype&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s">&quot;nipype&quot;</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span><span class="p">:</span> <span class="s">&quot;{0}-{1}|{2}-{3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;nipype&quot;</span><span class="p">:</span> <span class="n">get_tool_version</span><span class="p">(</span><span class="s2">&quot;nipype&quot;</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">-</span><span class="si">{1}</span><span class="s2">|</span><span class="si">{2}</span><span class="s2">-</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">SPMCommand</span><span class="o">.</span><span class="n">_matlab_cmd</span><span class="p">,</span> <span class="n">MatlabCommand</span><span class="o">.</span><span class="n">_default_paths</span><span class="p">,</span>
                     <span class="n">SPMCommand</span><span class="o">.</span><span class="n">_paths</span><span class="p">,</span> <span class="n">SPMCommand</span><span class="o">.</span><span class="n">_use_mcr</span><span class="p">)</span>
             <span class="p">})</span>
 
-        <span class="c"># Add a new trait to store the processing output directory</span>
+        <span class="c1"># Add a new trait to store the processing output directory</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Process</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span>
-            <span class="s">&quot;output_directory&quot;</span><span class="p">,</span> <span class="n">Directory</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                          <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
-</div>
+            <span class="s2">&quot;output_directory&quot;</span><span class="p">,</span> <span class="n">Directory</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span> <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">optional</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="NipypeProcess.__call__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess.__call__">[docs]</a>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to execute the NipypeProcess.</span>
 
@@ -1185,28 +1184,28 @@
 <span class="sd">        results:  ProcessResult object</span>
 <span class="sd">            contains all execution information</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Set the interface output directory just before the execution</span>
+        <span class="c1"># Set the interface output directory just before the execution</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span>
 
-        <span class="c"># Inheritance</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s">&quot;spm&quot;</span><span class="p">:</span>
-            <span class="c"># Set the spm working</span>
+        <span class="c1"># Inheritance</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s2">&quot;spm&quot;</span><span class="p">:</span>
+            <span class="c1"># Set the spm working</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span>
-            <span class="c"># Clean the working folder</span>
+            <span class="c1"># Clean the working folder</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">):</span>
                 <span class="n">items_in_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items_in_folder</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Found items &#39;{0}&#39;, exec auto-clean for spm &quot;</span>
-                                <span class="s">&quot;process.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items_in_folder</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found items &#39;</span><span class="si">{0}</span><span class="s2">&#39;, exec auto-clean for spm &quot;</span>
+                                <span class="s2">&quot;process.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">items_in_folder</span><span class="p">))</span>
                     <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="c"># Do nothing specific</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Do nothing specific</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">NipypeProcess</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c"># For spm, need to move the batch</span>
-        <span class="c"># (create in cwd: cf nipype.interfaces.matlab.matlab l.181)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s">&quot;spm&quot;</span><span class="p">:</span>
+        <span class="c1"># For spm, need to move the batch</span>
+        <span class="c1"># (create in cwd: cf nipype.interfaces.matlab.matlab l.181)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface_name</span> <span class="o">==</span> <span class="s2">&quot;spm&quot;</span><span class="p">:</span>
             <span class="n">mfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">script_file</span><span class="p">)</span>
@@ -1216,23 +1215,23 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">mfile</span><span class="p">):</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">mfile</span><span class="p">,</span> <span class="n">destmfile</span><span class="p">)</span>
 
-        <span class="c"># Set additional information in the execution report</span>
+        <span class="c1"># Set additional information in the execution report</span>
         <span class="n">returncode</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">returncode</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="p">,</span> <span class="s">&quot;cmd_line&quot;</span><span class="p">):</span>
-            <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s">&quot;cmd_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">cmdline</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s">&quot;stderr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">stderr</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s">&quot;stdout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">stdout</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s">&quot;cwd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span>
-        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s">&quot;returncode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">returncode</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="p">,</span> <span class="s2">&quot;cmd_line&quot;</span><span class="p">):</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;cmd_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">cmdline</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;stderr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">stderr</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;stdout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">stdout</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;cwd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">cwd</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">runtime</span><span class="p">[</span><span class="s2">&quot;returncode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">returncode</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">returncode</span>
 
-        <span class="c"># Set the nipype outputs to the execution report</span>
+        <span class="c1"># Set the nipype outputs to the execution report</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-            <span class="p">(</span><span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">_list_outputs</span><span class="p">()[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+            <span class="p">(</span><span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">_list_outputs</span><span class="p">()[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">returncode</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
         <span class="n">results</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span>
 
-        <span class="k">return</span> <span class="n">results</span>
-</div>
+        <span class="k">return</span> <span class="n">results</span></div>
+
 <div class="viewcode-block" id="NipypeProcess.set_output_directory"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess.set_output_directory">[docs]</a>    <span class="k">def</span> <span class="nf">set_output_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the process output directory.</span>
 
@@ -1242,8 +1241,8 @@
 <span class="sd">            the output directory</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="n">out_dir</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="n">out_dir</span>
-</div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="n">out_dir</span></div>
+
 <div class="viewcode-block" id="NipypeProcess._run_process"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess._run_process">[docs]</a>    <span class="k">def</span> <span class="nf">_run_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method that do the processings when the instance is called.</span>
 
@@ -1252,10 +1251,10 @@
 <span class="sd">        runtime: InterfaceResult</span>
 <span class="sd">            object containing the running results</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nipype_interface</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
+
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="NipypeProcess.help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">nipype_interface</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="NipypeProcess.help"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess.help">[docs]</a>    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">nipype_interface</span><span class="p">,</span> <span class="n">returnhelp</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to print the full wraped nipype interface help.</span>
 
 <span class="sd">        Parameters</span>
@@ -1268,13 +1267,13 @@
 <span class="sd">            if True return the help string message,</span>
 <span class="sd">            otherwise display it on the console.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.nipype_process</span> <span class="kn">import</span> <span class="n">nipype_factory</span>
+        <span class="kn">from</span> <span class="nn">.nipype_process</span> <span class="k">import</span> <span class="n">nipype_factory</span>
         <span class="n">cls_instance</span> <span class="o">=</span> <span class="n">nipype_factory</span><span class="p">(</span><span class="n">nipype_interface</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cls_instance</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span>
-</div>
-    <span class="n">run</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_run_process</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls_instance</span><span class="o">.</span><span class="n">get_help</span><span class="p">(</span><span class="n">returnhelp</span><span class="p">)</span></div>
 
-</div>
+    <span class="n">run</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_run_process</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="ProcessResult"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.ProcessResult.html#capsul.process.process.ProcessResult">[docs]</a><span class="k">class</span> <span class="nc">ProcessResult</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Object that contains running information a particular Process.</span>
 
@@ -1292,8 +1291,8 @@
 <span class="sd">        Representation of the process outputs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ProcessResult.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.ProcessResult.html#capsul.process.process.ProcessResult.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">runtime</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">outputs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ProcessResult.__init__"><a class="viewcode-back" href="../../../api_tree/generated/capsul-process/capsul.process.process.ProcessResult.html#capsul.process.process.ProcessResult.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process</span><span class="p">,</span> <span class="n">runtime</span><span class="p">,</span> <span class="n">returncode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the ProcessResult class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">process</span>
@@ -1313,7 +1312,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

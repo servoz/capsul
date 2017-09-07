@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,17 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../../index.html" />
-    <link rel="up" title="capsul.qt_gui.widgets" href="../widgets.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
   
    
        <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
@@ -55,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -95,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -120,49 +120,49 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for capsul.qt_gui.widgets.activation_inspector</h1><div class="highlight"><pre>
-<span class="c">#! /usr/bin/env python</span>
-<span class="c">##########################################################################</span>
-<span class="c"># CAPSUL - Copyright (C) CEA, 2013</span>
-<span class="c"># Distributed under the terms of the CeCILL-B license, as published by</span>
-<span class="c"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
-<span class="c"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
-<span class="c"># for details.</span>
-<span class="c">##########################################################################</span>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1">##########################################################################</span>
+<span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c1"># for details.</span>
+<span class="c1">##########################################################################</span>
 
-<span class="c"># System import</span>
+<span class="c1"># System import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 
-<span class="c"># Define the logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="c1"># Define the logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="c"># Soma import</span>
-<span class="kn">from</span> <span class="nn">soma.qt_gui</span> <span class="kn">import</span> <span class="n">qt_backend</span>
-<span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="kn">import</span> <span class="n">QtGui</span>
-<span class="kn">from</span> <span class="nn">soma.qt_gui.controller_widget</span> <span class="kn">import</span> <span class="n">ScrollControllerWidget</span>
+<span class="c1"># Soma import</span>
+<span class="kn">from</span> <span class="nn">soma.qt_gui</span> <span class="k">import</span> <span class="n">qt_backend</span>
+<span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="k">import</span> <span class="n">QtGui</span>
+<span class="kn">from</span> <span class="nn">soma.qt_gui.controller_widget</span> <span class="k">import</span> <span class="n">ScrollControllerWidget</span>
 
-<span class="c"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">capsul.qt_apps.utils.application</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">import</span> <span class="nn">capsul.qt_apps.resources</span> <span class="kn">as</span> <span class="nn">resources</span>
-<span class="kn">from</span> <span class="nn">capsul.process</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
-<span class="kn">from</span> <span class="nn">capsul.qt_gui.widgets</span> <span class="kn">import</span> <span class="n">PipelineDevelopperView</span>
-<span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_nodes</span> <span class="kn">import</span> <span class="n">PipelineNode</span>
+<span class="c1"># Capsul import</span>
+<span class="kn">from</span> <span class="nn">capsul.qt_apps.utils.application</span> <span class="k">import</span> <span class="n">Application</span>
+<span class="kn">import</span> <span class="nn">capsul.qt_apps.resources</span> <span class="k">as</span> <span class="nn">resources</span>
+<span class="kn">from</span> <span class="nn">capsul.process</span> <span class="k">import</span> <span class="n">get_process_instance</span>
+<span class="kn">from</span> <span class="nn">capsul.qt_gui.widgets</span> <span class="k">import</span> <span class="n">PipelineDevelopperView</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline_nodes</span> <span class="k">import</span> <span class="n">PipelineNode</span>
 
 
 <span class="k">class</span> <span class="nc">ActivationInspectorApp</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; ActiovationInspector Application.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Load some meta informations</span>
-    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_version</span>
-    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="kn">import</span> <span class="n">NAME</span> <span class="k">as</span> <span class="n">_application_name</span>
-    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="kn">import</span> <span class="n">ORGANISATION</span> <span class="k">as</span> <span class="n">_organisation_name</span>
+    <span class="c1"># Load some meta informations</span>
+    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="k">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">_version</span>
+    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="k">import</span> <span class="n">NAME</span> <span class="k">as</span> <span class="n">_application_name</span>
+    <span class="kn">from</span> <span class="nn">capsul.info</span> <span class="k">import</span> <span class="n">ORGANISATION</span> <span class="k">as</span> <span class="n">_organisation_name</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_path</span><span class="p">,</span> <span class="n">record_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_path</span><span class="p">,</span> <span class="n">record_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to initialize the ActivationInspectorApp class.</span>
 
 <span class="sd">        Parameters</span>
@@ -172,33 +172,33 @@
 <span class="sd">        record_file: str (optional)</span>
 <span class="sd">            a file where the pipeline activation steps are stored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Inhetritance</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ActivationInspectorApp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Inhetritance</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ActivationInspectorApp</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c"># Load the pipeline</span>
+        <span class="c1"># Load the pipeline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="n">pipeline_path</span><span class="p">)</span>
 
-        <span class="c"># Initialize the application</span>
+        <span class="c1"># Initialize the application</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">record_file</span> <span class="o">=</span> <span class="n">record_file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_window</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">init_window</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to initialize the main window.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># First set some meta informations</span>
+        <span class="c1"># First set some meta informations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setApplicationName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_application_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setOrganizationName</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_organisation_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setApplicationVersion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span>
 
-        <span class="c"># Get the user interface description from capsul resources</span>
+        <span class="c1"># Get the user interface description from capsul resources</span>
         <span class="n">ui_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&quot;activation_inspector.ui&quot;</span><span class="p">)</span>
-        <span class="c">#ui_file = os.path.join(resources.__path__[0], &quot;activation_inspector.ui&quot;)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;activation_inspector.ui&quot;</span><span class="p">)</span>
+        <span class="c1">#ui_file = os.path.join(resources.__path__[0], &quot;activation_inspector.ui&quot;)</span>
 
-        <span class="c"># Create and show the activation/pipeline/controller windows</span>
+        <span class="c1"># Create and show the activation/pipeline/controller windows</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_window</span> <span class="o">=</span> <span class="n">PipelineDevelopperView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">controller_window</span> <span class="o">=</span> <span class="n">ScrollControllerWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span><span class="n">live</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller_window</span> <span class="o">=</span> <span class="n">ScrollControllerWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span><span class="n">live</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">activation_window</span> <span class="o">=</span> <span class="n">ActivationInspector</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">ui_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">,</span>
             <span class="n">developper_view</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pipeline_window</span><span class="p">)</span>
@@ -206,13 +206,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">activation_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">controller_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ActivationInspector"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector">[docs]</a><span class="k">class</span> <span class="nc">ActivationInspector</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A Widget to display the pipeline activation process step by step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ActivationInspector.__init__"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">record_file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">developper_view</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ActivationInspector.__init__"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">ui_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">record_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">developper_view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the ActivationInspector class.</span>
 
 <span class="sd">        Parameters</span>
@@ -229,28 +229,28 @@
 <span class="sd">            if specified it is possible to click on a plug to set a filter</span>
 <span class="sd">            pattern and to update the pipeline activation accordingly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Inheritance: create the application</span>
-        <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="c1"># Inheritance: create the application</span>
+        <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 
-        <span class="c"># load the user interface window</span>
-        <span class="k">if</span> <span class="n">ui_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="c1"># load the user interface window</span>
+        <span class="k">if</span> <span class="n">ui_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ui_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&quot;activation_inspector.ui&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;activation_inspector.ui&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span> <span class="o">=</span> <span class="n">qt_backend</span><span class="o">.</span><span class="n">loadUi</span><span class="p">(</span><span class="n">ui_file</span><span class="p">)</span>
 
-        <span class="c"># Define dynamic controls</span>
+        <span class="c1"># Define dynamic controls</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">controls</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">QtGui</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;events&quot;</span><span class="p">],</span>
-            <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;btnUpdate&quot;</span><span class="p">,</span> <span class="s">&quot;next&quot;</span><span class="p">,</span> <span class="s">&quot;previous&quot;</span><span class="p">],</span>
-            <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;pattern&quot;</span><span class="p">]</span>
+            <span class="n">QtGui</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">],</span>
+            <span class="n">QtGui</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;btnUpdate&quot;</span><span class="p">,</span> <span class="s2">&quot;next&quot;</span><span class="p">,</span> <span class="s2">&quot;previous&quot;</span><span class="p">],</span>
+            <span class="n">QtGui</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;pattern&quot;</span><span class="p">]</span>
         <span class="p">}</span>
 
-        <span class="k">if</span> <span class="n">record_file</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">record_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">record_file_s</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">()</span>
             <span class="n">record_file</span> <span class="o">=</span> <span class="n">record_file_s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">record_file_s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">print</span> <span class="s">&#39;temporary record file:&#39;</span><span class="p">,</span> <span class="n">record_file</span>
+            <span class="nb">print</span> <span class="s1">&#39;temporary record file:&#39;</span><span class="p">,</span> <span class="n">record_file</span>
             <span class="k">class</span> <span class="nc">AutoDeleteFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
                 <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_file</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">record_file</span> <span class="o">=</span> <span class="n">record_file</span>
@@ -261,30 +261,30 @@
                         <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_autodelete_record_file</span> <span class="o">=</span> <span class="n">AutoDeleteFile</span><span class="p">(</span><span class="n">record_file</span><span class="p">)</span>
 
-        <span class="c"># Add ui class parameter with the dynamic controls and initialize</span>
-        <span class="c"># default values</span>
+        <span class="c1"># Add ui class parameter with the dynamic controls and initialize</span>
+        <span class="c1"># default values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_controls_to_ui</span><span class="p">()</span>
 
-        <span class="c"># Store class parameters</span>
+        <span class="c1"># Store class parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">pipeline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">record_file</span> <span class="o">=</span> <span class="n">record_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">developper_view</span> <span class="o">=</span> <span class="n">developper_view</span>
 
-        <span class="c"># Set the pipeline record file if folder exists</span>
+        <span class="c1"># Set the pipeline record file if folder exists</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">_debug_activations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">record_file</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s">&quot;The record file &#39;{0}&#39; can&#39;t be created since the &quot;</span>
-                <span class="s">&quot;base directory does not exists.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">))</span>
+                <span class="s2">&quot;The record file &#39;</span><span class="si">{0}</span><span class="s2">&#39; can&#39;t be created since the &quot;</span>
+                <span class="s2">&quot;base directory does not exists.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">))</span>
 
-        <span class="c"># Execute the pipeline activation method</span>
+        <span class="c1"># Execute the pipeline activation method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">update_nodes_and_plugs_activation</span><span class="p">()</span>
 
-        <span class="c"># Refresh the pipeline activation displayed list</span>
+        <span class="c1"># Refresh the pipeline activation displayed list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh_activation_from_record</span><span class="p">()</span>
 
-        <span class="c"># Signals for window interface</span>
+        <span class="c1"># Signals for window interface</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">currentRowChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_pipeline_activation</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">btnUpdate</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
@@ -292,116 +292,116 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">next</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_next</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">previous</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_previous</span><span class="p">)</span>
 
-        <span class="c"># Dynamically select a filter rule by clicking on the pipeline view</span>
-        <span class="c"># plugs</span>
-        <span class="k">if</span> <span class="n">developper_view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-          <span class="n">developper_view</span><span class="o">.</span><span class="n">plug_clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_filter_pattern</span><span class="p">)</span>
-</div>
+        <span class="c1"># Dynamically select a filter rule by clicking on the pipeline view</span>
+        <span class="c1"># plugs</span>
+        <span class="k">if</span> <span class="n">developper_view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+          <span class="n">developper_view</span><span class="o">.</span><span class="n">plug_clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_filter_pattern</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ActivationInspector.show"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Shows the widget and its child widgets.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="ActivationInspector.add_controls_to_ui"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.add_controls_to_ui">[docs]</a>    <span class="k">def</span> <span class="nf">add_controls_to_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to find dynamic controls</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Error message template</span>
-        <span class="n">error_message</span> <span class="o">=</span> <span class="s">&quot;{0} has no attribute &#39;{1}&#39;&quot;</span>
+        <span class="c1"># Error message template</span>
+        <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> has no attribute &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
 
-        <span class="c"># Got through the class dynamic controls</span>
+        <span class="c1"># Got through the class dynamic controls</span>
         <span class="k">for</span> <span class="n">control_type</span><span class="p">,</span> <span class="n">control_item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">controls</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
 
-            <span class="c"># Get the dynamic control name</span>
+            <span class="c1"># Get the dynamic control name</span>
             <span class="k">for</span> <span class="n">control_name</span> <span class="ow">in</span> <span class="n">control_item</span><span class="p">:</span>
 
-                <span class="c"># Try to set the control value to the ui class parameter</span>
+                <span class="c1"># Try to set the control value to the ui class parameter</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">findChild</span><span class="p">(</span><span class="n">control_type</span><span class="p">,</span> <span class="n">control_name</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">),</span> <span class="n">control_name</span><span class="p">))</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">,</span> <span class="n">control_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">),</span> <span class="n">control_name</span><span class="p">))</span>
+                        <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="p">),</span> <span class="n">control_name</span><span class="p">))</span></div>
 
-    <span class="c">###########################################################################</span>
-    <span class="c"># Slots   </span>
-    <span class="c">###########################################################################</span>
-</div>
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Slots   </span>
+    <span class="c1">###########################################################################</span>
+
 <div class="viewcode-block" id="ActivationInspector.refresh_activation_from_record"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.refresh_activation_from_record">[docs]</a>    <span class="k">def</span> <span class="nf">refresh_activation_from_record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method to display pipeline activation steps from the recorded file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Open the last recorded activation file</span>
+        <span class="c1"># Open the last recorded activation file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">openrecord</span><span class="p">:</span>
 
-            <span class="c"># Get the header of the file that contains the pipeline identifier</span>
-            <span class="c"># of the recorded activation</span>
+            <span class="c1"># Get the header of the file that contains the pipeline identifier</span>
+            <span class="c1"># of the recorded activation</span>
             <span class="n">record_pipeline_id</span> <span class="o">=</span> <span class="n">openrecord</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">record_pipeline_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s">&quot;&#39;{0}&#39; recorded activations for pipeline &#39;{1}&#39; but not for &quot;</span>
-                    <span class="s">&quot;&#39;{2}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">,</span> <span class="n">record_pipeline_id</span><span class="p">,</span> 
+                    <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; recorded activations for pipeline &#39;</span><span class="si">{1}</span><span class="s2">&#39; but not for &quot;</span>
+                    <span class="s2">&quot;&#39;</span><span class="si">{2}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record_file</span><span class="p">,</span> <span class="n">record_pipeline_id</span><span class="p">,</span> 
                                    <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
 
-            <span class="c"># Clear the list where the recorded activation is displayed</span>
+            <span class="c1"># Clear the list where the recorded activation is displayed</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-            <span class="c"># Parse the recorded activation file</span>
+            <span class="c1"># Parse the recorded activation file</span>
 
-            <span class="c"># &gt; Store the activation stack step by step to dynamically replay</span>
-            <span class="c"># the activation</span>
+            <span class="c1"># &gt; Store the activation stack step by step to dynamically replay</span>
+            <span class="c1"># the activation</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">current_activations</span> <span class="o">=</span> <span class="p">{}</span>
 
-            <span class="c"># &gt; Go through all the activation steps</span>
-            <span class="n">parser</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;(\d+)([+-=])([^:]*)(:([a-zA-Z_0-9]+))?&quot;</span><span class="p">)</span>
+            <span class="c1"># &gt; Go through all the activation steps</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)([+-=])([^:]*)(:([a-zA-Z_0-9]+))?&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">activation_step</span> <span class="ow">in</span> <span class="n">openrecord</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
 
-                <span class="c"># &gt; Parse the line</span>
+                <span class="c1"># &gt; Parse the line</span>
                 <span class="n">iteration</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">plug</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
                     <span class="n">activation_step</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
-                <span class="n">plug</span> <span class="o">=</span> <span class="n">plug</span> <span class="ow">or</span> <span class="s">&quot;&quot;</span>
+                <span class="n">plug</span> <span class="o">=</span> <span class="n">plug</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
 
-                <span class="c"># &gt; Store the current activation stack</span>
-                <span class="k">if</span> <span class="n">activation</span> <span class="o">==</span> <span class="s">&quot;+&quot;</span><span class="p">:</span>
-                    <span class="n">current_activations</span><span class="p">[</span><span class="s">&quot;{0}:{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="c1"># &gt; Store the current activation stack</span>
+                <span class="k">if</span> <span class="n">activation</span> <span class="o">==</span> <span class="s2">&quot;+&quot;</span><span class="p">:</span>
+                    <span class="n">current_activations</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="n">current_activations</span><span class="p">[</span><span class="s">&quot;{0}:{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">)]</span>
+                    <span class="k">del</span> <span class="n">current_activations</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">)]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_activations</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-                <span class="c"># &gt; Add a line to the activation display</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s">&quot;{0} {1}:{2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="c1"># &gt; Add a line to the activation display</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2">:</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">activation</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">))</span>
     
-            <span class="c"># Select the last activation step so the pipeline will be</span>
-            <span class="c"># in his final configuration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    </div>
+            <span class="c1"># Select the last activation step so the pipeline will be</span>
+            <span class="c1"># in his final configuration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+    
 <div class="viewcode-block" id="ActivationInspector.update_pipeline_activation"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.update_pipeline_activation">[docs]</a>    <span class="k">def</span> <span class="nf">update_pipeline_activation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method that is used to replay the activation step by step.</span>
 
 <span class="sd">        When a specific activation step is selected, the pipeline will reflect</span>
 <span class="sd">        the selected activation status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Get the activation associated to the &#39;index&#39; stack level</span>
+        <span class="c1"># Get the activation associated to the &#39;index&#39; stack level</span>
         <span class="n">activations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
-        <span class="c"># Update the pipeline activation to meet the current selection</span>
+        <span class="c1"># Update the pipeline activation to meet the current selection</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">all_nodes</span><span class="p">():</span>
 
-            <span class="c"># Restore the plugs and nodes activations</span>
+            <span class="c1"># Restore the plugs and nodes activations</span>
             <span class="n">node_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">full_name</span>
             <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="n">plug</span><span class="o">.</span><span class="n">activated</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="s">&quot;{0}:{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">),</span> <span class="bp">False</span><span class="p">)</span>
-            <span class="n">node</span><span class="o">.</span><span class="n">activated</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;{0}:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_name</span><span class="p">),</span> <span class="bp">False</span><span class="p">)</span>
+                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">activated</span> <span class="o">=</span> <span class="n">activations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_name</span><span class="p">),</span> <span class="kc">False</span><span class="p">)</span>
         
-        <span class="c"># Refresh views relying on plugs and nodes selection</span>
+        <span class="c1"># Refresh views relying on plugs and nodes selection</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">all_nodes</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">):</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">selection_changed</span> <span class="o">=</span> <span class="bp">True</span>
-</div>
+                <span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">selection_changed</span> <span class="o">=</span> <span class="kc">True</span></div>
+
 <div class="viewcode-block" id="ActivationInspector.find_next"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_next">[docs]</a>    <span class="k">def</span> <span class="nf">find_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Forward search for a pattern in the activation list.</span>
 
@@ -410,21 +410,21 @@
 <span class="sd">        is_found: int</span>
 <span class="sd">            1 if a match has been found, 0 otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Build the search pattern</span>
+        <span class="c1"># Build the search pattern</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
-        <span class="c"># Forward search</span>
-        <span class="c"># &gt; Get the next (n+1) activation row</span>
+        <span class="c1"># Forward search</span>
+        <span class="c1"># &gt; Get the next (n+1) activation row</span>
         <span class="n">next_activation_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">currentRow</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="c"># &gt; Search recursively until a match is found</span>
+        <span class="c1"># &gt; Search recursively until a match is found</span>
         <span class="k">while</span> <span class="n">next_activation_row</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">count</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">next_activation_row</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="n">next_activation_row</span><span class="p">)</span>
                 <span class="k">return</span> <span class="mi">1</span>
             <span class="n">next_activation_row</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="mi">0</span>
-        </div>
+        <span class="k">return</span> <span class="mi">0</span></div>
+        
 <div class="viewcode-block" id="ActivationInspector.find_previous"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.find_previous">[docs]</a>    <span class="k">def</span> <span class="nf">find_previous</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Backward search for a pattern in the activation list.</span>
 
@@ -433,21 +433,21 @@
 <span class="sd">        is_found: bool</span>
 <span class="sd">            True if a match has been found, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Build the search pattern</span>
+        <span class="c1"># Build the search pattern</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
-        <span class="c"># Backward search</span>
-        <span class="c"># &gt; Get the previous (n-1) activation row</span>
+        <span class="c1"># Backward search</span>
+        <span class="c1"># &gt; Get the previous (n-1) activation row</span>
         <span class="n">previous_activation_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">currentRow</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="c"># &gt; Search recursively until a match is found</span>
+        <span class="c1"># &gt; Search recursively until a match is found</span>
         <span class="k">while</span> <span class="n">previous_activation_row</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">previous_activation_row</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">setCurrentRow</span><span class="p">(</span><span class="n">previous_activation_row</span><span class="p">)</span>
                 <span class="k">return</span> <span class="mi">1</span>
             <span class="n">previous_activation_row</span> <span class="o">-=</span> <span class="mi">1</span>
 
-        <span class="k">return</span> <span class="mi">0</span>
-</div>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
 <div class="viewcode-block" id="ActivationInspector.set_filter_pattern"><a class="viewcode-back" href="../../../../gui_tree/generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector.set_filter_pattern">[docs]</a>    <span class="k">def</span> <span class="nf">set_filter_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_pattern</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Method that set a filter pattern.</span>
 
@@ -458,39 +458,41 @@
 <span class="sd">        filter_pattern: str (mandatory)</span>
 <span class="sd">            the filter pattern we want to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Display the filter pattern</span>
+        <span class="c1"># Display the filter pattern</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">filter_pattern</span><span class="p">)</span>
 
-        <span class="c"># Try to select an item corresponding to the filter pattern</span>
+        <span class="c1"># Try to select an item corresponding to the filter pattern</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_next</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">find_previous</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_previous</span><span class="p">()</span></div></div>
 
-</div></div>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot; Command example:</span>
 <span class="sd">    &gt;&gt;&gt; python activation_inspector.py -p funtk.connectivity.conn.Conn </span>
 <span class="sd">        -r ~/tmp/conn_activation.txt</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Create a tool we can control easily</span>
+    <span class="c1"># Create a tool we can control easily</span>
     <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+    <span class="kn">from</span> <span class="nn">optparse</span> <span class="k">import</span> <span class="n">OptionParser</span>
 
-    <span class="c"># Define activation inspector options</span>
+    <span class="c1"># Define activation inspector options</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">()</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-p&quot;</span><span class="p">,</span> <span class="s">&quot;--pipeline&quot;</span><span class="p">,</span>
-                      <span class="n">dest</span><span class="o">=</span><span class="s">&quot;pipeline_path&quot;</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&quot;the pipeline path we want to investigate: &quot;</span>
-                            <span class="s">&quot;module1.module2.Pipeline.&quot;</span><span class="p">))</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&quot;-r&quot;</span><span class="p">,</span> <span class="s">&quot;--record&quot;</span><span class="p">,</span>
-                      <span class="n">dest</span><span class="o">=</span><span class="s">&quot;record_file&quot;</span><span class="p">,</span>
-                      <span class="n">help</span><span class="o">=</span><span class="s">&quot;the file where the activation steps are recorded.&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--pipeline&quot;</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;pipeline_path&quot;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;the pipeline path we want to investigate: &quot;</span>
+                            <span class="s2">&quot;module1.module2.Pipeline.&quot;</span><span class="p">))</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="s2">&quot;--record&quot;</span><span class="p">,</span>
+                      <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;record_file&quot;</span><span class="p">,</span>
+                      <span class="n">help</span><span class="o">=</span><span class="s2">&quot;the file where the activation steps are recorded.&quot;</span><span class="p">)</span>
     <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c"># Start the application</span>
-    <span class="k">if</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="c1"># Start the application</span>
+    <span class="k">if</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">app</span> <span class="o">=</span> <span class="n">ActivationInspectorApp</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">pipeline_path</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">record_file</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+
+
 </pre></div>
 
           </div>
@@ -503,7 +505,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

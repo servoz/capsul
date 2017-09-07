@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,13 +123,13 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-tools-where-is-plug-value-from">
 <h1>capsul.pipeline.pipeline_tools.where_is_plug_value_from<a class="headerlink" href="#capsul-pipeline-pipeline-tools-where-is-plug-value-from" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_tools.where_is_plug_value_from">
-<tt class="descclassname">capsul.pipeline.pipeline_tools.</tt><tt class="descname">where_is_plug_value_from</tt><big>(</big><em>plug</em>, <em>recursive=True</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#where_is_plug_value_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.where_is_plug_value_from" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.pipeline.pipeline_tools.</code><code class="descname">where_is_plug_value_from</code><span class="sig-paren">(</span><em>plug</em>, <em>recursive=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#where_is_plug_value_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.where_is_plug_value_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find where the given (input) plug takes its value from.
 It has to be the output of an uphill process, or be unconnected.
 Looking for it may involve ascending through switches or pipeline walls.</p>
@@ -136,11 +137,11 @@ Looking for it may involve ascending through switches or pipeline walls.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug: Plug instance (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug: Plug instance (mandatory)</strong></p>
 <blockquote>
 <div><p>the plug to find source connection with</p>
 </div></blockquote>
-<p><strong>recursive: bool (optional)</strong> :</p>
+<p><strong>recursive: bool (optional)</strong></p>
 <blockquote>
 <div><p>if this option is set, sub-pipelines will not be returned as a whole
 but will be parsed recursively to select individual leaf nodes. Note
@@ -150,16 +151,16 @@ Default: True</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>node: Node</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">node: Node</p>
 <blockquote>
 <div><p>origin pipeline node. May be None if the plug was not connected to an
 active source.</p>
 </div></blockquote>
-<p><strong>param_name: string</strong> :</p>
+<p>param_name: string</p>
 <blockquote>
 <div><p>origin plug name in the origin node. May be None if node is None</p>
 </div></blockquote>
-<p><strong>parent: Node</strong> :</p>
+<p>parent: Node</p>
 <blockquote class="last">
 <div><p>Top-level parent node of the origin node. Useful to determine if the
 origin node is in a runtime pipeline step, which only records top-level
@@ -184,7 +185,7 @@ nodes.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

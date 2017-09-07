@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="index.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Documentation of the CAPSUL tools" href="documentation.html" />
     <link rel="prev" title="CAPSUL" href="index.html" />
   
@@ -56,7 +57,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -129,16 +130,16 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="installing-capsul">
 <span id="install-guid"></span><h1>Installing <cite>CAPSUL</cite><a class="headerlink" href="#installing-capsul" title="Permalink to this headline">¶</a></h1>
 <p>This tutorial will walk you through the process of intalling CAPSUL...</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="#install-release"><em>Install an official release</em></a>. This
+<li><a class="reference internal" href="#install-release"><span class="std std-ref">Install an official release</span></a>. This
 is the best approach for users who want a stable version.</li>
-<li><a class="reference internal" href="#install-development"><em>Install the latest development version</em></a>. This is best for users who want to contribute
+<li><a class="reference internal" href="#install-development"><span class="std std-ref">Install the latest development version</span></a>. This is best for users who want to contribute
 to the project.</li>
 </ul>
 </div></blockquote>
@@ -162,16 +163,16 @@ url = <a class="reference external" href="http://nsap.intra.cea.fr/resources/cap
 </dd>
 </dl>
 <p><strong>Install the package without the root privilege</strong></p>
-<div class="highlight-python"><div class="highlight"><pre>&gt;&gt;&gt; pip install --user --verbose $url
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; pip install --user --verbose $url
 &gt;&gt;&gt; export PATH=$PATH:$HOME/.local/bin
 </pre></div>
 </div>
 <p><strong>Install the package with the root privilege</strong></p>
-<div class="highlight-python"><div class="highlight"><pre>&gt;&gt;&gt; pip install --verbose $url
+<div class="highlight-default"><div class="highlight"><pre><span></span>&gt;&gt;&gt; pip install --verbose $url
 </pre></div>
 </div>
 <p><strong>When reinstalling locally the package first do</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">uninstall</span> <span class="n">capsul</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pip</span> <span class="n">uninstall</span> <span class="n">capsul</span>
 </pre></div>
 </div>
 </div>
@@ -188,7 +189,7 @@ url = <a class="reference external" href="http://nsap.intra.cea.fr/resources/cap
 </dd>
 </dl>
 <p><strong>Install the package with the root privilege</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="n">python</span><span class="o">-</span><span class="n">capsul_0</span><span class="o">.</span><span class="mf">0.1</span><span class="o">-</span><span class="mi">1</span><span class="n">_all</span><span class="o">.</span><span class="n">deb</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="n">python</span><span class="o">-</span><span class="n">capsul_0</span><span class="o">.</span><span class="mf">0.1</span><span class="o">-</span><span class="mi">1</span><span class="n">_all</span><span class="o">.</span><span class="n">deb</span>
 </pre></div>
 </div>
 </div>
@@ -206,7 +207,7 @@ url = <a class="reference external" href="http://nsap.intra.cea.fr/resources/cap
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

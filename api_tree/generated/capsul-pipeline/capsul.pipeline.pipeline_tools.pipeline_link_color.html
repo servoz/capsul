@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,29 +123,29 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-tools-pipeline-link-color">
 <h1>capsul.pipeline.pipeline_tools.pipeline_link_color<a class="headerlink" href="#capsul-pipeline-pipeline-tools-pipeline-link-color" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_tools.pipeline_link_color">
-<tt class="descclassname">capsul.pipeline.pipeline_tools.</tt><tt class="descname">pipeline_link_color</tt><big>(</big><em>plug</em>, <em>link</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#pipeline_link_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.pipeline_link_color" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.pipeline.pipeline_tools.</code><code class="descname">pipeline_link_color</code><span class="sig-paren">(</span><em>plug</em>, <em>link</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#pipeline_link_color"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.pipeline_link_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link color and style for graphical display and graphviz graphs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug: Plug</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug: Plug</strong></p>
 <blockquote>
 <div><p>the plug the link belong to</p>
 </div></blockquote>
-<p><strong>link: link tuple (5 values)</strong> :</p>
+<p><strong>link: link tuple (5 values)</strong></p>
 <blockquote>
 <div><p>link to color</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>link_props: tuple</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">link_props: tuple</p>
 <blockquote class="last">
 <div><p>(color, style, active, weak) where color is a RGB tuple of float values
 (between 0. and 1.), style is a string (&#8220;solid&#8221;, &#8220;dotted&#8221;), active and
@@ -169,7 +170,7 @@ weak are booleans.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,19 +123,19 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-process-process-process">
 <h1>capsul.process.process.Process<a class="headerlink" href="#capsul-process-process-process" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="capsul.process.process.Process">
-<em class="property">class </em><tt class="descclassname">capsul.process.process.</tt><tt class="descname">Process</tt><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">capsul.process.process.</code><code class="descname">Process</code><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process" title="Permalink to this definition">¶</a></dt>
 <dd><p>A process is an atomic component that contains a processing.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="32%" />
-<col width="68%" />
+<col width="22%" />
+<col width="78%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><cite>name</cite>: str</td>
@@ -144,8 +145,7 @@
 <td>the string description of the class location (ie., module.class).</td>
 </tr>
 <tr class="row-odd"><td><cite>log_file</cite>: str (default None)</td>
-<td>if None, the log will be generated in the current directory
-otherwise it will be written in log_file path.</td>
+<td>if None, the log will be generated in the current directory otherwise it will be written in log_file path.</td>
 </tr>
 </tbody>
 </table>
@@ -156,67 +156,65 @@ otherwise it will be written in log_file path.</td>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.__call__" title="capsul.process.process.Process.__call__"><tt class="xref py py-obj docutils literal"><span class="pre">__call__</span></tt></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.__call__" title="capsul.process.process.Process.__call__"><code class="xref py py-obj docutils literal"><span class="pre">__call__</span></code></a>(**kwargs)</td>
 <td>Method to execute the Process.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process._run_process" title="capsul.process.process.Process._run_process"><tt class="xref py py-obj docutils literal"><span class="pre">_run_process</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process._run_process" title="capsul.process.process.Process._run_process"><code class="xref py py-obj docutils literal"><span class="pre">_run_process</span></code></a>()</td>
 <td>Method that contains the processings.</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">_get_log</span></tt>(exec_info)</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">_get_log</span></code>(exec_info)</td>
 <td>Method that generate the logging structure from the execution information and class attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.add_trait" title="capsul.process.process.Process.add_trait"><tt class="xref py py-obj docutils literal"><span class="pre">add_trait</span></tt></a>(name,&nbsp;trait)</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.add_trait" title="capsul.process.process.Process.add_trait"><code class="xref py py-obj docutils literal"><span class="pre">add_trait</span></code></a>(name,&nbsp;trait)</td>
 <td>Ensure that trait.output and trait.optional are set to a boolean value before calling parent class add_trait.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.save_log" title="capsul.process.process.Process.save_log"><tt class="xref py py-obj docutils literal"><span class="pre">save_log</span></tt></a>(returncode)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.save_log" title="capsul.process.process.Process.save_log"><code class="xref py py-obj docutils literal"><span class="pre">save_log</span></code></a>(returncode)</td>
 <td>Method to save process execution informations in json format.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.help" title="capsul.process.process.Process.help"><tt class="xref py py-obj docutils literal"><span class="pre">help</span></tt></a>([returnhelp])</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.help" title="capsul.process.process.Process.help"><code class="xref py py-obj docutils literal"><span class="pre">help</span></code></a>([returnhelp])</td>
 <td>Method to print the full help.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_help" title="capsul.process.process.Process.get_input_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_input_help</span></tt></a>([rst_formating])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_help" title="capsul.process.process.Process.get_input_help"><code class="xref py py-obj docutils literal"><span class="pre">get_input_help</span></code></a>([rst_formating])</td>
 <td>Generate description for process input parameters.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_help" title="capsul.process.process.Process.get_output_help"><tt class="xref py py-obj docutils literal"><span class="pre">get_output_help</span></tt></a>([rst_formating])</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_help" title="capsul.process.process.Process.get_output_help"><code class="xref py py-obj docutils literal"><span class="pre">get_output_help</span></code></a>([rst_formating])</td>
 <td>Generate description for process output parameters.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_commandline" title="capsul.process.process.Process.get_commandline"><tt class="xref py py-obj docutils literal"><span class="pre">get_commandline</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_commandline" title="capsul.process.process.Process.get_commandline"><code class="xref py py-obj docutils literal"><span class="pre">get_commandline</span></code></a>()</td>
 <td>Method to generate a comandline representation of the process.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_log" title="capsul.process.process.Process.get_log"><tt class="xref py py-obj docutils literal"><span class="pre">get_log</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_log" title="capsul.process.process.Process.get_log"><code class="xref py py-obj docutils literal"><span class="pre">get_log</span></code></a>()</td>
 <td>Load the logging file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_spec" title="capsul.process.process.Process.get_input_spec"><tt class="xref py py-obj docutils literal"><span class="pre">get_input_spec</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_input_spec" title="capsul.process.process.Process.get_input_spec"><code class="xref py py-obj docutils literal"><span class="pre">get_input_spec</span></code></a>()</td>
 <td>Method to access the process input specifications.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_spec" title="capsul.process.process.Process.get_output_spec"><tt class="xref py py-obj docutils literal"><span class="pre">get_output_spec</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_output_spec" title="capsul.process.process.Process.get_output_spec"><code class="xref py py-obj docutils literal"><span class="pre">get_output_spec</span></code></a>()</td>
 <td>Method to access the process output specifications.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_inputs" title="capsul.process.process.Process.get_inputs"><tt class="xref py py-obj docutils literal"><span class="pre">get_inputs</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.get_inputs" title="capsul.process.process.Process.get_inputs"><code class="xref py py-obj docutils literal"><span class="pre">get_inputs</span></code></a>()</td>
 <td>Method to access the process inputs.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_outputs" title="capsul.process.process.Process.get_outputs"><tt class="xref py py-obj docutils literal"><span class="pre">get_outputs</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_outputs" title="capsul.process.process.Process.get_outputs"><code class="xref py py-obj docutils literal"><span class="pre">get_outputs</span></code></a>()</td>
 <td>Method to access the process outputs.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.set_parameter" title="capsul.process.process.Process.set_parameter"><tt class="xref py py-obj docutils literal"><span class="pre">set_parameter</span></tt></a>(name,&nbsp;value)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process.Process.set_parameter" title="capsul.process.process.Process.set_parameter"><code class="xref py py-obj docutils literal"><span class="pre">set_parameter</span></code></a>(name,&nbsp;value)</td>
 <td>Method to set a process instance trait value.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_parameter" title="capsul.process.process.Process.get_parameter"><tt class="xref py py-obj docutils literal"><span class="pre">get_parameter</span></tt></a>(name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process.Process.get_parameter" title="capsul.process.process.Process.get_parameter"><code class="xref py py-obj docutils literal"><span class="pre">get_parameter</span></code></a>(name)</td>
 <td>Method to access the value of a process instance.</td>
 </tr>
 </tbody>
 </table>
 <table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
-<col width="91%" />
+<col width="3%" />
+<col width="97%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td>&nbsp;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><ul class="first last simple">
-<li>Type &#8216;Process.help()&#8217; for a full description of this process parameters.</li>
-<li>Type &#8216;&lt;Process&gt;.get_input_spec()&#8217; for a full description of this process input trait types.</li>
-<li>Type &#8216;&lt;Process&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</li>
+<li>Type &#8216;Process.help()&#8217; for a full description of this process parameters. * Type &#8216;&lt;Process&gt;.get_input_spec()&#8217; for a full description of this process input trait types. * Type &#8216;&lt;Process&gt;.get_output_spec()&#8217; for a full description of this process output trait types.</li>
 </ul>
 </td>
 </tr>
@@ -224,13 +222,13 @@ otherwise it will be written in log_file path.</td>
 </table>
 <dl class="method">
 <dt id="capsul.process.process.Process.__init__">
-<tt class="descname">__init__</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the Process class.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.__call__">
-<tt class="descname">__call__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.__call__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to execute the Process.</p>
 <p>Keyword arguments may be passed to set process parameters.
 This in turn will allow calling the process like a standard
@@ -243,13 +241,13 @@ process trait name.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kwargs: dict (optional)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>kwargs: dict (optional)</strong></p>
 <blockquote>
 <div><p>should correspond to the declared parameter traits.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>results:  ProcessResult object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">results:  ProcessResult object</p>
 <blockquote class="last">
 <div><p>contains all execution information.</p>
 </div></blockquote>
@@ -261,7 +259,7 @@ process trait name.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process._run_process">
-<tt class="descname">_run_process</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process._run_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process._run_process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">_run_process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process._run_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process._run_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that contains the processings.</p>
 <p>Either this _run_process() or get_commandline() must be
 defined in derived classes.</p>
@@ -269,26 +267,26 @@ defined in derived classes.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.add_trait">
-<tt class="descname">add_trait</tt><big>(</big><em>name</em>, <em>trait</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.add_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.add_trait" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_trait</code><span class="sig-paren">(</span><em>name</em>, <em>trait</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.add_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.add_trait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensure that trait.output and trait.optional are set to a
 boolean value before calling parent class add_trait.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_commandline">
-<tt class="descname">get_commandline</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_commandline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_commandline" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_commandline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_commandline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_commandline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to generate a comandline representation of the process.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_help">
-<tt class="descname">get_help</tt><big>(</big><em>returnhelp=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_help" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_help</code><span class="sig-paren">(</span><em>returnhelp=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate description of a process parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returnhelp: bool (optional, default False)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returnhelp: bool (optional, default False)</strong></p>
 <blockquote class="last">
 <div><p>if True return the help string message formatted in rst,
 otherwise display the raw help string message on the console.</p>
@@ -301,19 +299,19 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_input_help">
-<tt class="descname">get_input_help</tt><big>(</big><em>rst_formating=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_help" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_input_help</code><span class="sig-paren">(</span><em>rst_formating=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate description for process input parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong></p>
 <blockquote>
 <div><p>if True generate a rst table witht the input descriptions.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">helpstr: str</p>
 <blockquote class="last">
 <div><p>the class input traits help</p>
 </div></blockquote>
@@ -325,13 +323,13 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_input_spec">
-<tt class="descname">get_input_spec</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_spec" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_input_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_input_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_input_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to access the process input specifications.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outputs: str</p>
 <blockquote class="last">
 <div><p>a string representation of all the input trait specifications.</p>
 </div></blockquote>
@@ -343,13 +341,13 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_inputs">
-<tt class="descname">get_inputs</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_inputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to access the process inputs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outputs: dict</p>
 <blockquote class="last">
 <div><p>a dictionary with all the input trait names and values.</p>
 </div></blockquote>
@@ -361,13 +359,13 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_log">
-<tt class="descname">get_log</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_log" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the logging file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>log: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">log: dict</p>
 <blockquote class="last">
 <div><p>the content of the log file.</p>
 </div></blockquote>
@@ -379,19 +377,19 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_output_help">
-<tt class="descname">get_output_help</tt><big>(</big><em>rst_formating=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_help" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_output_help</code><span class="sig-paren">(</span><em>rst_formating=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate description for process output parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rst_formating: bool (optional, default False)</strong></p>
 <blockquote>
 <div><p>if True generate a rst table witht the input descriptions.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>helpstr: str</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">helpstr: str</p>
 <blockquote class="last">
 <div><p>the trait output help descriptions</p>
 </div></blockquote>
@@ -403,13 +401,13 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_output_spec">
-<tt class="descname">get_output_spec</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_spec" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_output_spec</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_output_spec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_output_spec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to access the process output specifications.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: str</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outputs: str</p>
 <blockquote class="last">
 <div><p>a string representation of all the output trait specifications.</p>
 </div></blockquote>
@@ -421,13 +419,13 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_outputs">
-<tt class="descname">get_outputs</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_outputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_outputs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_outputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_outputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to access the process outputs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>outputs: dict</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">outputs: dict</p>
 <blockquote class="last">
 <div><p>a dictionary with all the output trait names and values.</p>
 </div></blockquote>
@@ -439,19 +437,19 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.get_parameter">
-<tt class="descname">get_parameter</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_parameter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_parameter</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.get_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.get_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to access the value of a process instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>value: object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">value: object</p>
 <blockquote class="last">
 <div><p>the trait value we want to access</p>
 </div></blockquote>
@@ -463,17 +461,17 @@ otherwise display the raw help string message on the console.</p>
 
 <dl class="classmethod">
 <dt id="capsul.process.process.Process.help">
-<em class="property">classmethod </em><tt class="descname">help</tt><big>(</big><em>returnhelp=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.help" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">help</code><span class="sig-paren">(</span><em>returnhelp=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.help" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to print the full help.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cls: process class (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>cls: process class (mandatory)</strong></p>
 <blockquote>
 <div><p>a process class</p>
 </div></blockquote>
-<p><strong>returnhelp: bool (optional, default False)</strong> :</p>
+<p><strong>returnhelp: bool (optional, default False)</strong></p>
 <blockquote class="last">
 <div><p>if True return the help string message,
 otherwise display it on the console.</p>
@@ -486,18 +484,18 @@ otherwise display it on the console.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.make_commandline_argument">
-<tt class="descname">make_commandline_argument</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.make_commandline_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.make_commandline_argument" title="Permalink to this definition">¶</a></dt>
+<code class="descname">make_commandline_argument</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.make_commandline_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.make_commandline_argument" title="Permalink to this definition">¶</a></dt>
 <dd><p>This helper function may be used to build non-trivial commandline
 arguments in get_commandline implementations.
 Basically it concatenates arguments, but it also takes care of keeping
 track of temporary file objects (if any), and converts non-string
 arguments to strings (using repr()).</p>
 <p>Ex:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">process</span><span class="o">.</span><span class="n">make_commandline_argument</span><span class="p">(</span><span class="s">&#39;param=&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">process</span><span class="o">.</span><span class="n">make_commandline_argument</span><span class="p">(</span><span class="s1">&#39;param=&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>will return the same as:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="s">&#39;param=&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;param=&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span>
 </pre></div>
 </div>
 <p>if self.param is a string (file name) or a temporary path.</p>
@@ -505,13 +503,13 @@ arguments to strings (using repr()).</p>
 
 <dl class="attribute">
 <dt id="capsul.process.process.Process.run">
-<tt class="descname">run</tt><a class="headerlink" href="#capsul.process.process.Process.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><a class="headerlink" href="#capsul.process.process.Process.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processing method that has to be defined in derived classes</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.save_log">
-<tt class="descname">save_log</tt><big>(</big><em>returncode</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.save_log" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_log</code><span class="sig-paren">(</span><em>returncode</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.save_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to save process execution informations in json format.</p>
 <p>If the class attribute <cite>log_file</cite> is not set, a log.json output
 file is generated in the process call current working directory.</p>
@@ -519,7 +517,7 @@ file is generated in the process call current working directory.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returncode: ProcessResult</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>returncode: ProcessResult</strong></p>
 <blockquote class="last">
 <div><p>the process result return code.</p>
 </div></blockquote>
@@ -531,7 +529,7 @@ file is generated in the process call current working directory.</p>
 
 <dl class="method">
 <dt id="capsul.process.process.Process.set_parameter">
-<tt class="descname">set_parameter</tt><big>(</big><em>name</em>, <em>value</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.set_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.set_parameter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_parameter</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process.html#Process.set_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process.Process.set_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to set a process instance trait value.</p>
 <p>For File and Directory traits the None value is replaced by the
 special _Undefined trait value.</p>
@@ -539,11 +537,11 @@ special _Undefined trait value.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>the trait name we want to modify</p>
 </div></blockquote>
-<p><strong>value: object (mandatory)</strong> :</p>
+<p><strong>value: object (mandatory)</strong></p>
 <blockquote class="last">
 <div><p>the trait value we want to set</p>
 </div></blockquote>
@@ -568,7 +566,7 @@ special _Undefined trait value.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

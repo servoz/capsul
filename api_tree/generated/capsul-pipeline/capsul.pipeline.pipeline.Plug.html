@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,55 +123,47 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-plug">
 <h1>capsul.pipeline.pipeline.Plug<a class="headerlink" href="#capsul-pipeline-pipeline-plug" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="capsul.pipeline.pipeline.Plug">
-<em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline.</tt><tt class="descname">Plug</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#capsul.pipeline.pipeline.Plug" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">capsul.pipeline.pipeline.</code><code class="descname">Plug</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Plug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Plug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overload of the traits in oder to keep the pipeline memory.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="13%" />
-<col width="35%" />
-<col width="52%" />
+<col width="17%" />
+<col width="83%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>enabled</td>
-<td>bool</td>
-<td>user parameter to control the plug activation</td>
+<td>(bool) user parameter to control the plug activation</td>
 </tr>
 <tr class="row-even"><td>activated</td>
-<td>bool</td>
-<td>parameter describing the Plug status</td>
+<td>(bool) parameter describing the Plug status</td>
 </tr>
 <tr class="row-odd"><td>output</td>
-<td>bool</td>
-<td>parameter to set the Plug type (input or output)</td>
+<td>(bool) parameter to set the Plug type (input or output)</td>
 </tr>
 <tr class="row-even"><td>optional</td>
-<td>bool</td>
-<td>parameter to create an optional Plug</td>
+<td>(bool) parameter to create an optional Plug</td>
 </tr>
 <tr class="row-odd"><td>has_default_value</td>
-<td>bool</td>
-<td>indicate if a value is available for that plug even if its not linked</td>
+<td>(bool) indicate if a value is available for that plug even if its not linked</td>
 </tr>
 <tr class="row-even"><td>links_to</td>
-<td>set (node_name, plug_name, node, plug, is_weak)</td>
-<td>the successor plugs of this  plug</td>
+<td>(set (node_name, plug_name, node, plug, is_weak)) the successor plugs of this  plug</td>
 </tr>
 <tr class="row-odd"><td>links_from</td>
-<td>set (node_name, plug_name, node, plug, is_weak)</td>
-<td>the predecessor plugs of this plug</td>
+<td>(set (node_name, plug_name, node, plug, is_weak)) the predecessor plugs of this plug</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="capsul.pipeline.pipeline.Plug.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#capsul.pipeline.pipeline.Plug.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Plug.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline.Plug.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a Plug, i.e. a trait with the memory of the
 pipeline adjacent nodes.</p>
 </dd></dl>
@@ -190,7 +183,7 @@ pipeline adjacent nodes.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

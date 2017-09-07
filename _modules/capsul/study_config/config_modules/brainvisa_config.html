@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,17 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../../index.html" />
-    <link rel="up" title="Module code" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
   
    
        <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
@@ -55,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -95,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -120,45 +120,32 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for capsul.study_config.config_modules.brainvisa_config</h1><div class="highlight"><pre>
-<span class="c">##########################################################################</span>
-<span class="c"># CAPSUL - Copyright (C) CEA, 2013</span>
-<span class="c"># Distributed under the terms of the CeCILL-B license, as published by</span>
-<span class="c"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
-<span class="c"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
-<span class="c"># for details.</span>
-<span class="c">##########################################################################</span>
+<span></span><span class="c1">##########################################################################</span>
+<span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
+<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
+<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
+<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
+<span class="c1"># for details.</span>
+<span class="c1">##########################################################################</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="kn">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">brainvisa_share</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">bv_share_config</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">bv_share_config</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="kn">from</span> <span class="nn">soma</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">soma_config</span>
-<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="kn">import</span> <span class="n">StudyConfigModule</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Directory</span><span class="p">,</span> <span class="n">Undefined</span>
+<span class="kn">from</span> <span class="nn">soma</span> <span class="k">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">soma_config</span>
+<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="k">import</span> <span class="n">StudyConfigModule</span>
 
 
 <div class="viewcode-block" id="BrainVISAConfig"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig.html#capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig">[docs]</a><span class="k">class</span> <span class="nc">BrainVISAConfig</span><span class="p">(</span><span class="n">StudyConfigModule</span><span class="p">):</span>
 <div class="viewcode-block" id="BrainVISAConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig.html#capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">BrainVISAConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
-        <span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s">&#39;shared_directory&#39;</span><span class="p">,</span><span class="n">Directory</span><span class="p">(</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BrainVISAConfig</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">)</span>
+        <span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s1">&#39;shared_directory&#39;</span><span class="p">,</span><span class="n">Directory</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
-            <span class="n">output</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">desc</span><span class="o">=</span><span class="s">&#39;Study shared directory&#39;</span><span class="p">))</span>
+            <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Study shared directory&#39;</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">bv_share_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="c"># take 2 fist digits in version</span>
-            <span class="n">bv_share_version</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bv_share_config</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c"># brainvisa_share.config cannot be imported: sounds bad, but</span>
-            <span class="c"># fallback to soma.config version (which may be different)</span>
-            <span class="n">bv_share_version</span> <span class="o">=</span> <span class="n">soma_config</span><span class="o">.</span><span class="n">short_version</span>
-        <span class="n">study_config</span><span class="o">.</span><span class="n">shared_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">soma_config</span><span class="o">.</span><span class="n">BRAINVISA_SHARE</span><span class="p">,</span> <span class="s">&#39;brainvisa-share-</span><span class="si">%s</span><span class="s">&#39;</span> \
-                <span class="o">%</span> <span class="n">bv_share_version</span><span class="p">)</span></div></div>
+        <span class="n">study_config</span><span class="o">.</span><span class="n">shared_directory</span> <span class="o">=</span> <span class="n">soma_config</span><span class="o">.</span><span class="n">BRAINVISA_SHARE</span></div></div>
 </pre></div>
 
           </div>
@@ -171,7 +158,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

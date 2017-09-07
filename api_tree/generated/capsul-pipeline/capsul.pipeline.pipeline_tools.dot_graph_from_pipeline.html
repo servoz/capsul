@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,53 +123,53 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-tools-dot-graph-from-pipeline">
 <h1>capsul.pipeline.pipeline_tools.dot_graph_from_pipeline<a class="headerlink" href="#capsul-pipeline-pipeline-tools-dot-graph-from-pipeline" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_tools.dot_graph_from_pipeline">
-<tt class="descclassname">capsul.pipeline.pipeline_tools.</tt><tt class="descname">dot_graph_from_pipeline</tt><big>(</big><em>pipeline</em>, <em>nodes_sizes={}</em>, <em>use_nodes_pos=False</em>, <em>include_io=True</em>, <em>enlarge_boxes=0.0</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#dot_graph_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.dot_graph_from_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.pipeline.pipeline_tools.</code><code class="descname">dot_graph_from_pipeline</code><span class="sig-paren">(</span><em>pipeline</em>, <em>nodes_sizes={}</em>, <em>use_nodes_pos=False</em>, <em>include_io=True</em>, <em>enlarge_boxes=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#dot_graph_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.dot_graph_from_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build a graphviz/dot-compatible representation of the pipeline.
 The pipeline representation uses one link between two given boxes:
 parameters are not represented.</p>
 <p>This is different from the workflow graph, as given by
-<tt class="xref py py-meth docutils literal"><span class="pre">capsul.pipeline.Pipeline.workflow_graph()</span></tt>, in that the full graph
+<code class="xref py py-meth docutils literal"><span class="pre">capsul.pipeline.Pipeline.workflow_graph()</span></code>, in that the full graph
 is represented here, including disabled nodes.</p>
-<p>To build a workflow graph, see <tt class="xref py py-func docutils literal"><span class="pre">dot_graph_from_workflow()</span></tt>.</p>
+<p>To build a workflow graph, see <code class="xref py py-func docutils literal"><span class="pre">dot_graph_from_workflow()</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline</strong></p>
 <blockquote>
 <div><p>pipeline to convert to a dot graph</p>
 </div></blockquote>
-<p><strong>nodes_sizes: dict (optional)</strong> :</p>
+<p><strong>nodes_sizes: dict (optional)</strong></p>
 <blockquote>
 <div><p>nodes sizes may be specified here, keys are node names, and values are
 tuples (width, height). Special &#8220;inputs&#8221; and &#8220;outputs&#8221; keys represent
 the global inputs/outputs blocks of the pipeline.</p>
 </div></blockquote>
-<p><strong>use_nodes_pos: bool (optional)</strong> :</p>
+<p><strong>use_nodes_pos: bool (optional)</strong></p>
 <blockquote>
 <div><p>if True, nodes positions in the pipeline.node_position variable will
 be used to force nodes positions in the graph.</p>
 </div></blockquote>
-<p><strong>include_io: bool (optional)</strong> :</p>
+<p><strong>include_io: bool (optional)</strong></p>
 <blockquote>
 <div><p>If True, build a node for the pipeline inputs and a node for the
 pipeline outputs. If False, these nodes will not be generated, and
 their links ignored.</p>
 </div></blockquote>
-<p><strong>enlarge_boxes: float (optional)</strong> :</p>
+<p><strong>enlarge_boxes: float (optional)</strong></p>
 <blockquote>
 <div><p>when nodes sizes are specified, enlarge them by this amount to produce
 bigger boxes</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>dot_graph: tuple</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dot_graph: tuple</p>
 <blockquote class="last">
 <div><p>a (nodes, edges) tuple, where nodes is a list of node tuples
 (id, node_name, props) and edges is a dict, where
@@ -176,7 +177,7 @@ keys are (source_node_id, dest_node_id), and values are tuples
 (props, active, weak). In both cases props is a dictionary of
 properties.
 This representation is simple and is meant to feed
-<a class="reference internal" href="capsul.pipeline.pipeline_tools.save_dot_graph.html#capsul.pipeline.pipeline_tools.save_dot_graph" title="capsul.pipeline.pipeline_tools.save_dot_graph"><tt class="xref py py-func docutils literal"><span class="pre">save_dot_graph()</span></tt></a></p>
+<a class="reference internal" href="capsul.pipeline.pipeline_tools.save_dot_graph.html#capsul.pipeline.pipeline_tools.save_dot_graph" title="capsul.pipeline.pipeline_tools.save_dot_graph"><code class="xref py py-func docutils literal"><span class="pre">save_dot_graph()</span></code></a></p>
 </div></blockquote>
 </td>
 </tr>
@@ -197,7 +198,7 @@ This representation is simple and is meant to feed
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

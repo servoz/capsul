@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,13 +123,13 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-qt-apps-utils-fill-treectrl-add-tree-nodes">
 <h1>capsul.qt_apps.utils.fill_treectrl.add_tree_nodes<a class="headerlink" href="#capsul-qt-apps-utils-fill-treectrl-add-tree-nodes" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.qt_apps.utils.fill_treectrl.add_tree_nodes">
-<tt class="descclassname">capsul.qt_apps.utils.fill_treectrl.</tt><tt class="descname">add_tree_nodes</tt><big>(</big><em>parent_item</em>, <em>menu</em>, <em>match</em>, <em>parent_module=''</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/qt_apps/utils/fill_treectrl.html#add_tree_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_apps.utils.fill_treectrl.add_tree_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.qt_apps.utils.fill_treectrl.</code><code class="descname">add_tree_nodes</code><span class="sig-paren">(</span><em>parent_item</em>, <em>menu</em>, <em>match</em>, <em>parent_module=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_apps/utils/fill_treectrl.html#add_tree_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_apps.utils.fill_treectrl.add_tree_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the menu to tree control if match in current module name or
 child modules.</p>
 <p>The match is insensitive to the cast.</p>
@@ -136,20 +137,20 @@ child modules.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent_item: QTreeWidgetItem (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent_item: QTreeWidgetItem (mandatory)</strong></p>
 <blockquote>
 <div><p>a tree control item where we want to insert the menu</p>
 </div></blockquote>
-<p><strong>menu: hierachic dict (mandatory)</strong> :</p>
+<p><strong>menu: hierachic dict (mandatory)</strong></p>
 <blockquote>
 <div><p>each key is a sub module of the module. Leafs contain a list with
 the url to the documentation.</p>
 </div></blockquote>
-<p><strong>match: str (mandatory)</strong> :</p>
+<p><strong>match: str (mandatory)</strong></p>
 <blockquote>
 <div><p>the string used to filter the menu items</p>
 </div></blockquote>
-<p><strong>parent_module: str (optional)</strong> :</p>
+<p><strong>parent_module: str (optional)</strong></p>
 <blockquote class="last">
 <div><p>the parent module string description (&#8216;module.sub_module&#8217;)</p>
 </div></blockquote>
@@ -172,7 +173,7 @@ the url to the documentation.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

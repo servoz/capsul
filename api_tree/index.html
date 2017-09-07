@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../index.html" />
+    <link rel="search" title="Search" href="../search.html" />
   
    
        <script type="text/javascript" src="../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -111,19 +112,19 @@
       <!-- toc tree -->
       <ul>
 <li><a class="reference internal" href="#">API</a><ul>
-<li><a class="reference internal" href="#capsul-pipeline-pipeline"><tt class="docutils literal"><span class="pre">capsul.pipeline</span></tt>: Pipeline</a><ul>
+<li><a class="reference internal" href="#capsul-pipeline-pipeline"><code class="docutils literal"><span class="pre">capsul.pipeline</span></code>: Pipeline</a><ul>
 <li><a class="reference internal" href="#pipeline-definition">Pipeline Definition</a></li>
 <li><a class="reference internal" href="#node-types">Node Types</a></li>
 <li><a class="reference internal" href="#plug">Plug</a></li>
 <li><a class="reference internal" href="#workflow-conversion">Workflow conversion</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#capsul-process-process"><tt class="docutils literal"><span class="pre">capsul.process</span></tt>: Process</a><ul>
+<li><a class="reference internal" href="#capsul-process-process"><code class="docutils literal"><span class="pre">capsul.process</span></code>: Process</a><ul>
 <li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#capsul-study-config-study-configuration"><tt class="docutils literal"><span class="pre">capsul.study_config</span></tt>: Study Configuration</a><ul>
+<li><a class="reference internal" href="#capsul-study-config-study-configuration"><code class="docutils literal"><span class="pre">capsul.study_config</span></code>: Study Configuration</a><ul>
 <li><a class="reference internal" href="#study-configuration">Study Configuration</a></li>
 <li><a class="reference internal" href="#configuration-modules">Configuration Modules</a></li>
 </ul>
@@ -141,14 +142,14 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="api">
 <h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <p>The exact API of all functions and classes, as given by the docstrings.</p>
-<p><strong>User guide:</strong> See the <a class="reference internal" href="../user_guide_tree/index.html#capsul-guide"><em>User Guide</em></a> section for further details.</p>
+<p><strong>User guide:</strong> See the <a class="reference internal" href="../user_guide_tree/index.html#capsul-guide"><span class="std std-ref">User Guide</span></a> section for further details.</p>
 <div class="section" id="capsul-pipeline-pipeline">
-<span id="capsul-ref"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.pipeline</span></tt>: Pipeline<a class="headerlink" href="#capsul-pipeline-pipeline" title="Permalink to this headline">¶</a></h2>
+<span id="capsul-ref"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.pipeline</span></code>: Pipeline<a class="headerlink" href="#capsul-pipeline-pipeline" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="pipeline-definition">
 <h3>Pipeline Definition<a class="headerlink" href="#pipeline-definition" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -157,7 +158,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline" title="capsul.pipeline.pipeline.Pipeline"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline.Pipeline</span></tt></a>([autoexport_nodes_parameters])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline" title="capsul.pipeline.pipeline.Pipeline"><code class="xref py py-obj docutils literal"><span class="pre">pipeline.Pipeline</span></code></a>([autoexport_nodes_parameters])</td>
 <td>Pipeline containing Process nodes, and links between node parameters.</td>
 </tr>
 </tbody>
@@ -171,16 +172,16 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Node.html#capsul.pipeline.pipeline_nodes.Node" title="capsul.pipeline.pipeline_nodes.Node"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.Node</span></tt></a>(pipeline,&nbsp;name,&nbsp;inputs,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Node.html#capsul.pipeline.pipeline_nodes.Node" title="capsul.pipeline.pipeline_nodes.Node"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.Node</span></code></a>(pipeline,&nbsp;name,&nbsp;inputs,&nbsp;...)</td>
 <td>Basic Node structure of the pipeline that need to be tuned.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode" title="capsul.pipeline.pipeline_nodes.ProcessNode"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.ProcessNode</span></tt></a>(pipeline,&nbsp;name,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline_nodes.ProcessNode" title="capsul.pipeline.pipeline_nodes.ProcessNode"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.ProcessNode</span></code></a>(pipeline,&nbsp;name,&nbsp;...)</td>
 <td>Process node.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.PipelineNode.html#capsul.pipeline.pipeline_nodes.PipelineNode" title="capsul.pipeline.pipeline_nodes.PipelineNode"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.PipelineNode</span></tt></a>(pipeline,&nbsp;name,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.PipelineNode.html#capsul.pipeline.pipeline_nodes.PipelineNode" title="capsul.pipeline.pipeline_nodes.PipelineNode"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.PipelineNode</span></code></a>(pipeline,&nbsp;name,&nbsp;...)</td>
 <td>A special node to store the pipeline user-parameters</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Switch.html#capsul.pipeline.pipeline_nodes.Switch" title="capsul.pipeline.pipeline_nodes.Switch"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.Switch</span></tt></a>(pipeline,&nbsp;name,&nbsp;...[,&nbsp;...])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Switch.html#capsul.pipeline.pipeline_nodes.Switch" title="capsul.pipeline.pipeline_nodes.Switch"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_nodes.Switch</span></code></a>(pipeline,&nbsp;name,&nbsp;...[,&nbsp;...])</td>
 <td>Switch node to select a specific Process.</td>
 </tr>
 </tbody>
@@ -194,7 +195,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline.Plug.html#capsul.pipeline.pipeline.Plug" title="capsul.pipeline.pipeline.Plug"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline.Plug</span></tt></a>(**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline.Plug.html#capsul.pipeline.pipeline.Plug" title="capsul.pipeline.pipeline.Plug"><code class="xref py py-obj docutils literal"><span class="pre">pipeline.Plug</span></code></a>(**kwargs)</td>
 <td>Overload of the traits in oder to keep the pipeline memory.</td>
 </tr>
 </tbody>
@@ -208,37 +209,37 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.workflow_from_pipeline.html#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="capsul.pipeline.pipeline_workflow.workflow_from_pipeline"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_workflow.workflow_from_pipeline</span></tt></a>(...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.workflow_from_pipeline.html#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="capsul.pipeline.pipeline_workflow.workflow_from_pipeline"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_workflow.workflow_from_pipeline</span></code></a>(...)</td>
 <td>Create a soma-workflow workflow from a Capsul Pipeline</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.local_workflow_run.html#capsul.pipeline.pipeline_workflow.local_workflow_run" title="capsul.pipeline.pipeline_workflow.local_workflow_run"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_workflow.local_workflow_run</span></tt></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_workflow.local_workflow_run.html#capsul.pipeline.pipeline_workflow.local_workflow_run" title="capsul.pipeline.pipeline_workflow.local_workflow_run"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_workflow.local_workflow_run</span></code></a>(...)</td>
 <td>Create a soma-workflow controller and submit a workflow</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.pipeline_node_colors.html#capsul.pipeline.pipeline_tools.pipeline_node_colors" title="capsul.pipeline.pipeline_tools.pipeline_node_colors"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.pipeline_node_colors</span></tt></a>(...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.pipeline_node_colors.html#capsul.pipeline.pipeline_tools.pipeline_node_colors" title="capsul.pipeline.pipeline_tools.pipeline_node_colors"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.pipeline_node_colors</span></code></a>(...)</td>
 <td>Node color to display boxes in GUI and graphviz graphs.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.pipeline_link_color.html#capsul.pipeline.pipeline_tools.pipeline_link_color" title="capsul.pipeline.pipeline_tools.pipeline_link_color"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.pipeline_link_color</span></tt></a>(plug,&nbsp;link)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.pipeline_link_color.html#capsul.pipeline.pipeline_tools.pipeline_link_color" title="capsul.pipeline.pipeline_tools.pipeline_link_color"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.pipeline_link_color</span></code></a>(plug,&nbsp;link)</td>
 <td>Link color and style for graphical display and graphviz graphs.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.dot_graph_from_pipeline.html#capsul.pipeline.pipeline_tools.dot_graph_from_pipeline" title="capsul.pipeline.pipeline_tools.dot_graph_from_pipeline"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.dot_graph_from_pipeline</span></tt></a>(pipeline)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.dot_graph_from_pipeline.html#capsul.pipeline.pipeline_tools.dot_graph_from_pipeline" title="capsul.pipeline.pipeline_tools.dot_graph_from_pipeline"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.dot_graph_from_pipeline</span></code></a>(pipeline)</td>
 <td>Build a graphviz/dot-compatible representation of the pipeline.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.save_dot_graph.html#capsul.pipeline.pipeline_tools.save_dot_graph" title="capsul.pipeline.pipeline_tools.save_dot_graph"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.save_dot_graph</span></tt></a>(dot_graph,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.save_dot_graph.html#capsul.pipeline.pipeline_tools.save_dot_graph" title="capsul.pipeline.pipeline_tools.save_dot_graph"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.save_dot_graph</span></code></a>(dot_graph,&nbsp;...)</td>
 <td>Write a graphviz/dot input file, which can be used to generate an image representation of the graph, or to make dot automatically position nodes.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.save_dot_image.html#capsul.pipeline.pipeline_tools.save_dot_image" title="capsul.pipeline.pipeline_tools.save_dot_image"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.save_dot_image</span></tt></a>(pipeline,&nbsp;filename)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.save_dot_image.html#capsul.pipeline.pipeline_tools.save_dot_image" title="capsul.pipeline.pipeline_tools.save_dot_image"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.save_dot_image</span></code></a>(pipeline,&nbsp;filename)</td>
 <td>Save a dot/graphviz image of the pipeline in a file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.nodes_with_existing_outputs.html#capsul.pipeline.pipeline_tools.nodes_with_existing_outputs" title="capsul.pipeline.pipeline_tools.nodes_with_existing_outputs"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.nodes_with_existing_outputs</span></tt></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.nodes_with_existing_outputs.html#capsul.pipeline.pipeline_tools.nodes_with_existing_outputs" title="capsul.pipeline.pipeline_tools.nodes_with_existing_outputs"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.nodes_with_existing_outputs</span></code></a>(...)</td>
 <td>Checks nodes in a pipeline which outputs contain existing files on the filesystem.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.nodes_with_missing_inputs.html#capsul.pipeline.pipeline_tools.nodes_with_missing_inputs" title="capsul.pipeline.pipeline_tools.nodes_with_missing_inputs"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.nodes_with_missing_inputs</span></tt></a>(...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.nodes_with_missing_inputs.html#capsul.pipeline.pipeline_tools.nodes_with_missing_inputs" title="capsul.pipeline.pipeline_tools.nodes_with_missing_inputs"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.nodes_with_missing_inputs</span></code></a>(...)</td>
 <td>Checks nodes in a pipeline which inputs contain invalid inputs.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs.html#capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs" title="capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.disable_runtime_steps_with_existing_outputs</span></tt></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs.html#capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs" title="capsul.pipeline.pipeline_tools.disable_runtime_steps_with_existing_outputs"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.disable_runtime_steps_with_existing_outputs</span></code></a>(...)</td>
 <td>Disable steps in a pipeline which outputs contain existing files.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.where_is_plug_value_from.html#capsul.pipeline.pipeline_tools.where_is_plug_value_from" title="capsul.pipeline.pipeline_tools.where_is_plug_value_from"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.where_is_plug_value_from</span></tt></a>(plug)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_tools.where_is_plug_value_from.html#capsul.pipeline.pipeline_tools.where_is_plug_value_from" title="capsul.pipeline.pipeline_tools.where_is_plug_value_from"><code class="xref py py-obj docutils literal"><span class="pre">pipeline_tools.where_is_plug_value_from</span></code></a>(plug)</td>
 <td>Find where the given (input) plug takes its value from.</td>
 </tr>
 </tbody>
@@ -246,7 +247,7 @@
 </div>
 </div>
 <div class="section" id="capsul-process-process">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.process</span></tt>: Process<a class="headerlink" href="#capsul-process-process" title="Permalink to this headline">¶</a></h2>
+<h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.process</span></code>: Process<a class="headerlink" href="#capsul-process-process" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -255,19 +256,19 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process" title="capsul.process.process.Process"><tt class="xref py py-obj docutils literal"><span class="pre">process.Process</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.Process.html#capsul.process.process.Process" title="capsul.process.process.Process"><code class="xref py py-obj docutils literal"><span class="pre">process.Process</span></code></a>()</td>
 <td>A process is an atomic component that contains a processing.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess" title="capsul.process.process.NipypeProcess"><tt class="xref py py-obj docutils literal"><span class="pre">process.NipypeProcess</span></tt></a>(nipype_instance,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.NipypeProcess.html#capsul.process.process.NipypeProcess" title="capsul.process.process.NipypeProcess"><code class="xref py py-obj docutils literal"><span class="pre">process.NipypeProcess</span></code></a>(nipype_instance,&nbsp;...)</td>
 <td>Base class used to wrap nipype interfaces.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess" title="capsul.process.process.FileCopyProcess"><tt class="xref py py-obj docutils literal"><span class="pre">process.FileCopyProcess</span></tt></a>([activate_copy,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.FileCopyProcess.html#capsul.process.process.FileCopyProcess" title="capsul.process.process.FileCopyProcess"><code class="xref py py-obj docutils literal"><span class="pre">process.FileCopyProcess</span></code></a>([activate_copy,&nbsp;...])</td>
 <td>A specific process that copies all the input files.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.ProcessResult.html#capsul.process.process.ProcessResult" title="capsul.process.process.ProcessResult"><tt class="xref py py-obj docutils literal"><span class="pre">process.ProcessResult</span></tt></a>(process,&nbsp;runtime,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process.ProcessResult.html#capsul.process.process.ProcessResult" title="capsul.process.process.ProcessResult"><code class="xref py py-obj docutils literal"><span class="pre">process.ProcessResult</span></code></a>(process,&nbsp;runtime,&nbsp;...)</td>
 <td>Object that contains running information a particular Process.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process_with_fom.ProcessWithFom.html#capsul.process.process_with_fom.ProcessWithFom" title="capsul.process.process_with_fom.ProcessWithFom"><tt class="xref py py-obj docutils literal"><span class="pre">process_with_fom.ProcessWithFom</span></tt></a>(process,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.process_with_fom.ProcessWithFom.html#capsul.process.process_with_fom.ProcessWithFom" title="capsul.process.process_with_fom.ProcessWithFom"><code class="xref py py-obj docutils literal"><span class="pre">process_with_fom.ProcessWithFom</span></code></a>(process,&nbsp;...)</td>
 <td>Class who creates attributes and completion Associates a Process and FOMs.</td>
 </tr>
 </tbody>
@@ -281,7 +282,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.loader.get_process_instance.html#capsul.process.loader.get_process_instance" title="capsul.process.loader.get_process_instance"><tt class="xref py py-obj docutils literal"><span class="pre">loader.get_process_instance</span></tt></a>(process_or_id,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.loader.get_process_instance.html#capsul.process.loader.get_process_instance" title="capsul.process.loader.get_process_instance"><code class="xref py py-obj docutils literal"><span class="pre">loader.get_process_instance</span></code></a>(process_or_id,&nbsp;...)</td>
 <td>Return a Process instance given an identifier.</td>
 </tr>
 </tbody>
@@ -289,7 +290,7 @@
 </div>
 </div>
 <div class="section" id="capsul-study-config-study-configuration">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.study_config</span></tt>: Study Configuration<a class="headerlink" href="#capsul-study-config-study-configuration" title="Permalink to this headline">¶</a></h2>
+<h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.study_config</span></code>: Study Configuration<a class="headerlink" href="#capsul-study-config-study-configuration" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="study-configuration">
 <h3>Study Configuration<a class="headerlink" href="#study-configuration" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
@@ -298,10 +299,10 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.study_config.StudyConfig.html#capsul.study_config.study_config.StudyConfig" title="capsul.study_config.study_config.StudyConfig"><tt class="xref py py-obj docutils literal"><span class="pre">study_config.StudyConfig</span></tt></a>([study_name,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.study_config.StudyConfig.html#capsul.study_config.study_config.StudyConfig" title="capsul.study_config.study_config.StudyConfig"><code class="xref py py-obj docutils literal"><span class="pre">study_config.StudyConfig</span></code></a>([study_name,&nbsp;...])</td>
 <td>Class to store the study parameters and processing options.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.Memory.html#capsul.study_config.memory.Memory" title="capsul.study_config.memory.Memory"><tt class="xref py py-obj docutils literal"><span class="pre">memory.Memory</span></tt></a>(cachedir)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.Memory.html#capsul.study_config.memory.Memory" title="capsul.study_config.memory.Memory"><code class="xref py py-obj docutils literal"><span class="pre">memory.Memory</span></code></a>(cachedir)</td>
 <td>Memory context to provide caching for processes.</td>
 </tr>
 </tbody>
@@ -315,25 +316,25 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.matlab_config.MatlabConfig.html#capsul.study_config.config_modules.matlab_config.MatlabConfig" title="capsul.study_config.config_modules.matlab_config.MatlabConfig"><tt class="xref py py-obj docutils literal"><span class="pre">matlab_config.MatlabConfig</span></tt></a>(study_config,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.matlab_config.MatlabConfig.html#capsul.study_config.config_modules.matlab_config.MatlabConfig" title="capsul.study_config.config_modules.matlab_config.MatlabConfig"><code class="xref py py-obj docutils literal"><span class="pre">matlab_config.MatlabConfig</span></code></a>(study_config,&nbsp;...)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig" title="capsul.study_config.config_modules.spm_config.SPMConfig"><tt class="xref py py-obj docutils literal"><span class="pre">spm_config.SPMConfig</span></tt></a>(study_config,&nbsp;configuration)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.SPMConfig.html#capsul.study_config.config_modules.spm_config.SPMConfig" title="capsul.study_config.config_modules.spm_config.SPMConfig"><code class="xref py py-obj docutils literal"><span class="pre">spm_config.SPMConfig</span></code></a>(study_config,&nbsp;configuration)</td>
 <td>SPM configuration.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.fsl_config.FSLConfig.html#capsul.study_config.config_modules.fsl_config.FSLConfig" title="capsul.study_config.config_modules.fsl_config.FSLConfig"><tt class="xref py py-obj docutils literal"><span class="pre">fsl_config.FSLConfig</span></tt></a>(study_config,&nbsp;configuration)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.fsl_config.FSLConfig.html#capsul.study_config.config_modules.fsl_config.FSLConfig" title="capsul.study_config.config_modules.fsl_config.FSLConfig"><code class="xref py py-obj docutils literal"><span class="pre">fsl_config.FSLConfig</span></code></a>(study_config,&nbsp;configuration)</td>
 <td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig.html#capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig" title="capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig"><tt class="xref py py-obj docutils literal"><span class="pre">freesurfer_config.FreeSurferConfig</span></tt></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig.html#capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig" title="capsul.study_config.config_modules.freesurfer_config.FreeSurferConfig"><code class="xref py py-obj docutils literal"><span class="pre">freesurfer_config.FreeSurferConfig</span></code></a>(...)</td>
 <td>Class to set up freesurfer configuration.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.nipype_config.NipypeConfig.html#capsul.study_config.config_modules.nipype_config.NipypeConfig" title="capsul.study_config.config_modules.nipype_config.NipypeConfig"><tt class="xref py py-obj docutils literal"><span class="pre">nipype_config.NipypeConfig</span></tt></a>(study_config,&nbsp;...)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.nipype_config.NipypeConfig.html#capsul.study_config.config_modules.nipype_config.NipypeConfig" title="capsul.study_config.config_modules.nipype_config.NipypeConfig"><code class="xref py py-obj docutils literal"><span class="pre">nipype_config.NipypeConfig</span></code></a>(study_config,&nbsp;...)</td>
 <td>Nipype configuration.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig.html#capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig" title="capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig"><tt class="xref py py-obj docutils literal"><span class="pre">brainvisa_config.BrainVISAConfig</span></tt></a>(...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig.html#capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig" title="capsul.study_config.config_modules.brainvisa_config.BrainVISAConfig"><code class="xref py py-obj docutils literal"><span class="pre">brainvisa_config.BrainVISAConfig</span></code></a>(...)</td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.fom_config.FomConfig.html#capsul.study_config.config_modules.fom_config.FomConfig" title="capsul.study_config.config_modules.fom_config.FomConfig"><tt class="xref py py-obj docutils literal"><span class="pre">fom_config.FomConfig</span></tt></a>(study_config,&nbsp;configuration)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.fom_config.FomConfig.html#capsul.study_config.config_modules.fom_config.FomConfig" title="capsul.study_config.config_modules.fom_config.FomConfig"><code class="xref py py-obj docutils literal"><span class="pre">fom_config.FomConfig</span></code></a>(study_config,&nbsp;configuration)</td>
 <td>FOM (File Organization Model) configuration module for StudyConfig</td>
 </tr>
 </tbody>
@@ -353,7 +354,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

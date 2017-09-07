@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,25 +123,23 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-nodes-processnode">
 <h1>capsul.pipeline.pipeline_nodes.ProcessNode<a class="headerlink" href="#capsul-pipeline-pipeline-nodes-processnode" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode">
-<em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline_nodes.</tt><tt class="descname">ProcessNode</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">capsul.pipeline.pipeline_nodes.</code><code class="descname">ProcessNode</code><span class="sig-paren">(</span><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process node.</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="23%" />
-<col width="68%" />
+<col width="9%" />
+<col width="91%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>process</td>
-<td>process instance</td>
-<td>the process instance stored in the pipeline node</td>
+<td>(process instance) the process instance stored in the pipeline node</td>
 </tr>
 </tbody>
 </table>
@@ -151,41 +150,41 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug" title="capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug"><tt class="xref py py-obj docutils literal"><span class="pre">set_callback_on_plug</span></tt></a>(plug_name,&nbsp;callback)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug" title="capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug"><code class="xref py py-obj docutils literal"><span class="pre">set_callback_on_plug</span></code></a>(plug_name,&nbsp;callback)</td>
 <td>Add an event when a plug change</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value" title="capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value"><tt class="xref py py-obj docutils literal"><span class="pre">get_plug_value</span></tt></a>(plug_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value" title="capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value"><code class="xref py py-obj docutils literal"><span class="pre">get_plug_value</span></code></a>(plug_name)</td>
 <td>Return the plug value</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value" title="capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value"><tt class="xref py py-obj docutils literal"><span class="pre">set_plug_value</span></tt></a>(plug_name,&nbsp;value)</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value" title="capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value"><code class="xref py py-obj docutils literal"><span class="pre">set_plug_value</span></code></a>(plug_name,&nbsp;value)</td>
 <td>Set the plug value</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_trait" title="capsul.pipeline.pipeline_nodes.ProcessNode.get_trait"><tt class="xref py py-obj docutils literal"><span class="pre">get_trait</span></tt></a>(trait_name)</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_trait" title="capsul.pipeline.pipeline_nodes.ProcessNode.get_trait"><code class="xref py py-obj docutils literal"><span class="pre">get_trait</span></code></a>(trait_name)</td>
 <td>Return the desired trait</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>pipeline</em>, <em>name</em>, <em>process</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a ProcessNode</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong></p>
 <blockquote>
 <div><p>the pipeline object where the node is added.</p>
 </div></blockquote>
-<p><strong>name: str (mandatory)</strong> :</p>
+<p><strong>name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>the node name.</p>
 </div></blockquote>
-<p><strong>process: instance</strong> :</p>
+<p><strong>process: instance</strong></p>
 <blockquote>
 <div><p>a process/interface instance.</p>
 </div></blockquote>
-<p><strong>kwargs: dict</strong> :</p>
+<p><strong>kwargs: dict</strong></p>
 <blockquote class="last">
 <div><p>process default values.</p>
 </div></blockquote>
@@ -197,19 +196,19 @@
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value">
-<tt class="descname">get_plug_value</tt><big>(</big><em>plug_name</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.get_plug_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_plug_value</code><span class="sig-paren">(</span><em>plug_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.get_plug_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_plug_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the plug value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>a plug name</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output: object</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">output: object</p>
 <blockquote class="last">
 <div><p>the plug value</p>
 </div></blockquote>
@@ -221,19 +220,19 @@
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.get_trait">
-<tt class="descname">get_trait</tt><big>(</big><em>trait_name</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.get_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_trait" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_trait</code><span class="sig-paren">(</span><em>trait_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.get_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.get_trait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the desired trait</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>trait_name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>a trait name</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output: trait</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">output: trait</p>
 <blockquote class="last">
 <div><p>the trait named trait_name</p>
 </div></blockquote>
@@ -245,17 +244,17 @@
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.remove_callback_from_plug">
-<tt class="descname">remove_callback_from_plug</tt><big>(</big><em>plug_name</em>, <em>callback</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.remove_callback_from_plug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.remove_callback_from_plug" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_callback_from_plug</code><span class="sig-paren">(</span><em>plug_name</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.remove_callback_from_plug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.remove_callback_from_plug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an event when a plug change</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>a plug name</p>
 </div></blockquote>
-<p><strong>callback: &#64;f (mandatory)</strong> :</p>
+<p><strong>callback: &#64;f (mandatory)</strong></p>
 <blockquote class="last">
 <div><p>a callback function</p>
 </div></blockquote>
@@ -267,17 +266,17 @@
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug">
-<tt class="descname">set_callback_on_plug</tt><big>(</big><em>plug_name</em>, <em>callback</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.set_callback_on_plug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_callback_on_plug</code><span class="sig-paren">(</span><em>plug_name</em>, <em>callback</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.set_callback_on_plug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_callback_on_plug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an event when a plug change</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>a plug name</p>
 </div></blockquote>
-<p><strong>callback: &#64;f (mandatory)</strong> :</p>
+<p><strong>callback: &#64;f (mandatory)</strong></p>
 <blockquote class="last">
 <div><p>a callback function</p>
 </div></blockquote>
@@ -289,17 +288,17 @@
 
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value">
-<tt class="descname">set_plug_value</tt><big>(</big><em>plug_name</em>, <em>value</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.set_plug_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_plug_value</code><span class="sig-paren">(</span><em>plug_name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#ProcessNode.set_plug_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.ProcessNode.set_plug_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the plug value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>plug_name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>a plug name</p>
 </div></blockquote>
-<p><strong>value: object (mandatory)</strong> :</p>
+<p><strong>value: object (mandatory)</strong></p>
 <blockquote class="last">
 <div><p>the plug value we want to set</p>
 </div></blockquote>
@@ -324,7 +323,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

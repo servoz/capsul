@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../index.html" />
+    <link rel="search" title="Search" href="../search.html" />
   
    
        <script type="text/javascript" src="../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -125,7 +126,7 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="user-guide">
 <span id="capsul-guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
@@ -135,18 +136,18 @@
 <p>Different tutorials are available as <a class="reference external" href="http://ipython.org/notebook.html">IPython notebooks</a>.
 Capsul may be used in two ways:</p>
 <ul class="simple">
-<li>a descriptive interface allows to develop processing bricks using simple Python functions and pipelines using a XML text description. <a class="reference download internal" href="../_downloads/capsul_descriptive_tutorial.ipynb"><tt class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></tt></a>.</li>
-<li>an object-oriented interface that uses Python classes programming. <a class="reference download internal" href="../_downloads/capsul_object_oriented_tutorial.ipynb"><tt class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></tt></a>. Note that this interface is compatible with the descriptive one, and allows more functionalities and tweak possibilities.</li>
+<li>a descriptive interface allows to develop processing bricks using simple Python functions and pipelines using a XML text description. <a class="reference download internal" href="../_downloads/capsul_descriptive_tutorial.ipynb" download=""><code class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></code></a>.</li>
+<li>an object-oriented interface that uses Python classes programming. <a class="reference download internal" href="../_downloads/capsul_object_oriented_tutorial.ipynb" download=""><code class="xref download docutils literal"><span class="pre">See</span> <span class="pre">this</span> <span class="pre">notebook</span> <span class="pre">to</span> <span class="pre">demonstrate</span> <span class="pre">this</span> <span class="pre">approach</span></code></a>. Note that this interface is compatible with the descriptive one, and allows more functionalities and tweak possibilities.</li>
 </ul>
 <p>To run it, the following must be done:</p>
 <ul>
-<li><p class="first"><a class="reference internal" href="../installation.html#install-guid"><em>Installing CAPSUL</em></a>.</p>
+<li><p class="first"><a class="reference internal" href="../installation.html#install-guid"><span class="std std-ref">Installing CAPSUL</span></a>.</p>
 </li>
 <li><p class="first">have IPython installed.</p>
 </li>
 <li><p class="first">run the tutorial ipython notebook server, with Qt GUI support:</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre>ipython notebook --gui=qt my_tutorial.ipynb
+<div><div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ipython</span> <span class="n">notebook</span> <span class="o">--</span><span class="n">gui</span><span class="o">=</span><span class="n">qt</span> <span class="n">my_tutorial</span><span class="o">.</span><span class="n">ipynb</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -166,7 +167,7 @@ Capsul may be used in two ways:</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

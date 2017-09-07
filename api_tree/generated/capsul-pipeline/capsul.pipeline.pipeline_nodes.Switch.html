@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,13 +123,13 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-nodes-switch">
 <h1>capsul.pipeline.pipeline_nodes.Switch<a class="headerlink" href="#capsul-pipeline-pipeline-nodes-switch" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="capsul.pipeline.pipeline_nodes.Switch">
-<em class="property">class </em><tt class="descclassname">capsul.pipeline.pipeline_nodes.</tt><tt class="descname">Switch</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">capsul.pipeline.pipeline_nodes.</code><code class="descname">Switch</code><span class="sig-paren">(</span><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em>, <em>output_types=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switch node to select a specific Process.</p>
 <p>A switch commutes a group of inputs to its outputs, according to its
 &#8220;switch&#8221; trait value. Each group may be typically linked to a different
@@ -170,58 +171,62 @@ are not propagated to such inputs.</li>
 </ul>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><tt class="xref py py-obj docutils literal"><span class="pre">_switch_changed</span></tt>, <tt class="xref py py-obj docutils literal"><span class="pre">_anytrait_changed</span></tt>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.add_switch" title="capsul.pipeline.pipeline.Pipeline.add_switch"><tt class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.add_switch</span></tt></a>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.pipeline_definition</span></tt></a></p>
+<p class="last"><code class="xref py py-obj docutils literal"><span class="pre">_switch_changed</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">_anytrait_changed</span></code>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.add_switch" title="capsul.pipeline.pipeline.Pipeline.add_switch"><code class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.add_switch</span></code></a>, <a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><code class="xref py py-obj docutils literal"><span class="pre">capsul.pipeline.pipeline.Pipeline.pipeline_definition</span></code></a></p>
 </div>
 <p class="rubric">Notes</p>
 <p>Switch is normally not instantiated directly, but from a pipeline
-<a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><tt class="xref py py-meth docutils literal"><span class="pre">pipeline_definition</span></tt></a> method</p>
+<a class="reference internal" href="capsul.pipeline.pipeline.Pipeline.html#capsul.pipeline.pipeline.Pipeline.pipeline_definition" title="capsul.pipeline.pipeline.Pipeline.pipeline_definition"><code class="xref py py-meth docutils literal"><span class="pre">pipeline_definition</span></code></a> method</p>
 <p class="rubric">Attributes</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="30%" />
-<col width="9%" />
-<col width="61%" />
+<col width="33%" />
+<col width="67%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>_switch_values</td>
-<td>list</td>
-<td>the switch options</td>
+<td>(list) the switch options</td>
 </tr>
 <tr class="row-even"><td>_outputs: list</td>
-<td>&nbsp;</td>
 <td>the switch output parameters</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="capsul.pipeline.pipeline_nodes.Switch.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em>, <em>output_types=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a Switch Node</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong></p>
 <blockquote>
 <div><p>the pipeline object where the node is added</p>
 </div></blockquote>
-<p><strong>name: str (mandatory)</strong> :</p>
+<p><strong>name: str (mandatory)</strong></p>
 <blockquote>
 <div><p>the switch node name</p>
 </div></blockquote>
-<p><strong>inputs: list (mandatory)</strong> :</p>
+<p><strong>inputs: list (mandatory)</strong></p>
 <blockquote>
 <div><p>a list of options</p>
 </div></blockquote>
-<p><strong>outputs: list (mandatory)</strong> :</p>
+<p><strong>outputs: list (mandatory)</strong></p>
 <blockquote>
 <div><p>a list of output parameters</p>
 </div></blockquote>
-<p><strong>make_optional: sequence (optional)</strong> :</p>
-<blockquote class="last">
+<p><strong>make_optional: sequence (optional)</strong></p>
+<blockquote>
 <div><p>list of optional outputs.
 These outputs will be made optional in the switch output. By
 default they are mandatory.</p>
+</div></blockquote>
+<p><strong>output_types: sequence of traits (optional)</strong></p>
+<blockquote class="last">
+<div><p>If given, this sequence sould have the same size as outputs. It
+will specify each switch output parameter type (as a standard
+trait). Input parameters for each input block will also have this
+type.</p>
 </div></blockquote>
 </td>
 </tr>
@@ -249,7 +254,7 @@ default they are mandatory.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,28 +123,28 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-workflow-workflow-from-pipeline">
 <h1>capsul.pipeline.pipeline_workflow.workflow_from_pipeline<a class="headerlink" href="#capsul-pipeline-pipeline-workflow-workflow-from-pipeline" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_workflow.workflow_from_pipeline">
-<tt class="descclassname">capsul.pipeline.pipeline_workflow.</tt><tt class="descname">workflow_from_pipeline</tt><big>(</big><em>pipeline</em>, <em>study_config={}</em>, <em>disabled_nodes=None</em>, <em>jobs_priority=0</em>, <em>create_directories=True</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_workflow.html#workflow_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.pipeline.pipeline_workflow.</code><code class="descname">workflow_from_pipeline</code><span class="sig-paren">(</span><em>pipeline</em>, <em>study_config={}</em>, <em>disabled_nodes=None</em>, <em>jobs_priority=0</em>, <em>create_directories=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_workflow.html#workflow_from_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_workflow.workflow_from_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a soma-workflow workflow from a Capsul Pipeline</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline (mandatory)</strong></p>
 <blockquote>
 <div><p>a CAPSUL pipeline</p>
 </div></blockquote>
-<p><strong>study_config: StudyConfig (optional), or dict</strong> :</p>
+<p><strong>study_config: StudyConfig (optional), or dict</strong></p>
 <blockquote>
 <div><p>holds information about file transfers and shared resource paths.
 If not specified, no translation/transfers will be used.</p>
 </div></blockquote>
-<p><strong>disabled_nodes: sequence of pipeline nodes (Node instances) (optional)</strong> :</p>
+<p><strong>disabled_nodes: sequence of pipeline nodes (Node instances) (optional)</strong></p>
 <blockquote>
 <div><p>such nodes will be disabled on-the-fly in the pipeline, file transfers
 will be adapted accordingly (outputs may become inputs in the resulting
@@ -154,18 +155,18 @@ If disabled_nodes is not passed, they will possibly be taken from the
 pipeline (if available) using disabled steps:
 see Pipeline.define_steps()</p>
 </div></blockquote>
-<p><strong>jobs_priority: int (optional, default: 0)</strong> :</p>
+<p><strong>jobs_priority: int (optional, default: 0)</strong></p>
 <blockquote>
 <div><p>set this priority on soma-workflow jobs.</p>
 </div></blockquote>
-<p><strong>create_directories: bool (optional, default: True)</strong> :</p>
+<p><strong>create_directories: bool (optional, default: True)</strong></p>
 <blockquote>
 <div><p>if set, needed output directories (which will contain output files)
 will be created in a first job, which all other ones depend on.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>workflow: Workflow</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">workflow: Workflow</p>
 <blockquote class="last">
 <div><p>a soma-workflow workflow</p>
 </div></blockquote>
@@ -188,7 +189,7 @@ will be created in a first job, which all other ones depend on.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

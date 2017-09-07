@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,21 +123,21 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-process-process-with-fom-processwithfom">
 <h1>capsul.process.process_with_fom.ProcessWithFom<a class="headerlink" href="#capsul-process-process-with-fom-processwithfom" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="capsul.process.process_with_fom.ProcessWithFom">
-<em class="property">class </em><tt class="descclassname">capsul.process.process_with_fom.</tt><tt class="descname">ProcessWithFom</tt><big>(</big><em>process</em>, <em>study_config</em>, <em>name=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">capsul.process.process_with_fom.</code><code class="descname">ProcessWithFom</code><span class="sig-paren">(</span><em>process</em>, <em>study_config</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class who creates attributes and completion
 Associates a Process and FOMs.</p>
 <ul class="simple">
 <li>A soma.Application needs to be created first, and associated with FOMS:</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">soma.application</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="n">soma_app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span> <span class="s">&#39;soma.fom&#39;</span><span class="p">,</span> <span class="s">&#39;1.0&#39;</span> <span class="p">)</span>
-<span class="n">soma_app</span><span class="o">.</span><span class="n">plugin_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;soma.fom&#39;</span> <span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">soma.application</span> <span class="k">import</span> <span class="n">Application</span>
+<span class="n">soma_app</span> <span class="o">=</span> <span class="n">Application</span><span class="p">(</span> <span class="s1">&#39;soma.fom&#39;</span><span class="p">,</span> <span class="s1">&#39;1.0&#39;</span> <span class="p">)</span>
+<span class="n">soma_app</span><span class="o">.</span><span class="n">plugin_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s1">&#39;soma.fom&#39;</span> <span class="p">)</span>
 <span class="n">soma_app</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -144,17 +145,17 @@ Associates a Process and FOMs.</p>
 <li>A capsul.study_config.StudyConfig also needs to be configured with FOM module, and
 selected FOMS and directories:</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">capsul.study_config</span> <span class="kn">import</span> <span class="n">StudyConfig</span>
-<span class="kn">from</span> <span class="nn">capsul.study_config.config_modules.fom_config</span> <span class="kn">import</span> <span class="n">FomConfig</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">capsul.study_config</span> <span class="k">import</span> <span class="n">StudyConfig</span>
+<span class="kn">from</span> <span class="nn">capsul.study_config.config_modules.fom_config</span> <span class="k">import</span> <span class="n">FomConfig</span>
 <span class="n">study_config</span> <span class="o">=</span> <span class="n">StudyConfig</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="n">StudyConfig</span><span class="o">.</span><span class="n">default_modules</span> <span class="o">+</span> <span class="p">[</span><span class="n">FomConfig</span><span class="p">])</span>
-<span class="n">study_config</span><span class="o">.</span><span class="n">update_study_configuration</span><span class="p">(</span><span class="s">&#39;study_config.json&#39;</span><span class="p">)</span>
+<span class="n">study_config</span><span class="o">.</span><span class="n">update_study_configuration</span><span class="p">(</span><span class="s1">&#39;study_config.json&#39;</span><span class="p">)</span>
 <span class="n">FomConfig</span><span class="o">.</span><span class="n">check_and_update_foms</span><span class="p">(</span><span class="n">study_config</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li>Only then a ProcessWithFom can be created:</li>
 </ul>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">process</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s">&#39;morphologist&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">process</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s1">&#39;morphologist&#39;</span><span class="p">)</span>
 <span class="n">process_with_fom</span> <span class="o">=</span> <span class="n">ProcessWithFom</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">study_config</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -162,15 +163,15 @@ selected FOMS and directories:</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process: Process instance (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process: Process instance (mandatory)</strong></p>
 <blockquote>
 <div><p>the process (or piprline) to be associated with FOMS</p>
 </div></blockquote>
-<p><strong>study_config: StudyConfig (mandatory)</strong> :</p>
+<p><strong>study_config: StudyConfig (mandatory)</strong></p>
 <blockquote>
 <div><p>config needed for FOMs, see capsul.study_config.study_config</p>
 </div></blockquote>
-<p><strong>name: string (optional)</strong> :</p>
+<p><strong>name: string (optional)</strong></p>
 <blockquote class="last">
 <div><p>name of the process in the FOM dictionary. By default the
 process.name variable will be used.</p>
@@ -186,32 +187,32 @@ process.name variable will be used.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process_with_fom.ProcessWithFom.create_completion" title="capsul.process.process_with_fom.ProcessWithFom.create_completion"><tt class="xref py py-obj docutils literal"><span class="pre">create_completion</span></tt></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.process.process_with_fom.ProcessWithFom.create_completion" title="capsul.process.process_with_fom.ProcessWithFom.create_completion"><code class="xref py py-obj docutils literal"><span class="pre">create_completion</span></code></a>()</td>
 <td>Completes the underlying process parameters according to the attributes set.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom" title="capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom"><tt class="xref py py-obj docutils literal"><span class="pre">create_attributes_with_fom</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom" title="capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom"><code class="xref py py-obj docutils literal"><span class="pre">create_attributes_with_fom</span></code></a>()</td>
 <td>To get useful attributes by the fom</td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="capsul.process.process_with_fom.ProcessWithFom.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>process</em>, <em>study_config</em>, <em>name=None</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>process</em>, <em>study_config</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom">
-<tt class="descname">create_attributes_with_fom</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.create_attributes_with_fom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_attributes_with_fom</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.create_attributes_with_fom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.create_attributes_with_fom" title="Permalink to this definition">¶</a></dt>
 <dd><p>To get useful attributes by the fom</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process_with_fom.ProcessWithFom.create_completion">
-<tt class="descname">create_completion</tt><big>(</big><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.create_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.create_completion" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_completion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.create_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.create_completion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Completes the underlying process parameters according to the
 attributes set.</p>
 <p>This is equivalent to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">proc_with_fom</span><span class="o">.</span><span class="n">process_completion</span><span class="p">(</span><span class="n">proc_with_fom</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">proc_with_fom</span><span class="o">.</span><span class="n">process_completion</span><span class="p">(</span><span class="n">proc_with_fom</span><span class="o">.</span><span class="n">process</span><span class="p">,</span>
 <span class="go">        proc_with_fom.name)</span>
 </pre></div>
 </div>
@@ -219,30 +220,30 @@ attributes set.</p>
 
 <dl class="method">
 <dt id="capsul.process.process_with_fom.ProcessWithFom.find_attributes">
-<tt class="descname">find_attributes</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.find_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.find_attributes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_attributes</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.find_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.find_attributes" title="Permalink to this definition">¶</a></dt>
 <dd><p>By the path, find value of attributes</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.process.process_with_fom.ProcessWithFom.process_completion">
-<tt class="descname">process_completion</tt><big>(</big><em>process</em>, <em>name=None</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.process_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.process_completion" title="Permalink to this definition">¶</a></dt>
+<code class="descname">process_completion</code><span class="sig-paren">(</span><em>process</em>, <em>name=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/process/process_with_fom.html#ProcessWithFom.process_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.process.process_with_fom.ProcessWithFom.process_completion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Completes the given process parameters according to the attributes
 set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process: Process / Pipeline: (mandatory)</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process: Process / Pipeline: (mandatory)</strong></p>
 <blockquote>
 <div><p>process on which perform completion</p>
 </div></blockquote>
-<p><strong>name: string (optional)</strong> :</p>
+<p><strong>name: string (optional)</strong></p>
 <blockquote>
 <div><p>name under which the process will be searched in the FOM. This
 enables specialized used of otherwise generic processes in the
 context of a given pipeline</p>
 </div></blockquote>
-<p><strong>verbose: bool (optional)</strong> :</p>
+<p><strong>verbose: bool (optional)</strong></p>
 <blockquote class="last">
 <div><p>issue warnings when a process cannot be found in the FOM list.
 Default: False</p>
@@ -268,7 +269,7 @@ Default: False</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

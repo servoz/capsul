@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../index.html" />
+    <link rel="search" title="Search" href="../search.html" />
   
    
        <script type="text/javascript" src="../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -111,13 +112,13 @@
       <!-- toc tree -->
       <ul>
 <li><a class="reference internal" href="#">Contributing Documentation</a><ul>
-<li><a class="reference internal" href="#capsul-pipeline-pipeline"><tt class="docutils literal"><span class="pre">capsul.pipeline</span></tt>: Pipeline</a><ul>
+<li><a class="reference internal" href="#capsul-pipeline-pipeline"><code class="docutils literal"><span class="pre">capsul.pipeline</span></code>: Pipeline</a><ul>
 <li><a class="reference internal" href="#workflow-definition">Workflow Definition</a></li>
 <li><a class="reference internal" href="#nodes">Nodes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#capsul-process-process"><tt class="docutils literal"><span class="pre">capsul.process</span></tt>: Process</a></li>
-<li><a class="reference internal" href="#capsul-study-config-study-configuration"><tt class="docutils literal"><span class="pre">capsul.study_config</span></tt>: Study Configuration</a><ul>
+<li><a class="reference internal" href="#capsul-process-process"><code class="docutils literal"><span class="pre">capsul.process</span></code>: Process</a></li>
+<li><a class="reference internal" href="#capsul-study-config-study-configuration"><code class="docutils literal"><span class="pre">capsul.study_config</span></code>: Study Configuration</a><ul>
 </ul>
 </li>
 </ul>
@@ -133,14 +134,14 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="contributing-documentation">
 <h1>Contributing Documentation<a class="headerlink" href="#contributing-documentation" title="Permalink to this headline">¶</a></h1>
 <p>Useful information for advanced users.</p>
-<p><strong>API:</strong> See the <a class="reference internal" href="../api_tree/index.html#capsul-ref"><em>capsul.pipeline: Pipeline</em></a> section for API details.</p>
+<p><strong>API:</strong> See the <a class="reference internal" href="../api_tree/index.html#capsul-ref"><span class="std std-ref">capsul.pipeline: Pipeline</span></a> section for API details.</p>
 <div class="section" id="capsul-pipeline-pipeline">
-<span id="capsul-dev"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.pipeline</span></tt>: Pipeline<a class="headerlink" href="#capsul-pipeline-pipeline" title="Permalink to this headline">¶</a></h2>
+<span id="capsul-dev"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.pipeline</span></code>: Pipeline<a class="headerlink" href="#capsul-pipeline-pipeline" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="workflow-definition">
 <h3>Workflow Definition<a class="headerlink" href="#workflow-definition" title="Permalink to this headline">¶</a></h3>
 <p>Pipeline nodes sorting and workflow helper</p>
@@ -150,10 +151,10 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.topological_sort.GraphNode.html#capsul.pipeline.topological_sort.GraphNode" title="capsul.pipeline.topological_sort.GraphNode"><tt class="xref py py-obj docutils literal"><span class="pre">topological_sort.GraphNode</span></tt></a>(name,&nbsp;meta)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.topological_sort.GraphNode.html#capsul.pipeline.topological_sort.GraphNode" title="capsul.pipeline.topological_sort.GraphNode"><code class="xref py py-obj docutils literal"><span class="pre">topological_sort.GraphNode</span></code></a>(name,&nbsp;meta)</td>
 <td>Simple Graph Node Structure</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.topological_sort.Graph.html#capsul.pipeline.topological_sort.Graph" title="capsul.pipeline.topological_sort.Graph"><tt class="xref py py-obj docutils literal"><span class="pre">topological_sort.Graph</span></tt></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.topological_sort.Graph.html#capsul.pipeline.topological_sort.Graph" title="capsul.pipeline.topological_sort.Graph"><code class="xref py py-obj docutils literal"><span class="pre">topological_sort.Graph</span></code></a>()</td>
 <td>Simple Graph Structure on which we want to perform a topological tree (no cycle).</td>
 </tr>
 </tbody>
@@ -168,42 +169,42 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_iterative.IterativeManager.html#capsul.pipeline.pipeline_iterative.IterativeManager" title="capsul.pipeline.pipeline_iterative.IterativeManager"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_iterative.IterativeManager</span></tt></a>(...[,&nbsp;...])</td>
-<td>Process to handle automatically the iterative input or output traits.</td>
+<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">pipeline_iterative.IterativeManager</span></code></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-pipeline/capsul.pipeline.pipeline_iterative.IterativePipeline.html#capsul.pipeline.pipeline_iterative.IterativePipeline" title="capsul.pipeline.pipeline_iterative.IterativePipeline"><tt class="xref py py-obj docutils literal"><span class="pre">pipeline_iterative.IterativePipeline</span></tt></a>([...])</td>
-<td>Dummy class to store an iterative pipeline</td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">pipeline_iterative.IterativePipeline</span></code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="capsul-process-process">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.process</span></tt>: Process<a class="headerlink" href="#capsul-process-process" title="Permalink to this headline">¶</a></h2>
+<h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.process</span></code>: Process<a class="headerlink" href="#capsul-process-process" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.nipype_process.nipype_factory.html#capsul.process.nipype_process.nipype_factory" title="capsul.process.nipype_process.nipype_factory"><tt class="xref py py-obj docutils literal"><span class="pre">nipype_process.nipype_factory</span></tt></a>(nipype_instance)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-process/capsul.process.nipype_process.nipype_factory.html#capsul.process.nipype_process.nipype_factory" title="capsul.process.nipype_process.nipype_factory"><code class="xref py py-obj docutils literal"><span class="pre">nipype_process.nipype_factory</span></code></a>(nipype_instance)</td>
 <td>From a nipype class instance generate dynamically a process instance that encapsulate the nipype instance.</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="capsul-study-config-study-configuration">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">capsul.study_config</span></tt>: Study Configuration<a class="headerlink" href="#capsul-study-config-study-configuration" title="Permalink to this headline">¶</a></h2>
+<h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.study_config</span></code>: Study Configuration<a class="headerlink" href="#capsul-study-config-study-configuration" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.MemorizedProcess.html#capsul.study_config.memory.MemorizedProcess" title="capsul.study_config.memory.MemorizedProcess"><tt class="xref py py-obj docutils literal"><span class="pre">memory.MemorizedProcess</span></tt></a>(process,&nbsp;cachedir[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.MemorizedProcess.html#capsul.study_config.memory.MemorizedProcess" title="capsul.study_config.memory.MemorizedProcess"><code class="xref py py-obj docutils literal"><span class="pre">memory.MemorizedProcess</span></code></a>(process,&nbsp;cachedir[,&nbsp;...])</td>
 <td>Callable object decorating a capsul process for caching its return values each time it is called.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.UnMemorizedProcess.html#capsul.study_config.memory.UnMemorizedProcess" title="capsul.study_config.memory.UnMemorizedProcess"><tt class="xref py py-obj docutils literal"><span class="pre">memory.UnMemorizedProcess</span></tt></a>(process[,&nbsp;verbose])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.memory.UnMemorizedProcess.html#capsul.study_config.memory.UnMemorizedProcess" title="capsul.study_config.memory.UnMemorizedProcess"><code class="xref py py-obj docutils literal"><span class="pre">memory.UnMemorizedProcess</span></code></a>(process[,&nbsp;verbose])</td>
 <td>This class replaces MemorizedProcess when there is no cache.</td>
 </tr>
 </tbody>
@@ -214,10 +215,10 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_utils.environment.html#capsul.study_config.config_utils.environment" title="capsul.study_config.config_utils.environment"><tt class="xref py py-obj docutils literal"><span class="pre">config_utils.environment</span></tt></a>([sh_file,&nbsp;env])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_utils.environment.html#capsul.study_config.config_utils.environment" title="capsul.study_config.config_utils.environment"><code class="xref py py-obj docutils literal"><span class="pre">config_utils.environment</span></code></a>([sh_file,&nbsp;env])</td>
 <td>Function that return a dictionary containing the environment needed by a program (for instance FSL or FreeSurfer).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.run.run_process.html#capsul.study_config.run.run_process" title="capsul.study_config.run.run_process"><tt class="xref py py-obj docutils literal"><span class="pre">run.run_process</span></tt></a>(output_dir,&nbsp;process_instance)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.run.run_process.html#capsul.study_config.run.run_process" title="capsul.study_config.run.run_process"><code class="xref py py-obj docutils literal"><span class="pre">run.run_process</span></code></a>(output_dir,&nbsp;process_instance)</td>
 <td>Execute a capsul process in a specific directory.</td>
 </tr>
 </tbody>
@@ -228,7 +229,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.find_spm.html#capsul.study_config.config_modules.spm_config.find_spm" title="capsul.study_config.config_modules.spm_config.find_spm"><tt class="xref py py-obj docutils literal"><span class="pre">spm_config.find_spm</span></tt></a>([matlab,&nbsp;matlab_path])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-studyconfig/capsul.study_config.config_modules.spm_config.find_spm.html#capsul.study_config.config_modules.spm_config.find_spm" title="capsul.study_config.config_modules.spm_config.find_spm"><code class="xref py py-obj docutils literal"><span class="pre">spm_config.find_spm</span></code></a>([matlab,&nbsp;matlab_path])</td>
 <td>Function to return the root directory of SPM.</td>
 </tr>
 </tbody>
@@ -247,7 +248,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>

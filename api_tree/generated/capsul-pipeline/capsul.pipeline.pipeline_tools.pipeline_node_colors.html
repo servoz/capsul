@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &mdash; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
@@ -20,16 +20,17 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean" href="../../../index.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
   
    
        <script type="text/javascript" src="../../../_static/sidebar.js"></script>
@@ -54,7 +55,7 @@
   </script>
 
   </head>
-  <body>
+  <body role="document">
 
 <div class="header-wrapper">
   <div class="header">
@@ -94,7 +95,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.1.0</strong>
+           This documentation is for CAPSUL <strong>version 1.2.0</strong>
           </p>
         <p class="citing">
           If you use the software, please do not esitate to 
@@ -122,13 +123,13 @@
       
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="capsul-pipeline-pipeline-tools-pipeline-node-colors">
 <h1>capsul.pipeline.pipeline_tools.pipeline_node_colors<a class="headerlink" href="#capsul-pipeline-pipeline-tools-pipeline-node-colors" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="capsul.pipeline.pipeline_tools.pipeline_node_colors">
-<tt class="descclassname">capsul.pipeline.pipeline_tools.</tt><tt class="descname">pipeline_node_colors</tt><big>(</big><em>pipeline</em>, <em>node</em><big>)</big><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#pipeline_node_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.pipeline_node_colors" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">capsul.pipeline.pipeline_tools.</code><code class="descname">pipeline_node_colors</code><span class="sig-paren">(</span><em>pipeline</em>, <em>node</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_tools.html#pipeline_node_colors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_tools.pipeline_node_colors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Node color to display boxes in GUI and graphviz graphs. Depending on the
 node type (process, pipeline, switch) and its activation, colors will
 differ.</p>
@@ -136,17 +137,17 @@ differ.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline</strong> :</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pipeline: Pipeline</strong></p>
 <blockquote>
 <div><p>the pipeline the node belongs to</p>
 </div></blockquote>
-<p><strong>node: Node</strong> :</p>
+<p><strong>node: Node</strong></p>
 <blockquote>
 <div><p>the node to be colored</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>colors: tuple</strong> :</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">colors: tuple</p>
 <blockquote class="last">
 <div><p>(box_color, background_fill_color, dark_color, style). Colors are
 3-tuples of float values between 0. and 1. style is &#8220;default&#8221;,
@@ -171,7 +172,7 @@ differ.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;antoine.grigis@cea.fr&gt;.
+    &copy; 2013, CAPSUL developers &lt;&gt;.
 </div>
   </body>
 </html>
