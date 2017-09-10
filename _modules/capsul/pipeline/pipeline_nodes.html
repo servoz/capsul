@@ -7,11 +7,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
+  <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
@@ -20,7 +21,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.0',
+        VERSION:     '2.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -30,6 +31,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -38,7 +40,6 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
-  <!-- <link rel="canonical" href="https://bioproj.extra.cea.fr/redmine/projects/nsap/_modules/capsul/pipeline/pipeline_nodes.html" /> -->
 
   <script type="text/javascript">
     $("div.buttonNext, div.buttonPrevious").hover(
@@ -57,36 +58,44 @@
   </head>
   <body role="document">
 
-<div class="header-wrapper">
-  <div class="header">
-    <p class="logo">
-      <a href="../../../index.html">
-        <img src="../../../_static/capsul.png" alt="Logo"/>
-      </a>
-    </p><div class="navbar">
+  <div class="header" style="display: inline; width: 80%; margin-left:10%;">
+    <a href="../../../index.html">
+    <img src="../../../_static/capsul_logo.svg" alt="Capsul logo" style="display: inline; height:4em;"/>
+    </a >
+    <div class="navbar" style="display: inline;">
       <ul>
         <li><a href="../../../index.html">Home</a></li>
         <li><a href="../../../installation.html">Installation</a></li>
         <li class="btn-li">
           <div class="btn-group">
-		    <a href="../../../documentation.html">Documentation</a>
-		    <a class="btn dropdown-toggle" data-toggle="dropdown">
-		      <span class="caret"></span>
-		    </a>
-		    <ul class="dropdown-menu">
-	          <li class="link-title">CAPSUL</li>
-			  <li><a href="../../../user_guide_tree/index.html">User guide</a></li>
-			  <li><a href="../../../api_tree/index.html">API</a></li>
-			  <li><a href="../../../gui_tree/index.html">GUI</a></li>
-			  <li class="divider"></li>
-		      <li><a href="../../../developer_tree/index.html">Development</a></li>
-		    </ul>
-		  </div>
+            <a href="../../../documentation.html">Documentation</a>
+            <a class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="link-title">CAPSUL</li>
+              <li><a href="#">User guide</a></li>
+              <li><a href="../../../api_tree/index.html">API</a></li>
+              <li><a href="../../../gui_tree/index.html">GUI</a></li>
+              <li class="divider"></li>
+              <li><a href="../../../developer_tree/index.html">Development</a></li>
+            </ul>
+          </div>
         </li>
-        <li><a href="http://neurospin-wiki.org/">NeuroSpin Wiki</a></li>
+        <li>
+          <!-- form action="search.html" method="get" style="display: inline-block;"></form>
+            <input type="text" class="search-header" name="q" placeholder="search documentation..." value=""></input>
+            <button type="submit" >search</button>
+          </form -->
+          <form class="search_box" method="get" action="http://www.google.com/search" style="display: inline-block;">
+            <input class="search-header" type="text" name="q" placeholder="search documentation..." />
+            <input class="submit" type="image" src="../../../_static/find_read.png" value="Search" />
+            <input type="hidden" name="sitesearch" value="brainvisa.info/capsul" />
+          </form>
+        </li>
       </ul>
-    </div> <!-- end navbar --></div>
-</div>
+    </div> <!-- end navbar -->
+  </div>
 
 
 <div class="content-wrapper">
@@ -95,19 +104,13 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.2.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.0</strong>
           </p>
-        <p class="citing">
+<!--        <p class="citing">
           If you use the software, please do not esitate to 
           <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
           Report a Bug</a>.
-        </p>
-        <!-- <form action="/scripts/nsap-src-message.php" method="post">
-          <textarea rows="4" name="comments" style="width:175px">Enter here your comments</textarea>
-          <center>
-           <input type="submit" value="Send">
-          </center>
-        </form> -->
+        </p>-->
 
       <!-- toc tree -->
       
@@ -123,8 +126,7 @@
           <div class="body" role="main">
             
   <h1>Source code for capsul.pipeline.pipeline_nodes</h1><div class="highlight"><pre>
-<span></span><span class="ch">#! /usr/bin/env python</span>
-<span class="c1">##########################################################################</span>
+<span></span><span class="c1">##########################################################################</span>
 <span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
 <span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
 <span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
@@ -132,8 +134,11 @@
 <span class="c1"># for details.</span>
 <span class="c1">##########################################################################</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
 <span class="c1"># System import</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">six</span>
 
 <span class="c1"># Define the logger</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -147,16 +152,14 @@
 <span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">Undefined</span>
 
 <span class="c1"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">clone_trait</span>
 <span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">trait_ids</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">build_expression</span>
-<span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">eval_trait</span>
 <span class="kn">from</span> <span class="nn">soma.controller.trait_utils</span> <span class="k">import</span> <span class="n">is_trait_pathname</span>
 
 <span class="c1"># Soma import</span>
 <span class="kn">from</span> <span class="nn">soma.controller</span> <span class="k">import</span> <span class="n">Controller</span>
 <span class="kn">from</span> <span class="nn">soma.sorted_dictionary</span> <span class="k">import</span> <span class="n">SortedDictionary</span>
 <span class="kn">from</span> <span class="nn">soma.utils.functiontools</span> <span class="k">import</span> <span class="n">SomaPartial</span>
+<span class="kn">from</span> <span class="nn">soma.utils.weak_proxy</span> <span class="k">import</span> <span class="n">weak_proxy</span><span class="p">,</span> <span class="n">get_ref</span>
 
 
 <div class="viewcode-block" id="Plug"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline.Plug.html#capsul.pipeline.pipeline.Plug">[docs]</a><span class="k">class</span> <span class="nc">Plug</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
@@ -244,7 +247,7 @@
 <span class="sd">            values (mandatory key: name)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">pipeline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">weak_proxy</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span> <span class="o">=</span> <span class="n">SortedDictionary</span><span class="p">()</span>
         <span class="c1"># _callbacks -&gt; (src_plug_name, dest_node, dest_plug_name)</span>
@@ -253,8 +256,8 @@
         <span class="c1"># generate a list with all the inputs and outputs</span>
         <span class="c1"># the second parameter (parameter_type) is False for an input,</span>
         <span class="c1"># True for an output</span>
-        <span class="n">parameters</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span>
-        <span class="n">parameters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)))</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)))</span>
+        <span class="n">parameters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">))))</span>
         <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">parameter_type</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
             <span class="c1"># check if parameter is a dictionary as specified in the</span>
             <span class="c1"># docstring</span>
@@ -293,6 +296,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_value_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span>
                         <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Spread the source plug value to the destination plug.</span>
@@ -356,11 +360,11 @@
             <span class="k">return</span> <span class="n">name</span>
         <span class="n">dest_plug</span> <span class="o">=</span> <span class="n">dest_node</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">dest_plug_name</span><span class="p">]</span>
         <span class="c1">#print &gt;&gt; open(&#39;/tmp/linklog.txt&#39;, &#39;a&#39;), &#39;link_name:&#39;,  self, repr(self.name), &#39;, prefix:&#39;, repr(prefix), &#39;, source_plug_name:&#39;, source_plug_name, &#39;dest:&#39;, dest_plug, repr(dest_plug_name), &#39;dest node:&#39;, dest_node, repr(dest_node.name)</span>
-        <span class="nb">print</span> <span class="o">&gt;&gt;</span> <span class="n">log_stream</span><span class="p">,</span> <span class="s1">&#39;value link:&#39;</span><span class="p">,</span> \
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;value link:&#39;</span><span class="p">,</span> \
             <span class="s1">&#39;from:&#39;</span><span class="p">,</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">source_plug_name</span><span class="p">,</span> \
             <span class="s1">&#39;to:&#39;</span><span class="p">,</span> <span class="n">_link_name</span><span class="p">(</span><span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">,</span>
                               <span class="bp">self</span><span class="p">),</span> \
-            <span class="s1">&#39;, value:&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c1">#, &#39;self:&#39;, self, repr(self.name), &#39;, prefix:&#39;,repr(prefix), &#39;, source_plug_name:&#39;, source_plug_name, &#39;dest:&#39;, dest_plug, repr(dest_plug_name), &#39;dest node:&#39;, dest_node, repr(dest_node.name)</span>
+            <span class="s1">&#39;, value:&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">log_stream</span><span class="p">)</span> <span class="c1">#, &#39;self:&#39;, self, repr(self.name), &#39;, prefix:&#39;,repr(prefix), &#39;, source_plug_name:&#39;, source_plug_name, &#39;dest:&#39;, dest_plug, repr(dest_plug_name), &#39;dest node:&#39;, dest_node, repr(dest_node.name)</span>
         <span class="n">log_stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
         <span class="c1"># actually propagate</span>
@@ -379,8 +383,9 @@
 <span class="sd">            the destination plug name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># add a callback to spread the source plug value</span>
-        <span class="n">value_callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="n">source_plug_name</span><span class="p">,</span>
-                                     <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">)</span>
+        <span class="n">value_callback</span> <span class="o">=</span> <span class="n">SomaPartial</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="n">weak_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="n">source_plug_name</span><span class="p">,</span> <span class="n">weak_proxy</span><span class="p">(</span><span class="n">dest_node</span><span class="p">),</span> <span class="n">dest_plug_name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">[(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span>
                          <span class="n">dest_plug_name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value_callback</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_callback_on_plug</span><span class="p">(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">value_callback</span><span class="p">)</span></div>
@@ -398,8 +403,8 @@
 <span class="sd">            the destination plug name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># remove the callback to spread the source plug value</span>
-        <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">((</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span>
-                                        <span class="n">dest_plug_name</span><span class="p">))</span>
+        <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">dest_node</span><span class="p">,</span> <span class="n">dest_plug_name</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_callback_from_plug</span><span class="p">(</span><span class="n">source_plug_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -416,7 +421,7 @@
         <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_callbacks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">SomaPartial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_callback</span><span class="p">,</span> <span class="o">*</span><span class="n">i</span><span class="p">))</span>
                                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_callbacks&#39;</span><span class="p">])</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">callback_key</span><span class="p">,</span> <span class="n">value_callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">callback_key</span><span class="p">,</span> <span class="n">value_callback</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_callbacks</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_callback_on_plug</span><span class="p">(</span><span class="n">callback_key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value_callback</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Node.set_callback_on_plug"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.Node.html#capsul.pipeline.pipeline.Node.set_callback_on_plug">[docs]</a>    <span class="k">def</span> <span class="nf">set_callback_on_plug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
@@ -519,7 +524,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nodes_activation&#39;</span><span class="p">,</span> <span class="s1">&#39;selection_changed&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">trait</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
@@ -589,7 +594,7 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">Undefined</span>
         <span class="k">elif</span> <span class="n">is_trait_pathname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">plug_name</span><span class="p">))</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">Undefined</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">plug_name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProcessNode.get_trait"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_nodes.ProcessNode.html#capsul.pipeline.pipeline.ProcessNode.get_trait">[docs]</a>    <span class="k">def</span> <span class="nf">get_trait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trait_name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the desired trait</span>
@@ -748,7 +753,8 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Switch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">node_inputs</span><span class="p">,</span>
                                      <span class="n">node_outputs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">plug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span>
+            <span class="n">plug</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># add switch enum trait to select the process</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s2">&quot;switch&quot;</span><span class="p">,</span> <span class="n">Enum</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">))</span>
@@ -758,9 +764,11 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">flat_inputs</span><span class="p">,</span> <span class="n">input_types</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">output_types</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">trait</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span>
 
         <span class="c1"># activate the switch first Process</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_switch_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
@@ -862,6 +870,128 @@
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__block_output_propagation</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Switch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">OptionalOutputSwitch</span><span class="p">(</span><span class="n">Switch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; A switch which activates or disables its input/output link according</span>
+<span class="sd">    to the output value. If the output value is not None or Undefined, the</span>
+<span class="sd">    link is active, otherwise it is inactive.</span>
+
+<span class="sd">    This kind of switch is meant to make a pipeline output optional, but still</span>
+<span class="sd">    available for temporary files values inside the pipeline.</span>
+
+<span class="sd">    Ex:</span>
+
+<span class="sd">        A.output -&gt; B.input</span>
+
+<span class="sd">        B.input is mandatory, but we want to make A.output available and</span>
+<span class="sd">        optional in the pipeline outputs. If we directlty export A.output, then</span>
+<span class="sd">        if the pipeline does not set a value, B.input will be empty and the</span>
+<span class="sd">        pipeline run will fail.</span>
+
+<span class="sd">        Instead we can add an OptionalOutputSwitch between A.output and</span>
+<span class="sd">        pipeline.output. If pipeline.output is set a valid value, then A.output</span>
+<span class="sd">        and B.input will have the same valid value. If pipeline.output is left</span>
+<span class="sd">        Undefined, then A.output and B.input will get a temporary value during</span>
+<span class="sd">        the run.</span>
+
+<span class="sd">    Technically, the OptionalOutputSwitch is currently implemented as a</span>
+<span class="sd">    specialized switch node with two inputs and one output, and thus follows</span>
+<span class="sd">    the inputs naming rules. The first input is the defined one, and the</span>
+<span class="sd">    second, hidden one, is named &quot;_none&quot;. As a consequence, its 1st input</span>
+<span class="sd">    should be connected under the name &quot;&lt;input&gt;_switch_&lt;output&gt; as in a</span>
+<span class="sd">    standard switch.</span>
+<span class="sd">    The &quot;switch&quot; input is hidden (not exported to the pipeline) and set</span>
+<span class="sd">    automatically according to the output value.</span>
+<span class="sd">    The implementation details may change in future versions.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Generate an OptionalOutputSwitch Node</span>
+
+<span class="sd">        Warnings</span>
+<span class="sd">        --------</span>
+<span class="sd">        The input plug name is built according to the following rule:</span>
+<span class="sd">        &lt;input&gt;_switch_&lt;output&gt;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pipeline: Pipeline (mandatory)</span>
+<span class="sd">            the pipeline object where the node is added</span>
+<span class="sd">        name: str (mandatory)</span>
+<span class="sd">            the switch node name</span>
+<span class="sd">        input: str (mandatory)</span>
+<span class="sd">            option</span>
+<span class="sd">        output: str (mandatory)</span>
+<span class="sd">            output parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">OptionalOutputSwitch</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">pipeline</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="nb">input</span><span class="p">,</span> <span class="s1">&#39;_none&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">output</span><span class="p">],</span> <span class="p">[</span><span class="n">output</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="s1">&#39;switch&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="s1">&#39;switch&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">optional</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">switch</span> <span class="o">=</span> <span class="s1">&#39;_none&#39;</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">do_not_export</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;switch&#39;</span><span class="p">))</span>
+        <span class="n">none_input</span> <span class="o">=</span> <span class="s1">&#39;_none_switch_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">output</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">do_not_export</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="n">none_input</span><span class="p">))</span>
+        <span class="c1"># hide internal machinery plugs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="s1">&#39;switch&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="s1">&#39;switch&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">none_input</span><span class="p">)</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">none_input</span><span class="p">]</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_anytrait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add an event to the switch trait that enables us to select</span>
+<span class="sd">        the desired option.</span>
+
+<span class="sd">        Propagates value through the switch, from output to input.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: str (mandatory)</span>
+<span class="sd">            the trait name</span>
+<span class="sd">        old: str (mandatory)</span>
+<span class="sd">            the old value</span>
+<span class="sd">        new: str (mandatory)</span>
+<span class="sd">            the new value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if the value change is on an output of the switch, and comes from</span>
+        <span class="c1"># an &quot;external&quot; assignment (ie not the result of switch action or</span>
+        <span class="c1"># change in one of its inputs), then propagate the new value to</span>
+        <span class="c1"># all corresponding inputs.</span>
+        <span class="c1"># However those inputs which are connected to a pipeline input are</span>
+        <span class="c1"># not propagated, to avoid cyclic feedback between outputs and inputs</span>
+        <span class="c1"># inside a pipeline</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;trait_added&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_outputs&#39;</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Switch__block_output_propagation</span> \
+                <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Switch__block_output_propagation</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># change the switch value according to the output value</span>
+            <span class="k">if</span> <span class="n">new</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">switch</span> <span class="o">=</span> <span class="s1">&#39;_none&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">switch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">flat_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_switch_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">switch_name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">switch_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">input_name</span> <span class="ow">in</span> <span class="n">flat_inputs</span><span class="p">:</span>
+                <span class="c1"># check if input is connected to a pipeline input</span>
+                <span class="n">plug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugs</span><span class="p">[</span><span class="n">input_name</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">link_spec</span> <span class="ow">in</span> <span class="n">plug</span><span class="o">.</span><span class="n">links_from</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">link_spec</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">PipelineNode</span><span class="p">)</span> \
+                            <span class="ow">and</span> <span class="ow">not</span> <span class="n">link_spec</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Switch__block_output_propagation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># if the change is in an input, change the corresponding output</span>
+        <span class="c1"># accordingly, if the current switch selection is on this input.</span>
+        <span class="n">spliter</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_switch_&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spliter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">spliter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_switch_values</span><span class="p">:</span>
+            <span class="n">switch_selection</span><span class="p">,</span> <span class="n">output_plug_name</span> <span class="o">=</span> <span class="n">spliter</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">switch</span> <span class="o">==</span> <span class="n">switch_selection</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_Switch__block_output_propagation</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_plug_name</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_Switch__block_output_propagation</span> <span class="o">=</span> <span class="kc">False</span>
 </pre></div>
 
           </div>
@@ -874,7 +1004,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;&gt;.
+    &copy; 2017, BrainVISA team &lt;support@brainvisa.info&gt;.
 </div>
   </body>
 </html>

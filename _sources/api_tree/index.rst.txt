@@ -53,7 +53,7 @@ Workflow conversion
     :template: function.rst
 
     pipeline_workflow.workflow_from_pipeline
-    pipeline_workflow.local_workflow_run
+    pipeline_workflow.workflow_run
 
     pipeline_tools.pipeline_node_colors
     pipeline_tools.pipeline_link_color
@@ -84,17 +84,16 @@ Classes
 
     :template: class.rst
 
-    process.ProcessResult
-    process_with_fom.ProcessWithFom
-
 Functions
 ---------
+
+.. currentmodule:: capsul.api
 
 .. autosummary::
     :toctree: generated/capsul-process/
     :template: function.rst
 
-    loader.get_process_instance
+    get_process_instance
 
 
 :mod:`capsul.study_config`: Study Configuration
@@ -121,6 +120,7 @@ Configuration Modules
     :toctree: generated/capsul-studyconfig/
     :template: class.rst
 
+    somaworkflow_config.SomaWorkflowConfig
     matlab_config.MatlabConfig
     spm_config.SPMConfig
     fsl_config.FSLConfig
@@ -128,4 +128,29 @@ Configuration Modules
     nipype_config.NipypeConfig
     brainvisa_config.BrainVISAConfig
     fom_config.FomConfig
+    attributes_config.AttributesConfig
+    smartcaching_config.SmartCachingConfig
+
+
+:mod:`capsul.attributes`: Attributes and processes completion
+=============================================================
+
+.. currentmodule:: capsul.attributes
+
+Classes
+-------
+
+.. autosummary::
+    :toctree: generated/capsul-attributes
+    :template: class_process.rst
+
+    completion_engine.ProcessCompletionEngine
+    completion_engine.PathCompletionEngine
+    completion_engine.ProcessCompletionEngineFactory
+    completion_engine.PathCompletionEngine
+    completion_engine_iteration.ProcessCompletionEngineIteration
+    fom_completion_engine.FomProcessCompletionEngine
+    fom_completion_engine.FomProcessCompletionEngineIteration
+    fom_completion_engine.FomPathCompletionEngine
+
 

@@ -7,11 +7,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
+  <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
@@ -20,7 +21,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.0',
+        VERSION:     '2.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -30,6 +31,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -38,7 +40,6 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
-  <!-- <link rel="canonical" href="https://bioproj.extra.cea.fr/redmine/projects/nsap/_modules/capsul/pipeline/pipeline_tools.html" /> -->
 
   <script type="text/javascript">
     $("div.buttonNext, div.buttonPrevious").hover(
@@ -57,36 +58,44 @@
   </head>
   <body role="document">
 
-<div class="header-wrapper">
-  <div class="header">
-    <p class="logo">
-      <a href="../../../index.html">
-        <img src="../../../_static/capsul.png" alt="Logo"/>
-      </a>
-    </p><div class="navbar">
+  <div class="header" style="display: inline; width: 80%; margin-left:10%;">
+    <a href="../../../index.html">
+    <img src="../../../_static/capsul_logo.svg" alt="Capsul logo" style="display: inline; height:4em;"/>
+    </a >
+    <div class="navbar" style="display: inline;">
       <ul>
         <li><a href="../../../index.html">Home</a></li>
         <li><a href="../../../installation.html">Installation</a></li>
         <li class="btn-li">
           <div class="btn-group">
-		    <a href="../../../documentation.html">Documentation</a>
-		    <a class="btn dropdown-toggle" data-toggle="dropdown">
-		      <span class="caret"></span>
-		    </a>
-		    <ul class="dropdown-menu">
-	          <li class="link-title">CAPSUL</li>
-			  <li><a href="../../../user_guide_tree/index.html">User guide</a></li>
-			  <li><a href="../../../api_tree/index.html">API</a></li>
-			  <li><a href="../../../gui_tree/index.html">GUI</a></li>
-			  <li class="divider"></li>
-		      <li><a href="../../../developer_tree/index.html">Development</a></li>
-		    </ul>
-		  </div>
+            <a href="../../../documentation.html">Documentation</a>
+            <a class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="link-title">CAPSUL</li>
+              <li><a href="#">User guide</a></li>
+              <li><a href="../../../api_tree/index.html">API</a></li>
+              <li><a href="../../../gui_tree/index.html">GUI</a></li>
+              <li class="divider"></li>
+              <li><a href="../../../developer_tree/index.html">Development</a></li>
+            </ul>
+          </div>
         </li>
-        <li><a href="http://neurospin-wiki.org/">NeuroSpin Wiki</a></li>
+        <li>
+          <!-- form action="search.html" method="get" style="display: inline-block;"></form>
+            <input type="text" class="search-header" name="q" placeholder="search documentation..." value=""></input>
+            <button type="submit" >search</button>
+          </form -->
+          <form class="search_box" method="get" action="http://www.google.com/search" style="display: inline-block;">
+            <input class="search-header" type="text" name="q" placeholder="search documentation..." />
+            <input class="submit" type="image" src="../../../_static/find_read.png" value="Search" />
+            <input type="hidden" name="sitesearch" value="brainvisa.info/capsul" />
+          </form>
+        </li>
       </ul>
-    </div> <!-- end navbar --></div>
-</div>
+    </div> <!-- end navbar -->
+  </div>
 
 
 <div class="content-wrapper">
@@ -95,19 +104,13 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.2.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.0</strong>
           </p>
-        <p class="citing">
+<!--        <p class="citing">
           If you use the software, please do not esitate to 
           <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
           Report a Bug</a>.
-        </p>
-        <!-- <form action="/scripts/nsap-src-message.php" method="post">
-          <textarea rows="4" name="comments" style="width:175px">Enter here your comments</textarea>
-          <center>
-           <input type="submit" value="Send">
-          </center>
-        </form> -->
+        </p>-->
 
       <!-- toc tree -->
       
@@ -132,12 +135,17 @@
 <span class="c1">##########################################################################</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
 <span class="c1"># System import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">subprocess32</span> <span class="k">as</span> <span class="nn">subprocess</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="c1"># Define the logger</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -149,8 +157,13 @@
     <span class="kn">from</span> <span class="nn">enthought.traits</span> <span class="k">import</span> <span class="n">api</span> <span class="k">as</span> <span class="n">traits</span>
 
 <span class="c1"># Capsul import</span>
-<span class="kn">from</span> <span class="nn">capsul.pipeline</span> <span class="k">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">,</span> <span class="n">Switch</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline.pipeline</span> <span class="k">import</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">,</span> <span class="n">Switch</span><span class="p">,</span> \
+    <span class="n">ProcessNode</span><span class="p">,</span> <span class="n">OptionalOutputSwitch</span>
+<span class="kn">from</span> <span class="nn">capsul.pipeline.process_iteration</span> <span class="k">import</span> <span class="n">ProcessIteration</span>
 <span class="kn">from</span> <span class="nn">soma.controller</span> <span class="k">import</span> <span class="n">Controller</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">basestring</span> <span class="o">=</span> <span class="nb">str</span>
 
 
 <div class="viewcode-block" id="pipeline_node_colors"><a class="viewcode-back" href="../../../api_tree/generated/capsul-pipeline/capsul.pipeline.pipeline_tools.pipeline_node_colors.html#capsul.pipeline.pipeline_tools.pipeline_node_colors">[docs]</a><span class="k">def</span> <span class="nf">pipeline_node_colors</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -187,6 +200,13 @@
     <span class="n">LIGHT_BLUE_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
     <span class="n">LIGHT_BLUE_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 
+    <span class="n">SEA_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="n">SEA_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">SEA_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+    <span class="n">LIGHT_SEA_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">LIGHT_SEA_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="n">LIGHT_SEA_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+
     <span class="c1">#GRAY_1 = (0.7, 0.7, 0.8, 1)</span>
     <span class="c1">#GRAY_2 = (0.4, 0.4, 0.4, 1)</span>
     <span class="c1">#LIGHT_GRAY_1 = (0.7, 0.7, 0.8, 1)</span>
@@ -206,6 +226,27 @@
     <span class="n">DEEP_PURPLE_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
     <span class="n">DEEP_PURPLE_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
 
+    <span class="n">GREEN_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+    <span class="n">GREEN_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">GREEN_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">LIGHT_GREEN_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">)</span>
+    <span class="n">LIGHT_GREEN_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">)</span>
+    <span class="n">LIGHT_GREEN_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+
+    <span class="n">SKY_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="n">SKY_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">SKY_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">LIGHT_SKY_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+    <span class="n">LIGHT_SKY_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">LIGHT_SKY_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+
+    <span class="n">APPLE_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">APPLE_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">APPLE_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">LIGHT_APPLE_1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.78</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">)</span>
+    <span class="n">LIGHT_APPLE_2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.73</span><span class="p">)</span>
+    <span class="n">LIGHT_APPLE_3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+
     <span class="n">_colors</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">BLUE_1</span><span class="p">,</span> <span class="n">BLUE_2</span><span class="p">,</span> <span class="n">BLUE_3</span><span class="p">,</span> <span class="n">LIGHT_BLUE_1</span><span class="p">,</span> <span class="n">LIGHT_BLUE_2</span><span class="p">,</span>
                     <span class="n">LIGHT_BLUE_3</span><span class="p">),</span>
@@ -213,11 +254,29 @@
                    <span class="n">LIGHT_SAND_3</span><span class="p">),</span>
         <span class="s1">&#39;pipeline&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">DEEP_PURPLE_1</span><span class="p">,</span> <span class="n">DEEP_PURPLE_2</span><span class="p">,</span> <span class="n">DEEP_PURPLE_3</span><span class="p">,</span> <span class="n">PURPLE_1</span><span class="p">,</span>
                      <span class="n">PURPLE_2</span><span class="p">,</span> <span class="n">PURPLE_3</span><span class="p">),</span>
+        <span class="s1">&#39;pipeline_io&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SEA_1</span><span class="p">,</span> <span class="n">SEA_2</span><span class="p">,</span> <span class="n">SEA_3</span><span class="p">,</span> <span class="n">LIGHT_SEA_1</span><span class="p">,</span> <span class="n">LIGHT_SEA_2</span><span class="p">,</span>
+                        <span class="n">LIGHT_SEA_3</span><span class="p">),</span>
+        <span class="s1">&#39;iteration&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">GREEN_1</span><span class="p">,</span> <span class="n">GREEN_2</span><span class="p">,</span> <span class="n">GREEN_3</span><span class="p">,</span> <span class="n">LIGHT_GREEN_1</span><span class="p">,</span> <span class="n">LIGHT_GREEN_2</span><span class="p">,</span>
+                      <span class="n">LIGHT_GREEN_3</span><span class="p">),</span>
+        <span class="s1">&#39;attributed&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">SKY_1</span><span class="p">,</span> <span class="n">SKY_2</span><span class="p">,</span> <span class="n">SKY_3</span><span class="p">,</span> <span class="n">LIGHT_SKY_1</span><span class="p">,</span> <span class="n">LIGHT_SKY_2</span><span class="p">,</span>
+                      <span class="n">LIGHT_SKY_3</span><span class="p">),</span>
+        <span class="s1">&#39;optional_output_switch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">APPLE_1</span><span class="p">,</span> <span class="n">APPLE_2</span><span class="p">,</span> <span class="n">APPLE_3</span><span class="p">,</span> <span class="n">LIGHT_APPLE_1</span><span class="p">,</span>
+                                   <span class="n">LIGHT_APPLE_2</span><span class="p">,</span> <span class="n">LIGHT_APPLE_3</span><span class="p">),</span>
     <span class="p">}</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Switch</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">:</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;pipeline_io&#39;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">OptionalOutputSwitch</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;optional_output_switch&#39;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Switch</span><span class="p">):</span>
         <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;switch&#39;</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">)</span> <span class="ow">and</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">pipeline_node</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PipelineNode</span><span class="p">):</span>
         <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;pipeline&#39;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ProcessNode</span><span class="p">)</span> \
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="n">ProcessIteration</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;iteration&#39;</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ProcessNode</span><span class="p">)</span> \
+            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s1">&#39;completion_engine&#39;</span><span class="p">):</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;attributed&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
     <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">activated</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">enabled</span><span class="p">:</span>
@@ -323,7 +382,7 @@
     <span class="n">nodes_pos</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">node_position</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mf">67.</span>
 
-    <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">include_io</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -351,7 +410,7 @@
         <span class="k">if</span> <span class="n">node_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">id</span><span class="p">,</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node_props</span><span class="p">))</span>
         <span class="n">has_inputs</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="n">node_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> \
                     <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span> <span class="ow">and</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">node_name</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
@@ -388,7 +447,7 @@
     <span class="k">if</span> <span class="n">has_outputs</span><span class="p">:</span>
         <span class="n">size</span> <span class="o">=</span> <span class="n">nodes_sizes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="s1">&#39;fixedsize&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">main_node_props</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="n">prop</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">main_node_props</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">main_node_props</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">main_node_props</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
@@ -494,7 +553,7 @@
     <span class="n">props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;rankdir&#39;</span><span class="p">:</span> <span class="s1">&#39;LR&#39;</span><span class="p">}</span>
     <span class="n">props</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">propsstr</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">aname</span><span class="p">,</span> <span class="n">_str_repr</span><span class="p">(</span><span class="n">val</span><span class="p">)])</span>
-                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">props</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()])</span>
+                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">props</span><span class="p">)])</span>
     <span class="n">rankdir</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s1">&#39;rankdir&#39;</span><span class="p">]</span>
 
     <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;digraph {</span><span class="si">%s</span><span class="s1">;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">propsstr</span><span class="p">)</span>
@@ -505,16 +564,16 @@
             <span class="n">props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">props</span><span class="p">)</span>
             <span class="n">props</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">90</span>
         <span class="n">attstr</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">aname</span><span class="p">,</span> <span class="n">_str_repr</span><span class="p">(</span><span class="n">val</span><span class="p">)])</span>
-                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">props</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()])</span>
+                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">props</span><span class="p">)])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">props</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">attstr</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">attstr</span>
-        <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%s</span><span class="s1"> [label=</span><span class="si">%s</span><span class="s1"> style=&quot;filled&quot;</span><span class="si">%s</span><span class="s1">];</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%s</span><span class="s1"> [label=&quot;</span><span class="si">%s</span><span class="s1">&quot; style=&quot;filled&quot;</span><span class="si">%s</span><span class="s1">];</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">attstr</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="n">dot_graph</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">dot_graph</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">descr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">attstr</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;=&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">aname</span><span class="p">,</span> <span class="n">_str_repr</span><span class="p">(</span><span class="n">val</span><span class="p">)])</span>
-                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">props</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()])</span>
-        <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%s</span><span class="s1"> -&gt; </span><span class="si">%s</span><span class="s1"> [</span><span class="si">%s</span><span class="s1">];</span><span class="se">\n</span><span class="s1">&#39;</span>
+                           <span class="k">for</span> <span class="n">aname</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">props</span><span class="p">)])</span>
+        <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &quot;</span><span class="si">%s</span><span class="s1">&quot; -&gt; &quot;</span><span class="si">%s</span><span class="s1">&quot; [</span><span class="si">%s</span><span class="s1">];</span><span class="se">\n</span><span class="s1">&#39;</span>
             <span class="o">%</span> <span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">attstr</span><span class="p">))</span>
     <span class="n">fileobj</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
@@ -599,7 +658,7 @@
 <span class="sd">        pipeline to disbale nodes in.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">steps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="s1">&#39;pipeline_steps&#39;</span><span class="p">,</span> <span class="n">Controller</span><span class="p">())</span>
-    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
             <span class="k">continue</span>  <span class="c1"># already inactive</span>
         <span class="k">for</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="n">trait</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
@@ -675,7 +734,7 @@
     <span class="k">if</span> <span class="n">exclude_inactive</span><span class="p">:</span>
         <span class="n">steps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="s1">&#39;pipeline_steps&#39;</span><span class="p">,</span> <span class="n">Controller</span><span class="p">())</span>
         <span class="n">disabled_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
                 <span class="n">disabled_nodes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
@@ -691,12 +750,12 @@
         <span class="n">process</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
         <span class="k">if</span> <span class="n">recursive</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
             <span class="n">nodes</span> <span class="o">+=</span> <span class="p">[(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">),</span> <span class="n">new_node</span><span class="p">)</span>
-                      <span class="k">for</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_node</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+                      <span class="k">for</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_node</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
                       <span class="k">if</span> <span class="n">new_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
             <span class="k">continue</span>
         <span class="n">plug_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">input_files_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">):</span>
             <span class="n">trait</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">plug_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> \
                     <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">Directory</span><span class="p">)</span> \
@@ -745,7 +804,7 @@
     <span class="n">selected_nodes</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">steps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="s1">&#39;pipeline_steps&#39;</span><span class="p">,</span> <span class="n">Controller</span><span class="p">())</span>
     <span class="n">disabled_nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">trait</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">steps</span><span class="o">.</span><span class="n">user_traits</span><span class="p">()):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">steps</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
             <span class="n">disabled_nodes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">pipeline</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">node_name</span> <span class="ow">in</span> <span class="n">trait</span><span class="o">.</span><span class="n">nodes</span><span class="p">])</span>
@@ -761,10 +820,10 @@
         <span class="n">process</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
         <span class="k">if</span> <span class="n">recursive</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">process</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">):</span>
             <span class="n">nodes</span> <span class="o">+=</span> <span class="p">[(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">),</span> <span class="n">new_node</span><span class="p">)</span>
-                      <span class="k">for</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_node</span> <span class="ow">in</span> <span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+                      <span class="k">for</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_node</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">process</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
                       <span class="k">if</span> <span class="n">new_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
             <span class="k">continue</span>
-        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">plug</span><span class="o">.</span><span class="n">output</span><span class="p">:</span>
                 <span class="n">trait</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">trait</span><span class="p">(</span><span class="n">plug_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trait</span><span class="o">.</span><span class="n">trait_type</span><span class="p">,</span> <span class="n">traits</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> \
@@ -960,7 +1019,7 @@
                     <span class="n">modified</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">elif</span> <span class="n">recursive</span><span class="p">:</span>
                     <span class="n">todo</span> <span class="o">=</span> <span class="p">[(</span><span class="n">value</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span> <span class="o">+</span> <span class="n">todo</span>
+                            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">nodes</span><span class="p">)]</span> <span class="o">+</span> <span class="n">todo</span>
                     <span class="n">modified</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">parent</span><span class="p">[</span><span class="n">parent_key</span><span class="p">]</span>
@@ -977,7 +1036,7 @@
             <span class="n">proc</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">process</span>
         <span class="n">node_dict</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">export_to_dict</span><span class="p">()</span>
         <span class="c1"># filter out forbidden and already used plugs</span>
-        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">plug_name</span><span class="p">,</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">plugs</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">should_keep_value</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">plug</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
                 <span class="k">del</span> <span class="n">node_dict</span><span class="p">[</span><span class="n">plug_name</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">node_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -992,7 +1051,7 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">proc</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">):</span>
             <span class="n">nodes</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">child_node_name</span><span class="p">,</span> <span class="n">child_node</span><span class="p">,</span> <span class="n">child_dict</span><span class="p">)</span>
                       <span class="k">for</span> <span class="n">child_node_name</span><span class="p">,</span> <span class="n">child_node</span>
-                      <span class="ow">in</span> <span class="n">proc</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">child_node_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+                      <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">proc</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="k">if</span> <span class="n">child_node_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
 
     <span class="n">prune_empty_dicts</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">state_dict</span>
@@ -1022,7 +1081,7 @@
         <span class="n">sub_nodes</span> <span class="o">=</span> <span class="n">current_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sub_nodes</span><span class="p">:</span>
             <span class="n">nodes</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">proc</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_name</span><span class="p">],</span> <span class="n">sub_dict</span><span class="p">)</span>
-                      <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">sub_dict</span> <span class="ow">in</span> <span class="n">sub_nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
+                      <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">sub_dict</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">sub_nodes</span><span class="p">)]</span>
 
 <span class="k">def</span> <span class="nf">get_output_directories</span><span class="p">(</span><span class="n">process</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1073,7 +1132,7 @@
             <span class="c1"># TODO: handle disabled steps</span>
             <span class="n">sub_dict</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">dirs</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_dict</span>
-            <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">sub_nodes</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">node_name</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">sub_nodes</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">node_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">activated</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">enabled</span> \
                         <span class="ow">and</span> <span class="ow">not</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">disabled_nodes</span><span class="p">:</span>
                     <span class="n">sub_node_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1089,6 +1148,25 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
 
+<span class="k">def</span> <span class="nf">save_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Save the pipeline either in XML or .py source file</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">capsul.pipeline.xml</span> <span class="k">import</span> <span class="n">save_xml_pipeline</span>
+    <span class="kn">from</span> <span class="nn">capsul.pipeline.python_export</span> <span class="k">import</span> <span class="n">save_py_pipeline</span>
+
+    <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.py&#39;</span><span class="p">:</span> <span class="n">save_py_pipeline</span><span class="p">,</span>
+               <span class="s1">&#39;.xml&#39;</span><span class="p">:</span> <span class="n">save_xml_pipeline</span><span class="p">}</span>
+
+    <span class="n">saved</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">ext</span><span class="p">,</span> <span class="n">writer</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">formats</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">ext</span><span class="p">):</span>
+            <span class="n">writer</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">saved</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">saved</span><span class="p">:</span>
+        <span class="c1"># fallback to XML</span>
+        <span class="n">save_py_pipeline</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -1101,7 +1179,7 @@
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;&gt;.
+    &copy; 2017, BrainVISA team &lt;support@brainvisa.info&gt;.
 </div>
   </body>
 </html>

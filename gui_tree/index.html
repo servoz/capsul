@@ -7,11 +7,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
   
-    <title>CAPSUL &#8212; CAPSUL - Collaborative Analysis Platform: Simple, Unifying, Lean</title>
+    <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../_static/css/bootstrap.min.css" media="screen" />
   <link rel="stylesheet" href="../_static/css/bootstrap-responsive.css"/>
+  <link rel="icon" href="../_static/capsul_logo.svg"/>
 
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
@@ -20,7 +21,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.0',
+        VERSION:     '2.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -30,6 +31,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../search.html" />
   
    
@@ -38,7 +40,6 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="../_static/js/bootstrap.min.js" type="text/javascript"></script>
-  <!-- <link rel="canonical" href="https://bioproj.extra.cea.fr/redmine/projects/nsap/gui_tree/index.html" /> -->
 
   <script type="text/javascript">
     $("div.buttonNext, div.buttonPrevious").hover(
@@ -57,36 +58,44 @@
   </head>
   <body role="document">
 
-<div class="header-wrapper">
-  <div class="header">
-    <p class="logo">
-      <a href="../index.html">
-        <img src="../_static/capsul.png" alt="Logo"/>
-      </a>
-    </p><div class="navbar">
+  <div class="header" style="display: inline; width: 80%; margin-left:10%;">
+    <a href="../index.html">
+    <img src="../_static/capsul_logo.svg" alt="Capsul logo" style="display: inline; height:4em;"/>
+    </a >
+    <div class="navbar" style="display: inline;">
       <ul>
         <li><a href="../index.html">Home</a></li>
         <li><a href="../installation.html">Installation</a></li>
         <li class="btn-li">
           <div class="btn-group">
-		    <a href="../documentation.html">Documentation</a>
-		    <a class="btn dropdown-toggle" data-toggle="dropdown">
-		      <span class="caret"></span>
-		    </a>
-		    <ul class="dropdown-menu">
-	          <li class="link-title">CAPSUL</li>
-			  <li><a href="../user_guide_tree/index.html">User guide</a></li>
-			  <li><a href="../api_tree/index.html">API</a></li>
-			  <li><a href="#">GUI</a></li>
-			  <li class="divider"></li>
-		      <li><a href="../developer_tree/index.html">Development</a></li>
-		    </ul>
-		  </div>
+            <a href="../documentation.html">Documentation</a>
+            <a class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="link-title">CAPSUL</li>
+              <li><a href="#">User guide</a></li>
+              <li><a href="../api_tree/index.html">API</a></li>
+              <li><a href="#">GUI</a></li>
+              <li class="divider"></li>
+              <li><a href="../developer_tree/index.html">Development</a></li>
+            </ul>
+          </div>
         </li>
-        <li><a href="http://neurospin-wiki.org/">NeuroSpin Wiki</a></li>
+        <li>
+          <!-- form action="search.html" method="get" style="display: inline-block;"></form>
+            <input type="text" class="search-header" name="q" placeholder="search documentation..." value=""></input>
+            <button type="submit" >search</button>
+          </form -->
+          <form class="search_box" method="get" action="http://www.google.com/search" style="display: inline-block;">
+            <input class="search-header" type="text" name="q" placeholder="search documentation..." />
+            <input class="submit" type="image" src="../_static/find_read.png" value="Search" />
+            <input type="hidden" name="sitesearch" value="brainvisa.info/capsul" />
+          </form>
+        </li>
       </ul>
-    </div> <!-- end navbar --></div>
-</div>
+    </div> <!-- end navbar -->
+  </div>
 
 
 <div class="content-wrapper">
@@ -95,39 +104,25 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 1.2.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.0</strong>
           </p>
-        <p class="citing">
+<!--        <p class="citing">
           If you use the software, please do not esitate to 
           <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
           Report a Bug</a>.
-        </p>
-        <!-- <form action="/scripts/nsap-src-message.php" method="post">
-          <textarea rows="4" name="comments" style="width:175px">Enter here your comments</textarea>
-          <center>
-           <input type="submit" value="Send">
-          </center>
-        </form> -->
+        </p>-->
 
       <!-- toc tree -->
       <ul>
 <li><a class="reference internal" href="#">GUI</a><ul>
-<li><a class="reference internal" href="#capsul-qt-apps-application"><code class="docutils literal"><span class="pre">capsul.qt_apps</span></code>: Application</a><ul>
-<li><a class="reference internal" href="#classes">Classes</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#capsul-qt-apps-application"><code class="docutils literal"><span class="pre">capsul.qt_apps</span></code>: Application</a></li>
 <li><a class="reference internal" href="#capsul-qt-apps-utils-utils"><code class="docutils literal"><span class="pre">capsul.qt_apps.utils</span></code>: Utils</a><ul>
-<li><a class="reference internal" href="#id1">Classes</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#capsul-qt-gui-controller-widgets"><code class="docutils literal"><span class="pre">capsul.qt_gui</span></code>: Controller Widgets</a><ul>
-<li><a class="reference internal" href="#id2">Classes</a></li>
-<li><a class="reference internal" href="#controls">Controls</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#capsul-qt-gui-widgets-pipeline-viewers"><code class="docutils literal"><span class="pre">capsul.qt_gui.widgets</span></code>: Pipeline Viewers</a><ul>
-<li><a class="reference internal" href="#id3">Classes</a></li>
+<li><a class="reference internal" href="#id1">Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -152,28 +147,11 @@ the docstrings.</p>
 <p><strong>User guide:</strong> See the <a class="reference internal" href="../user_guide_tree/index.html#capsul-guide"><span class="std std-ref">User Guide</span></a> section for further details.</p>
 <div class="section" id="capsul-qt-apps-application">
 <span id="capsul-gui-ref"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.qt_apps</span></code>: Application<a class="headerlink" href="#capsul-qt-apps-application" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">main_window.CapsulMainWindow</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">pipeline_viewer_app.PipelineViewerApp</span></code></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 <div class="section" id="capsul-qt-apps-utils-utils">
 <h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.qt_apps.utils</span></code>: Utils<a class="headerlink" href="#capsul-qt-apps-utils-utils" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -197,78 +175,14 @@ the docstrings.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.find_pipelines_from_description.html#capsul.qt_apps.utils.find_pipelines.find_pipelines_from_description" title="capsul.qt_apps.utils.find_pipelines.find_pipelines_from_description"><code class="xref py py-obj docutils literal"><span class="pre">find_pipelines.find_pipelines_from_description</span></code></a>(...)</td>
-<td>Function that list all the pipeline of a module.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.find_pipeline_and_process.html#capsul.qt_apps.utils.find_pipelines.find_pipeline_and_process" title="capsul.qt_apps.utils.find_pipelines.find_pipeline_and_process"><code class="xref py py-obj docutils literal"><span class="pre">find_pipelines.find_pipeline_and_process</span></code></a>(...)</td>
-<td>Function that return all the Pipeline and Process classes of a module.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.find_pipelines.lists2dict.html#capsul.qt_apps.utils.find_pipelines.lists2dict" title="capsul.qt_apps.utils.find_pipelines.lists2dict"><code class="xref py py-obj docutils literal"><span class="pre">find_pipelines.lists2dict</span></code></a>(...)</td>
-<td>Convert a list of splited module names to a hierachic dictionary with list leafs that contain the url to the module docuementation.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.fill_treectrl.html#capsul.qt_apps.utils.fill_treectrl.fill_treectrl" title="capsul.qt_apps.utils.fill_treectrl.fill_treectrl"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.fill_treectrl</span></code></a>(treectrl,&nbsp;menu)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.fill_treectrl.html#capsul.qt_apps.utils.fill_treectrl.fill_treectrl" title="capsul.qt_apps.utils.fill_treectrl.fill_treectrl"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.fill_treectrl</span></code></a>(treectrl,&nbsp;menu)</td>
 <td>Fill a tree control with the different menu items.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.add_tree_nodes.html#capsul.qt_apps.utils.fill_treectrl.add_tree_nodes" title="capsul.qt_apps.utils.fill_treectrl.add_tree_nodes"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.add_tree_nodes</span></code></a>(parent_item,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.add_tree_nodes.html#capsul.qt_apps.utils.fill_treectrl.add_tree_nodes" title="capsul.qt_apps.utils.fill_treectrl.add_tree_nodes"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.add_tree_nodes</span></code></a>(parent_item,&nbsp;...)</td>
 <td>Add the menu to tree control if match in current module name or child modules.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.search_in_menu.html#capsul.qt_apps.utils.fill_treectrl.search_in_menu" title="capsul.qt_apps.utils.fill_treectrl.search_in_menu"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.search_in_menu</span></code></a>(menu,&nbsp;match)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-apps-utils/capsul.qt_apps.utils.fill_treectrl.search_in_menu.html#capsul.qt_apps.utils.fill_treectrl.search_in_menu" title="capsul.qt_apps.utils.fill_treectrl.search_in_menu"><code class="xref py py-obj docutils literal"><span class="pre">fill_treectrl.search_in_menu</span></code></a>(menu,&nbsp;match)</td>
 <td>Recursive search in tree.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="capsul-qt-gui-controller-widgets">
-<h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.qt_gui</span></code>: Controller Widgets<a class="headerlink" href="#capsul-qt-gui-controller-widgets" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id2">
-<h3>Classes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">controller_widget.ScrollControllerWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">controller_widget.ControllerWidget</span></code></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="controls">
-<h3>Controls<a class="headerlink" href="#controls" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">Str.StrControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">File.FileControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">Bool.BoolControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">Float.FloatControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">Directory.DirectoryControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">Enum.EnumControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal"><span class="pre">Int.IntControlWidget</span></code></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">List.ListControlWidget</span></code></td>
-<td></td>
 </tr>
 </tbody>
 </table>
@@ -276,22 +190,19 @@ the docstrings.</p>
 </div>
 <div class="section" id="capsul-qt-gui-widgets-pipeline-viewers">
 <h2><code class="xref py py-mod docutils literal"><span class="pre">capsul.qt_gui.widgets</span></code>: Pipeline Viewers<a class="headerlink" href="#capsul-qt-gui-widgets-pipeline-viewers" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3>Classes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h3>Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-gui-widgets/capsul.qt_gui.widgets.PipelineDevelopperView.html#capsul.qt_gui.widgets.PipelineDevelopperView" title="capsul.qt_gui.widgets.PipelineDevelopperView"><code class="xref py py-obj docutils literal"><span class="pre">PipelineDevelopperView</span></code></a>(pipeline[,&nbsp;parent,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-gui-widgets/capsul.qt_gui.widgets.PipelineDevelopperView.html#capsul.qt_gui.widgets.PipelineDevelopperView" title="capsul.qt_gui.widgets.PipelineDevelopperView"><code class="xref py py-obj docutils literal"><span class="pre">PipelineDevelopperView</span></code></a>([pipeline,&nbsp;parent,&nbsp;...])</td>
 <td>Pipeline representation as a graph, using boxes and arrows.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/capsul-gui-widgets/capsul.qt_gui.widgets.PipelineUserView.html#capsul.qt_gui.widgets.PipelineUserView" title="capsul.qt_gui.widgets.PipelineUserView"><code class="xref py py-obj docutils literal"><span class="pre">PipelineUserView</span></code></a>(pipeline)</td>
 <td>A widget to visualize a pipeline as a simple workflow.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/capsul-gui-widgets/capsul.qt_gui.widgets.activation_inspector.ActivationInspector.html#capsul.qt_gui.widgets.activation_inspector.ActivationInspector" title="capsul.qt_gui.widgets.activation_inspector.ActivationInspector"><code class="xref py py-obj docutils literal"><span class="pre">activation_inspector.ActivationInspector</span></code></a>(...)</td>
-<td>A Widget to display the pipeline activation process step by step.</td>
 </tr>
 </tbody>
 </table>
@@ -310,7 +221,7 @@ the docstrings.</p>
 </div>
 
 <div class="footer">
-    &copy; 2013, CAPSUL developers &lt;&gt;.
+    &copy; 2017, BrainVISA team &lt;support@brainvisa.info&gt;.
 </div>
   </body>
 </html>
