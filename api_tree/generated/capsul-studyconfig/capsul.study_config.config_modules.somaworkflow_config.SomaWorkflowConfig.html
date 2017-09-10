@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
+  <link rel="icon" href="../../../_static/capsul_logo.svg"/>
+
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../../search.html" />
+  
+   
+       <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../../../_static/js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    var bodywrapper = $('.bodywrapper');
+    var sidebarbutton = $('#sidebarbutton');
+    sidebarbutton.css({'height': '900px'});
+  </script>
+
+  </head>
+  <body role="document">
+
+  <div class="header" style="display: inline; width: 80%; margin-left:10%;">
+    <a href="../../../index.html">
+    <img src="../../../_static/capsul_logo.svg" alt="Capsul logo" style="display: inline; height:4em;"/>
+    </a >
+    <div class="navbar" style="display: inline;">
+      <ul>
+        <li><a href="../../../index.html">Home</a></li>
+        <li><a href="../../../installation.html">Installation</a></li>
+        <li class="btn-li">
+          <div class="btn-group">
+            <a href="../../../documentation.html">Documentation</a>
+            <a class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="link-title">CAPSUL</li>
+              <li><a href="#">User guide</a></li>
+              <li><a href="../../index.html">API</a></li>
+              <li><a href="../../../gui_tree/index.html">GUI</a></li>
+              <li class="divider"></li>
+              <li><a href="../../../developer_tree/index.html">Development</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <!-- form action="search.html" method="get" style="display: inline-block;"></form>
+            <input type="text" class="search-header" name="q" placeholder="search documentation..." value=""></input>
+            <button type="submit" >search</button>
+          </form -->
+          <form class="search_box" method="get" action="http://www.google.com/search" style="display: inline-block;">
+            <input class="search-header" type="text" name="q" placeholder="search documentation..." />
+            <input class="submit" type="image" src="../../../_static/find_read.png" value="Search" />
+            <input type="hidden" name="sitesearch" value="brainvisa.info/capsul" />
+          </form>
+        </li>
+      </ul>
+    </div> <!-- end navbar -->
+  </div>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+          </p>
+<!--        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
+          Report a Bug</a>.
+        </p>-->
+
+      <!-- toc tree -->
+      <ul>
+<li><a class="reference internal" href="#">capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig</a></li>
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="capsul-study-config-config-modules-somaworkflow-config-somaworkflowconfig">
+<h1>capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig<a class="headerlink" href="#capsul-study-config-config-modules-somaworkflow-config-somaworkflowconfig" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig">
+<em class="property">class </em><code class="descclassname">capsul.study_config.config_modules.somaworkflow_config.</code><code class="descname">SomaWorkflowConfig</code><span class="sig-paren">(</span><em>study_config</em>, <em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration module for <a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/index.html">Soma-Workflow</a></p>
+<p>Stores configuration options which are not part of Soma-Workflow own
+configuration, and used to run workflows from CAPSUL pipelines.</p>
+<p>The configuration module may also store connected Soma-Workflow
+<a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/client_API.html">WorkflowController</a> objects to allow
+monitoring and submiting workflows.</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>use_soma_workflow: bool</td>
+<td>Use soma workflow for the execution</td>
+</tr>
+<tr class="row-even"><td>somaworkflow_computing_resource: str</td>
+<td>Soma-workflow computing resource to be used to run processing</td>
+</tr>
+<tr class="row-odd"><td>somaworkflow_config_file: filename</td>
+<td>Soma-Workflow configuration file. Default: <code class="docutils literal"><span class="pre">$HOME/.soma_workflow.cfg</span></code></td>
+</tr>
+<tr class="row-even"><td>somaworkflow_keep_failed_workflows: bool</td>
+<td>Keep failed workflows after pipeline execution through StudyConfig</td>
+</tr>
+<tr class="row-odd"><td>somaworkflow_keep_succeeded_workflows: bool</td>
+<td>Keep succeeded workflows after pipeline execution through StudyConfig</td>
+</tr>
+<tr class="row-even"><td>somaworkflow_computing_resources_config: dict(str, ResourceController)</td>
+<td>Computing resource config dict, keys are resource ids. Values are <a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.ResourceController" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.ResourceController"><code class="xref py py-class docutils literal"><span class="pre">ResourceController</span></code></a> instances</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_resource_id" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_resource_id"><code class="xref py py-obj docutils literal"><span class="pre">get_resource_id</span></code></a>([resource_id,&nbsp;set_it])</td>
+<td>Get a computing resource name according to the (optional) input resource_id and Soma-Workflow configuration.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.set_computing_resource_password" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.set_computing_resource_password"><code class="xref py py-obj docutils literal"><span class="pre">set_computing_resource_password</span></code></a>(resource_id)</td>
+<td>Set credentials for a given computinf resource.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_workflow_controller" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_workflow_controller"><code class="xref py py-obj docutils literal"><span class="pre">get_workflow_controller</span></code></a>([resource_id])</td>
+<td>Get a connected</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.connect_resource" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.connect_resource"><code class="xref py py-obj docutils literal"><span class="pre">connect_resource</span></code></a>([resource_id,&nbsp;force_reconnect])</td>
+<td>Connect a soma-workflow computing resource.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.disconnect_resource" title="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.disconnect_resource"><code class="xref py py-obj docutils literal"><span class="pre">disconnect_resource</span></code></a>([resource_id])</td>
+<td>Disconnect a connected</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>study_config</em>, <em>configuration</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.ResourceController">
+<em class="property">class </em><code class="descname">ResourceController</code><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.ResourceController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.ResourceController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configuration options for one Soma-Workflow computing resource</p>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>queue: str</td>
+<td>Jobs queue to be used on the computing resource for w orkflow submissions</td>
+</tr>
+<tr class="row-even"><td>transfer_paths: list(str)</td>
+<td>list of paths where files have to be transferred by soma-workflow</td>
+</tr>
+<tr class="row-odd"><td>path_translations: dict(str, (str, str))</td>
+<td>Soma-workflow paths translations mapping: <code class="docutils literal"><span class="pre">{local_path:</span> <span class="pre">(identifier,</span> <span class="pre">uuid)}</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.connect_resource">
+<code class="descclassname">SomaWorkflowConfig.</code><code class="descname">connect_resource</code><span class="sig-paren">(</span><em>resource_id=None</em>, <em>force_reconnect=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.connect_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.connect_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect a soma-workflow computing resource.</p>
+<p>Sets the current resource to the given resource_id (transformed by
+get_resource_id() if None or &#8220;localhost&#8221; is given, for instance).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>resource_id: str (optional)</strong></p>
+<blockquote>
+<div><p>resource name, may be None or &#8220;localhost&#8221;. If None, the current
+one (study_config.somaworkflow_computing_resource) is used, or
+the localhost if none is configured.</p>
+</div></blockquote>
+<p><strong>force_reconnect: bool (optional)</strong></p>
+<blockquote>
+<div><p>if True, if an existing workflow controller is already connected,
+it will be disconnected (deleted) and a new one will be connected.
+If False, an existing controller will be reused without
+reconnection.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/client_API.html">WorkflowController</a> object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.disconnect_resource">
+<code class="descclassname">SomaWorkflowConfig.</code><code class="descname">disconnect_resource</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.disconnect_resource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.disconnect_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect a connected
+<a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/client_API.html">WorkflowController</a> and removes it
+from the internal list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_resource_id">
+<code class="descclassname">SomaWorkflowConfig.</code><code class="descname">get_resource_id</code><span class="sig-paren">(</span><em>resource_id=None</em>, <em>set_it=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.get_resource_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_resource_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a computing resource name according to the (optional) input
+resource_id and Soma-Workflow configuration.</p>
+<p>For instance, <code class="docutils literal"><span class="pre">None</span></code> or <code class="docutils literal"><span class="pre">&quot;localhost&quot;</span></code> will be transformed to the
+local host id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>resource_id: str (optional)</strong></p>
+<p><strong>set_it: bool (optional)</strong></p>
+<blockquote>
+<div><p>if True, the computed resource id will be set as the current
+resource in the somaworkflow_computing_resource trait value.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">computed resource id.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_workflow_controller">
+<code class="descclassname">SomaWorkflowConfig.</code><code class="descname">get_workflow_controller</code><span class="sig-paren">(</span><em>resource_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.get_workflow_controller"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.get_workflow_controller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a connected
+<a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/client_API.html">WorkflowController</a> for the given
+resource</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.set_computing_resource_password">
+<code class="descclassname">SomaWorkflowConfig.</code><code class="descname">set_computing_resource_password</code><span class="sig-paren">(</span><em>resource_id</em>, <em>password=None</em>, <em>rsa_key_password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/config_modules/somaworkflow_config.html#SomaWorkflowConfig.set_computing_resource_password"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.config_modules.somaworkflow_config.SomaWorkflowConfig.set_computing_resource_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set credentials for a given computinf resource.</p>
+<p>Such credentials are stored in the config object, but will not be
+written when the config is saved in a file. They are thus non-
+persistant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>resource_id: str (optional)</strong></p>
+<p><strong>password: str (optional)</strong></p>
+<p class="last"><strong>rsa_key_password: str (optional)</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2017, BrainVISA team &lt;support@brainvisa.info&gt;.
+</div>
+  </body>
+</html>

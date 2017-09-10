@@ -1,0 +1,1108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+  
+    <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
+  <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/bootstrap.min.css" media="screen" />
+  <link rel="stylesheet" href="../css/bootstrap-responsive.css"/>
+  <link rel="icon" href="../capsul_logo.svg"/>
+
+    
+    <link rel="stylesheet" href="../nature.css" type="text/css" />
+    <link rel="stylesheet" href="../pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../jquery.js"></script>
+    <script type="text/javascript" src="../underscore.js"></script>
+    <script type="text/javascript" src="../doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" title="Search" href="../../search.html" />
+  
+   
+       <script type="text/javascript" src="../sidebar.js"></script>
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    $("div.buttonNext, div.buttonPrevious").hover(
+       function () {
+           $(this).css('background-color', '#FF9C34');
+       },
+       function () {
+           $(this).css('background-color', '#A7D6E2');
+       }
+    );
+    var bodywrapper = $('.bodywrapper');
+    var sidebarbutton = $('#sidebarbutton');
+    sidebarbutton.css({'height': '900px'});
+  </script>
+
+  </head>
+  <body role="document">
+
+  <div class="header" style="display: inline; width: 80%; margin-left:10%;">
+    <a href="../../index.html">
+    <img src="../capsul_logo.svg" alt="Capsul logo" style="display: inline; height:4em;"/>
+    </a >
+    <div class="navbar" style="display: inline;">
+      <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li class="btn-li">
+          <div class="btn-group">
+            <a href="../../documentation.html">Documentation</a>
+            <a class="btn dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="link-title">CAPSUL</li>
+              <li><a href="#">User guide</a></li>
+              <li><a href="../../api_tree/index.html">API</a></li>
+              <li><a href="../../gui_tree/index.html">GUI</a></li>
+              <li class="divider"></li>
+              <li><a href="../../developer_tree/index.html">Development</a></li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <!-- form action="search.html" method="get" style="display: inline-block;"></form>
+            <input type="text" class="search-header" name="q" placeholder="search documentation..." value=""></input>
+            <button type="submit" >search</button>
+          </form -->
+          <form class="search_box" method="get" action="http://www.google.com/search" style="display: inline-block;">
+            <input class="search-header" type="text" name="q" placeholder="search documentation..." />
+            <input class="submit" type="image" src="../find_read.png" value="Search" />
+            <input type="hidden" name="sitesearch" value="brainvisa.info/capsul" />
+          </form>
+        </li>
+      </ul>
+    </div> <!-- end navbar -->
+  </div>
+
+
+<div class="content-wrapper">
+    <div class="sphinxsidebar">
+      <div class="sphinxsidebarwrapper">
+
+        <!-- info setup -->
+          <p class="doc-version">
+           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+          </p>
+<!--        <p class="citing">
+          If you use the software, please do not esitate to 
+          <a &mdash; <a href="https://bioproj.extra.cea.fr/redmine/projects/capsul/">
+          Report a Bug</a>.
+        </p>-->
+
+      <!-- toc tree -->
+      <ul class="simple">
+</ul>
+
+
+      </div>
+    </div>
+  
+
+  <div class="content">
+      
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #303F9F;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #D84315;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 9ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #cfcfcf;
+    border-radius: 2px;
+    background: #f7f7f7;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.pngmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-bold { font-weight: bold; }
+</style>
+<h1><p>Capsul: Collaborative Analysis Platform : Simple, Unifying, Lean</p>
+</h1><div style="text-align: center"><p>Credit: Antoine Grigis</p>
+</div><p>Capsul is a simple and efficient Python tool that aims to organize a set
+of processings. It is accessible to everybody, and is reusable in
+various contexts. The project is hosted on github:
+<a class="reference external" href="https://github.com/neurospin/capsul">https://github.com/neurospin/capsul</a>.</p>
+<p>Definitions</p>
+<ul style="list-style-type:disc;"><li><p>A Process is a processing that can derived directly from a Python
+function and that can be used as a building block of a pipeline.</p>
+</li><li><p>A Pipeline is a serie of connected processes.</p>
+</li></ul><p>First check</p>
+<p>In order to test if capsul is installed on your machine, you can ask the
+the Capsul version:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="c1"># just to ensure compatibility of this notebook with python 2 and 3</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="c1"># the following to avoid display when this notebook is converted to sphinx doc</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ALLOW_GUI&#39;</span><span class="p">,</span> <span class="s1">&#39;TRUE&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;FALSE&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">):</span>
+    <span class="n">use_gui</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">use_gui</span> <span class="o">=</span> <span class="bp">True</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">capsul</span>
+<span class="k">print</span><span class="p">(</span><span class="n">capsul</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2.1.0
+</pre></div></div>
+</div>
+<h2><p>Use a function as a building block</p>
+</h2><p>It is possible to convert a function in Process and thus use it as a
+building block of a pipeline. In the following example we will use the
+&#8216;a_function_to_wrap&#8217; test function:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">capsul.process.test.test_load_from_description</span> <span class="kn">import</span> <span class="n">a_function_to_wrap</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsourcelines</span><span class="p">(</span><span class="n">a_function_to_wrap</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+def a_function_to_wrap(fname, directory, value, enum, list_of_str):
+    &#34;&#34;&#34; A dummy fucntion that just print all its parameters.
+
+    &lt;process&gt;
+        &lt;return name=&#34;string&#34; type=&#34;string&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;fname&#34; type=&#34;file&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;directory&#34; type=&#34;directory&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;value&#34; type=&#34;float&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;enum&#34; type=&#34;string&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;list_of_str&#34; type=&#34;list_string&#34; doc=&#34;test&#34; /&gt;
+    &lt;/process&gt;
+    &#34;&#34;&#34;
+    string = &#34;ALL FUNCTION PARAMETERS::\n\n&#34;
+    for input_parameter in (fname, directory, value, enum, list_of_str):
+        string += str(input_parameter)
+    return string
+
+</pre></div></div>
+</div>
+<p>This is a pure Python function with the Process description in the
+docstring between the &lt;process&gt;...&lt;/process&gt; tags. Inside those tags,
+each returned and input parameters are described in the function order.
+The parameters are typed and a description is asked in order to generate
+proper tooltips or documentations. The &#8216;reference&#8217; output parameter is
+optional.</p>
+<p>We can now create a Process from this Python function:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
+
+<span class="n">funcprocess</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.test_load_from_description.a_function_to_wrap&quot;</span><span class="p">)</span>
+<span class="n">funcprocess</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ A dummy fucntion that just print all its parameters.
+
+    &lt;process&gt;
+        &lt;return name=&#34;string&#34; type=&#34;string&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;fname&#34; type=&#34;file&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;directory&#34; type=&#34;directory&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;value&#34; type=&#34;float&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;enum&#34; type=&#34;string&#34; doc=&#34;test&#34; /&gt;
+        &lt;input name=&#34;list_of_str&#34; type=&#34;list_string&#34; doc=&#34;test&#34; /&gt;
+    &lt;/process&gt;
+
+
+    .. note::
+
+        * Type &#39;a_function_to_wrap.help()&#39; for a full description of this process parameters.
+        * Type &#39;&lt;a_function_to_wrap&gt;.get_input_spec()&#39; for a full description of this process input trait types.
+        * Type &#39;&lt;a_function_to_wrap&gt;.get_output_spec()&#39; for a full description of this process output trait types.
+
+
+Inputs
+~~~~~~
+
+[Mandatory]
+
+directory: a directory name ([&#39;Directory&#39;] - mandatory)
+    test
+enum: a string ([&#39;String&#39;] - mandatory)
+    test
+list_of_str: a legal value ([&#39;List_String&#39;] - mandatory)
+    test
+value: a float ([&#39;Float&#39;] - mandatory)
+    test
+fname: a file name ([&#39;File&#39;] - mandatory)
+    test
+
+Outputs
+~~~~~~~
+
+string: a string
+    test
+
+</pre></div></div>
+</div>
+<p>We can modify some input parameters and execute the process:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="n">funcprocess</span><span class="o">.</span><span class="n">list_of_str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
+<span class="n">funcprocess</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">4.3</span>
+<span class="n">funcprocess</span><span class="o">.</span><span class="n">enum</span> <span class="o">=</span> <span class="s2">&quot;c&quot;</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">funcprocess</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">funcprocess</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+<span class="c1"># print funcprocess.reference</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ALL FUNCTION PARAMETERS::
+
+4.3c[&#39;a&#39;, &#39;b&#39;]
+</pre></div></div>
+</div>
+<h2><p>Defining a Pipeline</p>
+</h2><p>A Pipeline can be described from an xml file. For the documentation of
+the description glossary, please refere to the capsul documentation. In
+the following example we will use the &#8216;xml_pipeline.xml&#8217; test
+description:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">capsul.process.test</span> <span class="kn">as</span> <span class="nn">test</span>
+
+<span class="n">xmldesc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;xml_pipeline.xml&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">xmldesc</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">openfile</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">openfile</span><span class="o">.</span><span class="n">readlines</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;pipeline&gt;
+    &lt;doc&gt;
+        Auto Generated Pipeline Test
+    &lt;/doc&gt;
+    &lt;process name=&#34;p1&#34;
+             module=&#34;capsul.process.test.test_load_from_description.a_function_to_wrap&#34;&gt;
+        &lt;set name=&#34;list_of_str&#34; value=&#34;[&#39;test&#39;]&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;p2&#34;
+             module=&#34;capsul.process.test.test_load_from_description.a_function_to_wrap&#34;/&gt;
+    &lt;link source=&#34;p1.string&#34; dest=&#34;p2.fname&#34;/&gt;
+    &lt;link source=&#34;pdirectory&#34; dest=&#34;p2.directory&#34;/&gt;
+    &lt;link source=&#34;value&#34; dest=&#34;p2.value&#34;/&gt;
+    &lt;link source=&#34;enum&#34; dest=&#34;p2.enum&#34;/&gt;
+    &lt;link source=&#34;list_of_str&#34; dest=&#34;p2.list_of_str&#34;/&gt;
+    &lt;link source=&#34;value&#34; dest=&#34;p1.value&#34;/&gt;
+    &lt;link source=&#34;enum&#34; dest=&#34;p1.enum&#34;/&gt;
+    &lt;link source=&#34;fname&#34; dest=&#34;p1.fname&#34;/&gt;
+    &lt;link source=&#34;list_of_str&#34; dest=&#34;p1.list_of_str&#34;/&gt;
+    &lt;link source=&#34;pdirectory&#34; dest=&#34;p1.directory&#34;/&gt;
+    &lt;link dest=&#34;out1&#34; source=&#34;p2.string&#34;/&gt;
+    &lt;gui&gt;
+        &lt;position name=&#34;inputs&#34; x=&#34;0&#34; y=&#34;0&#34;/&gt;
+        &lt;position name=&#34;p1&#34; x=&#34;200&#34; y=&#34;200&#34;/&gt;
+        &lt;position name=&#34;p2&#34; x=&#34;400&#34; y=&#34;-200&#34;/&gt;
+        &lt;position name=&#34;outputs&#34; x=&#34;600&#34; y=&#34;0&#34;/&gt;
+        &lt;zoom level=&#34;1&#34;/&gt;
+    &lt;/gui&gt;
+&lt;/pipeline&gt;
+
+</pre></div></div>
+</div>
+<p>Two building blocks are connected in this example. We will soon have a
+graphical representation of the pipeline, which in turn will clarify the
+xml sections. But first we must create a Pipeline from this xml
+description:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
+
+<span class="n">xmlpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.xml_pipeline&quot;</span><span class="p">)</span>
+<span class="n">xmlpipe</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+Auto Generated Pipeline Test
+
+.. note::
+
+    * Type &#39;ProcessMeta.help()&#39; for a full description of this process parameters.
+    * Type &#39;&lt;ProcessMeta&gt;.get_input_spec()&#39; for a full description of this process input trait types.
+    * Type &#39;&lt;ProcessMeta&gt;.get_output_spec()&#39; for a full description of this process output trait types.
+
+
+Inputs
+~~~~~~
+
+[Mandatory]
+
+enum: a string ([&#39;String&#39;] - mandatory)
+    test
+pdirectory: a directory name ([&#39;Directory&#39;] - mandatory)
+    test
+value: a float ([&#39;Float&#39;] - mandatory)
+    test
+list_of_str: a legal value ([&#39;List_String&#39;] - mandatory)
+    test
+fname: a file name ([&#39;File&#39;] - mandatory)
+    test
+nodes_activation: a legal value ([&#39;ControllerTrait&#39;] - mandatory)
+    No description.
+
+Outputs
+~~~~~~~
+
+out1: a string
+    test
+
+</pre></div></div>
+</div>
+<p>One major advantage of the capsul pipeline system is to be able to
+represent graphically the processing sequence:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">if</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_gui&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">soma.qt_gui</span> <span class="kn">import</span> <span class="n">qt_backend</span>
+    <span class="n">qt_backend</span><span class="o">.</span><span class="n">set_qt_backend</span><span class="p">(</span><span class="s1">&#39;PyQt4&#39;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="kn">import</span> <span class="n">QtGui</span>
+    <span class="kn">from</span> <span class="nn">capsul.qt_gui.widgets</span> <span class="kn">import</span> <span class="n">PipelineDevelopperView</span>
+    <span class="kn">from</span> <span class="nn">soma.qt_gui.controller_widget</span> <span class="kn">import</span> <span class="n">ControllerWidget</span>
+
+    <span class="n">app_created</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">app_created</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;app created:&#39;</span><span class="p">,</span> <span class="n">app_created</span><span class="p">)</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">PipelineDevelopperView</span><span class="p">(</span><span class="n">xmlpipe</span><span class="p">)</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">ControllerWidget</span><span class="p">(</span><span class="n">xmlpipe</span><span class="p">,</span> <span class="n">live</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app_created</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<h2><p>A structure to switch between processings</p>
+</h2><p>In Capsul it is possible to define a building block which aims to select
+a sequence of processings. It is done with a Switch building block as
+follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">capsul.process.test</span> <span class="kn">as</span> <span class="nn">test</span>
+
+<span class="n">xmldesc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;test_pipeline.xml&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">xmldesc</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">openfile</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">openfile</span><span class="o">.</span><span class="n">readlines</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;pipeline capsul_xml=&#34;2.0&#34;&gt;
+    &lt;process name=&#34;threshold_gt_1&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;1&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;gt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;threshold_gt_10&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;10&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;gt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;threshold_gt_100&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;100&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;gt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;threshold_lt_1&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;1&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;lt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;threshold_lt_10&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;10&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;lt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;threshold_lt_100&#34;
+     module=&#34;capsul.process.test.test_load_from_description.threshold&#34;&gt;
+        &lt;set name=&#34;threshold&#34; value=&#34;100&#34;/&gt;
+        &lt;set name=&#34;method&#34; value=&#34;&#39;lt&#39;&#34;/&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;mask_1&#34;
+     module=&#34;capsul.process.test.test_load_from_description.mask&#34;&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;mask_10&#34;
+     module=&#34;capsul.process.test.test_load_from_description.mask&#34;&gt;
+    &lt;/process&gt;
+    &lt;process name=&#34;mask_100&#34;
+     module=&#34;capsul.process.test.test_load_from_description.mask&#34;&gt;
+    &lt;/process&gt;
+
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_gt_1.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_gt_10.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_gt_100.input_image&#34;/&gt;
+
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_lt_1.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_lt_10.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;threshold_lt_100.input_image&#34;/&gt;
+
+    &lt;link source=&#34;input_image&#34; dest=&#34;mask_1.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;mask_10.input_image&#34;/&gt;
+    &lt;link source=&#34;input_image&#34; dest=&#34;mask_100.input_image&#34;/&gt;
+
+    &lt;link source=&#34;threshold_gt_1.output_image&#34; dest=&#34;mask_1.mask&#34;/&gt;
+    &lt;link source=&#34;threshold_gt_10.output_image&#34; dest=&#34;mask_10.mask&#34;/&gt;
+    &lt;link source=&#34;threshold_gt_100.output_image&#34; dest=&#34;mask_100.mask&#34;/&gt;
+    &lt;link source=&#34;threshold_lt_1.output_image&#34; dest=&#34;mask_1.mask&#34;/&gt;
+    &lt;link source=&#34;threshold_lt_10.output_image&#34; dest=&#34;mask_10.mask&#34;/&gt;
+    &lt;link source=&#34;threshold_lt_100.output_image&#34; dest=&#34;mask_100.mask&#34;/&gt;
+
+    &lt;link source=&#34;mask_1.output_image&#34; dest=&#34;output_1&#34;/&gt;
+    &lt;link source=&#34;mask_10.output_image&#34; dest=&#34;output_10&#34;/&gt;
+    &lt;link source=&#34;mask_100.output_image&#34; dest=&#34;output_100&#34;/&gt;
+
+    &lt;processes_selection name=&#34;select_method&#34;&gt;
+        &lt;processes_group name=&#34;greater than&#34;&gt;
+            &lt;process name=&#34;threshold_gt_1&#34;/&gt;
+            &lt;process name=&#34;threshold_gt_10&#34;/&gt;
+            &lt;process name=&#34;threshold_gt_100&#34;/&gt;
+        &lt;/processes_group&gt;
+        &lt;processes_group name=&#34;lower than&#34;&gt;
+            &lt;process name=&#34;threshold_lt_1&#34;/&gt;
+            &lt;process name=&#34;threshold_lt_10&#34;/&gt;
+            &lt;process name=&#34;threshold_lt_100&#34;/&gt;
+        &lt;/processes_group&gt;
+    &lt;/processes_selection&gt;
+
+    &lt;gui&gt;
+        &lt;position name=&#34;threshold_gt_100&#34; x=&#34;386.0&#34; y=&#34;403.0&#34;/&gt;
+        &lt;position name=&#34;inputs&#34; x=&#34;50.0&#34; y=&#34;50.0&#34;/&gt;
+        &lt;position name=&#34;mask_1&#34; x=&#34;815.0&#34; y=&#34;153.0&#34;/&gt;
+        &lt;position name=&#34;threshold_gt_10&#34; x=&#34;374.0&#34; y=&#34;242.0&#34;/&gt;
+        &lt;position name=&#34;threshold_lt_100&#34; x=&#34;556.0&#34; y=&#34;314.0&#34;/&gt;
+        &lt;position name=&#34;threshold_gt_1&#34; x=&#34;371.0&#34; y=&#34;88.0&#34;/&gt;
+        &lt;position name=&#34;mask_10&#34; x=&#34;820.0&#34; y=&#34;293.0&#34;/&gt;
+        &lt;position name=&#34;mask_100&#34; x=&#34;826.0&#34; y=&#34;451.0&#34;/&gt;
+        &lt;position name=&#34;threshold_lt_1&#34; x=&#34;570.0&#34; y=&#34;6.0&#34;/&gt;
+        &lt;position name=&#34;threshold_lt_10&#34; x=&#34;568.0&#34; y=&#34;145.0&#34;/&gt;
+
+        &lt;!--
+        &lt;position name=&#34;threshold_gt_100&#34; x=&#34;182.35615&#34; y=&#34;658.8043&#34;&gt;
+        &lt;position name=&#34;mask_1&#34; x=&#34;348.3267625&#34; y=&#34;205.125&#34;&gt;
+        &lt;position name=&#34;threshold_gt_10&#34; x=&#34;183.6139625&#34; y=&#34;329.3854&#34;&gt;
+        &lt;position name=&#34;inputs&#34; x=&#34;0.0&#34; y=&#34;488.9169&#34;&gt;
+        &lt;position name=&#34;outputs&#34; x=&#34;512.08755&#34; y=&#34;488.9169&#34;&gt;
+        &lt;position name=&#34;mask_100&#34; x=&#34;348.3267625&#34; y=&#34;744.8167&#34;&gt;
+        &lt;position name=&#34;threshold_lt_1&#34; x=&#34;183.6139625&#34; y=&#34;146.998&#34;&gt;
+        &lt;position name=&#34;threshold_gt_1&#34; x=&#34;183.6139625&#34; y=&#34;0.0&#34;&gt;
+        &lt;position name=&#34;threshold_lt_100&#34; x=&#34;183.6139625&#34; y=&#34;805.8291&#34;&gt;
+        &lt;position name=&#34;mask_10&#34; x=&#34;348.3267625&#34; y=&#34;488.9169&#34;&gt;
+        &lt;position name=&#34;threshold_lt_10&#34; x=&#34;183.6139625&#34; y=&#34;476.4169&#34;&gt;
+        --&gt;
+    &lt;/gui&gt;
+&lt;/pipeline&gt;
+
+</pre></div></div>
+</div>
+<p>Again we can create a Pipeline from his xml description:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
+
+<span class="n">xmlpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.test_pipeline&quot;</span><span class="p">)</span>
+<span class="n">xmlpipe</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+
+
+.. note::
+
+    * Type &#39;test_pipeline.help()&#39; for a full description of this process parameters.
+    * Type &#39;&lt;test_pipeline&gt;.get_input_spec()&#39; for a full description of this process input trait types.
+    * Type &#39;&lt;test_pipeline&gt;.get_output_spec()&#39; for a full description of this process output trait types.
+
+
+Inputs
+~~~~~~
+
+[Mandatory]
+
+input_image: a file name ([&#39;File&#39;] - mandatory)
+    Path of a NIFTI-1 image file.
+nodes_activation: a legal value ([&#39;ControllerTrait&#39;] - mandatory)
+    No description.
+select_method: a legal value ([&#39;Enum&#39;] - mandatory)
+    No description.
+
+Outputs
+~~~~~~~
+
+output_10: a file name
+    Output file name.
+output_100: a file name
+    Output file name.
+output_1: a file name
+    Output file name.
+
+</pre></div></div>
+</div>
+<p>And generate his graphical representation:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">if</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_gui&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="kn">import</span> <span class="n">QtGui</span>
+    <span class="kn">from</span> <span class="nn">capsul.qt_gui.widgets</span> <span class="kn">import</span> <span class="n">PipelineDevelopperView</span>
+    <span class="kn">from</span> <span class="nn">soma.qt_gui.controller_widget</span> <span class="kn">import</span> <span class="n">ControllerWidget</span>
+
+    <span class="k">if</span> <span class="s2">&quot;app_created&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+        <span class="n">app_created</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+        <span class="n">app_created</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">PipelineDevelopperView</span><span class="p">(</span><span class="n">xmlpipe</span><span class="p">)</span>
+    <span class="n">controller</span> <span class="o">=</span> <span class="n">ControllerWidget</span><span class="p">(</span><span class="n">xmlpipe</span><span class="p">,</span> <span class="n">live</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">app_created</span><span class="p">:</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<h2><p>Use Nipype in Capsul</p>
+</h2><p>It is possible to use all the nipype interfaces (FSL, SPM, FreeSurfer,
+...) as building blocks in Capsul. This step requires nipype to be
+properly installed as well as the software we want to use. For instance
+if we want to perform a brain extraction with FSL we can simply write:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">nipype</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;nipype is not available&#39;</span><span class="p">)</span>
+    <span class="n">nipype</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="k">if</span> <span class="n">nipype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">betpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;nipype.interfaces.fsl.BET&quot;</span><span class="p">)</span>
+    <span class="n">betpipe</span><span class="o">.</span><span class="n">get_help</span><span class="p">()</span>
+    <span class="n">betpipe</span><span class="o">.</span><span class="n">in_file</span><span class="o">=</span><span class="s2">&quot;/tmp/capsul_demo/MNI152_T1_2mm.nii.gz&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+ Base class used to wrap nipype interfaces.
+
+
+.. note::
+
+    * Type &#39;NipypeProcess.help()&#39; for a full description of this process parameters.
+    * Type &#39;&lt;NipypeProcess&gt;.get_input_spec()&#39; for a full description of this process input trait types.
+    * Type &#39;&lt;NipypeProcess&gt;.get_output_spec()&#39; for a full description of this process output trait types.
+
+
+Inputs
+~~~~~~
+
+[Mandatory]
+
+in_file: an existing file name ([&#39;File&#39;] - mandatory)
+    input file to skull strip
+
+[Optional]
+
+remove_eyes: a boolean ([&#39;Bool&#39;] - optional)
+    eye &amp; optic nerve cleanup (can be useful in SIENA)
+no_output: a boolean ([&#39;Bool&#39;] - optional)
+    Don&#39;t generate segmented output
+functional: a boolean ([&#39;Bool&#39;] - optional)
+    apply to 4D fMRI data
+radius: an integer (int or long) ([&#39;Int&#39;] - optional)
+    head radius
+threshold: a boolean ([&#39;Bool&#39;] - optional)
+    apply thresholding to segmented brain image and mask
+surfaces: a boolean ([&#39;Bool&#39;] - optional)
+    run bet2 and then betsurf to get additional skull and scalp
+    surfaces (includes registrations)
+outline: a boolean ([&#39;Bool&#39;] - optional)
+    create surface outline image
+t2_guided: a file name ([&#39;File&#39;] - optional)
+    as with creating surfaces, when also feeding in non-brain-
+    extracted T2 (includes registrations)
+ignore_exception: a boolean ([&#39;Bool&#39;] - optional)
+    Print an error message instead of throwing an exception in case
+    the interface fails to run
+vertical_gradient: a float ([&#39;Float&#39;] - optional)
+    vertical gradient in fractional intensity threshold (-1, 1)
+frac: a float ([&#39;Float&#39;] - optional)
+    fractional intensity threshold
+reduce_bias: a boolean ([&#39;Bool&#39;] - optional)
+    bias field and neck cleanup
+args: a string ([&#39;Str&#39;] - optional)
+    Additional parameters to the command
+output_directory: a directory name ([&#39;Directory&#39;] - optional)
+    No description.
+padding: a boolean ([&#39;Bool&#39;] - optional)
+    improve BET if FOV is very small in Z (by temporarily padding end
+    slices)
+mesh: a boolean ([&#39;Bool&#39;] - optional)
+    generate a vtk mesh brain surface
+robust: a boolean ([&#39;Bool&#39;] - optional)
+    robust brain centre estimation (iterates BET several times)
+out_file: a file name ([&#39;File&#39;] - optional)
+    name of output skull stripped image
+center: a legal value ([&#39;List_Int&#39;] - optional)
+    center of gravity in voxels
+skull: a boolean ([&#39;Bool&#39;] - optional)
+    create skull image
+mask: a boolean ([&#39;Bool&#39;] - optional)
+    create binary mask image
+synchronize: an integer (int or long) ([&#39;Int&#39;] - optional)
+    No description.
+terminal_output: a legal value ([&#39;Enum&#39;] - optional)
+    Control terminal output: `stream` - displays to terminal
+    immediately (default), `allatonce` - waits till command is
+    finished to display output, `file` - writes output to file, `none`
+    - output is ignored
+environ: a legal value ([&#39;Dict_Str_Str&#39;] - optional)
+    Environment variables
+output_type: a legal value ([&#39;Enum&#39;] - optional)
+    FSL output type
+
+Outputs
+~~~~~~~
+
+_outskull_mesh_file: a file name
+    path/name of outskull mesh outline (if generated)
+_outskin_mesh_file: a file name
+    path/name of outskin mesh outline (if generated)
+_skull_mask_file: a file name
+    path/name of skull mask (if generated)
+_inskull_mask_file: a file name
+    path/name of inskull mask (if generated)
+_outskull_mask_file: a file name
+    path/name of outskull mask (if generated)
+_out_file: a file name
+    path/name of skullstripped file (if generated)
+_outline_file: a file name
+    path/name of outline file (if generated)
+_inskull_mesh_file: a file name
+    path/name of inskull mesh outline (if generated)
+_outskin_mask_file: a file name
+    path/name of outskin mask (if generated)
+_meshfile: a file name
+    path/name of vtk mesh file (if generated)
+_mask_file: a file name
+    path/name of binary brain mask (if generated)
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="stderr output_area docutils container">
+<div class="highlight"><pre>
+/usr/lib/python2.7/dist-packages/nipype/interfaces/fsl/base.py:116: UserWarning: FSL environment variables not set. setting output type to NIFTI
+  warnings.warn((&#39;FSL environment variables not set. setting output &#39;
+</pre></div></div>
+</div>
+<p>As shown it is possible to set the BET algorithm input parameters. Note
+that in capsul the standard nipype outputs are prefixed with
+underscores. We can execute this Process but unfortunatelly, as
+mentioned by the nipype warnings, FSL has not been configured and the
+BET algorithm will not run. The following section shows a simplified way
+to configure external softwares in Capsul.</p>
+<h2><p>A helper to configure state of the art medical softwares</p>
+</h2><p>Capsul propose a module to configure external softwares:</p>
+<ul style="list-style-type:disc;"><li><p>FSL</p>
+</li><li><p>SPM</p>
+</li><li><p>FreeSurfer</p>
+</li><li><p>BrainVisa</p>
+</li></ul><p>With this module it is also possible to configure the execution of the
+pipeline:</p>
+<ul style="list-style-type:disc;"><li><p>Use smart caching</p>
+</li><li><p>Generate some logging</p>
+</li><li><p>Soma-Worflow to handle population imaging</p>
+</li></ul><p>Let show how to configure FSL:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">StudyConfig</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="n">study_config</span> <span class="o">=</span> <span class="n">StudyConfig</span><span class="p">(</span>
+    <span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SmartCachingConfig&quot;</span><span class="p">,</span> <span class="s2">&quot;FSLConfig&quot;</span><span class="p">],</span>
+    <span class="n">fsl_config</span><span class="o">=</span><span class="s2">&quot;/etc/fsl/4.1/fsl.sh&quot;</span><span class="p">,</span>
+    <span class="n">use_smart_caching</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">output_directory</span><span class="o">=</span><span class="s2">&quot;/tmp/capsul_demo&quot;</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">study_config</span><span class="o">.</span><span class="n">export_to_dict</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">study_config</span><span class="o">.</span><span class="n">run</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;create_output_directories&#39;: True,
+ &#39;fsl_config&#39;: &#39;/etc/fsl/4.1/fsl.sh&#39;,
+ &#39;generate_logging&#39;: False,
+ &#39;input_directory&#39;: &lt;undefined&gt;,
+ &#39;output_directory&#39;: &#39;/tmp/capsul_demo&#39;,
+ &#39;process_output_directory&#39;: False,
+ &#39;study_name&#39;: None,
+ &#39;use_fsl&#39;: False,
+ &#39;use_smart_caching&#39;: True}
+Method to execute a process or a pipline in a study configuration
+         environment.
+
+         Depending on the studies_config settings, it may be a sequential run,
+         or a parallel run, which can involve remote execution (through soma-
+         workflow).
+
+         Only pipeline nodes can be filtered on the &#39;execute_qc_nodes&#39;
+         attribute.
+
+         A valid output directory is exepcted to execute the process or the
+         pepeline without soma-workflow.
+
+        Parameters
+        ----------
+        process_or_pipeline: Process or Pipeline instance (mandatory)
+            the process or pipeline we want to execute
+        output_directory: Directory name (optional)
+            the output directory to use for process execution. This replaces
+            self.output_directory but left it unchanged.
+        execute_qc_nodes: bool (optional, default False)
+            if True execute process nodes that are taged as qualtity control
+            process nodes.
+        verbose: int
+            if different from zero, print console messages.
+
+</pre></div></div>
+</div>
+<h2><p>Execution of the pipeline</p>
+</h2><p>In this section a simple execution is performed on your machine using
+one CPU (if more than one CPU are used it means that the called external
+software is parallelized). We just have to call the StudyConfig run
+method:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<span></span><span class="k">if</span> <span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span><span class="p">:</span>
+    <span class="n">study_config</span><span class="o">.</span><span class="n">reset_process_counter</span><span class="p">()</span>
+    <span class="n">study_config</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">betpipe</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;FSL is not available or not correctly configured&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+FSL is not available or not correctly configured
+</pre></div></div>
+</div>
+<h2><p>Distributed execution top handle population imaging</p>
+</h2><p>Capsul can execute a pipeline through Soma-Workflow in order to address
+huge datasets in the case of population imaging studies. But this
+functionality is out of the scope of this tuto.</p>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer">
+    </div>
+  </div>
+  
+</div>
+
+<div class="footer">
+    &copy; 2017, BrainVISA team &lt;support@brainvisa.info&gt;.
+</div>
+  </body>
+</html>
