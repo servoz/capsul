@@ -1,0 +1,9 @@
+:orphan:
+
+capsul.qt_apps.utils.find_pipelines.lists2dict
+==============================================
+
+.. currentmodule:: capsul.qt_apps.utils.find_pipelines
+
+.. autofunction:: lists2dict
+

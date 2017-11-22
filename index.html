@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="CAPSUL installation" href="installation.html" />
   
@@ -53,7 +50,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="#">
@@ -121,7 +118,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -164,7 +161,7 @@
 <li>Althrough written in Python, Capsul does not force algorithms to be written in Python language: pipeline nodes can run any software program. However Capsul provides facilities for Python: a pipeline node can be a simple Python function.</li>
 <li>A paramters completion system helps to automatically fill parameters from a set of common attributes.</li>
 <li>An iteration system allows to iterate runs, or pipeline nodes, over a set of parameters configurations.</li>
-<li>Capsul provides a GUI (graphical user interface) to display pipelines structure in a boxes and links representation, to enter parameters, to iterate runs... The GUI allows basic pipeline edition and graphical building.</li>
+<li>Capsul provides a GUI (graphical user interface) to display pipelines structure in a boxes and links representation, to enter parameters, to iterate runs… The GUI allows basic pipeline edition and graphical building.</li>
 <li>Pipelines can be saved as XML files. They can thus be written either as Python source files, or as XML files.</li>
 <li>Pipeline execution can optionally make use of <a class="reference external" href="http://brainvisa.info/soma-workflow/sphinx/index.html">soma-workflow</a>, which manages execution dependencies between pipeline nodes and can run in parallel independent ones, can run and monitor pipelines either locally or remotely on a distant computing resource (a cluster for instance).</li>
 <li>Capsul has a compatibility with <a class="reference external" href="http://nipype.readthedocs.io/en/latest/">Nipype</a> interfaces which can be directly used as pipeline nodes.</li>

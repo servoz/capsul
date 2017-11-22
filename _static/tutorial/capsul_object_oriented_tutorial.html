@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../css/bootstrap-responsive.css"/>
   <link rel="icon" href="../capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../nature.css" type="text/css" />
     <link rel="stylesheet" href="../pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../jquery.js"></script>
     <script type="text/javascript" src="../underscore.js"></script>
     <script type="text/javascript" src="../doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -297,7 +294,11 @@ div.nboutput div.output_area.stderr {
 .ansi-white-intense-fg { color: #A1A6B2; }
 .ansi-white-intense-bg { background-color: #A1A6B2; }
 
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
 .ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
 </style>
 <div class="section" id="CAPSUL:-chain-algorithms-in-pipelines">
 <h1>CAPSUL: chain algorithms in pipelines<a class="headerlink" href="#CAPSUL:-chain-algorithms-in-pipelines" title="Permalink to this headline">¶</a></h1>
@@ -308,7 +309,7 @@ various contexts. The project is hosted on github:
 </p><p><p>Documentation: <a class="reference external" href="http://neurospin.github.io/capsul">http://neurospin.github.io/capsul</a></p>
 </p><p><p>The following examples are using CAPSUL, and PyQt (or PySide). To get
 the GUI running in a non-blocking way, the IPython notebook should be
-started with the option &#8211;gui=qt:</p>
+started with the option –gui=qt:</p>
 <pre>ipython notebook --gui=qt</pre><p>Otherwise calls to the Qt loop will be blocking until windows are closed
 at each demo step.</p>
 </p><p><p>Definitions</p>
@@ -352,7 +353,7 @@ the Capsul version:</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2.1.0
+2.1.1
 </pre></div></div>
 </div>
 <h1><p>Process and pipeline creation API</p>
@@ -672,7 +673,7 @@ Process1 execution, f: 13.2 , ff: 0.0
 <h3><p>Defining a Pipeline from XML a file</p>
 </h3><p>A Pipeline can be described from an xml file. For the documentation of
 the description glossary, please refere to the capsul documentation. In
-the following example we will use the &#8216;xml_pipeline.xml&#8217; test
+the following example we will use the ‘xml_pipeline.xml’ test
 description:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
@@ -833,7 +834,7 @@ follows:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [19]:
+<span></span>In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -848,7 +849,7 @@ follows:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [20]:
+<span></span>In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -860,28 +861,20 @@ follows:</p>
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [21]:
+<span></span>In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="n">pipeline3</span><span class="p">()</span>
+<span></span><span class="n">pipeline3</span><span class="o">.</span><span class="n">switch</span> <span class="o">=</span> <span class="s2">&quot;case1&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Process2 execution, a: 0.0 , b: &lt;undefined&gt;
-</pre></div></div>
 </div>
 <h3><p>Using XML definition</p>
 </h3><div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [22]:
+<span></span>In [25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1007,62 +1000,20 @@ Process2 execution, a: 0.0 , b: &lt;undefined&gt;
 </pre></div></div>
 </div>
 <p>Again we can create a Pipeline from his xml description:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [23]:
+<span></span>In [29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
-
-<span class="n">xmlpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.test_pipeline&quot;</span><span class="p">)</span>
-<span class="n">xmlpipe</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+<span></span><span class="n">xmlpipe</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;greater than&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-
-
-.. note::
-
-    * Type &#39;test_pipeline.help()&#39; for a full description of this process parameters.
-    * Type &#39;&lt;test_pipeline&gt;.get_input_spec()&#39; for a full description of this process input trait types.
-    * Type &#39;&lt;test_pipeline&gt;.get_output_spec()&#39; for a full description of this process output trait types.
-
-
-Inputs
-~~~~~~
-
-[Mandatory]
-
-input_image: a file name ([&#39;File&#39;] - mandatory)
-    Path of a NIFTI-1 image file.
-nodes_activation: a legal value ([&#39;ControllerTrait&#39;] - mandatory)
-    No description.
-select_method: a legal value ([&#39;Enum&#39;] - mandatory)
-    No description.
-
-Outputs
-~~~~~~~
-
-output_10: a file name
-    Output file name.
-output_100: a file name
-    Output file name.
-output_1: a file name
-    Output file name.
-
-</pre></div></div>
 </div>
 <p>And generate its graphical representation:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [24]:
+<span></span>In [27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1086,7 +1037,7 @@ output_1: a file name
 will be changed for lists</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [25]:
+<span></span>In [30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1118,7 +1069,7 @@ will be changed for lists</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [26]:
+<span></span>In [31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1139,7 +1090,7 @@ will be changed for lists</p>
 <p>This should make (4.2 + 12) + (6.8 + 12) + (7. + 12) = 54.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [27]:
+<span></span>In [32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1159,11 +1110,11 @@ will be changed for lists</p>
 </pre></div></div>
 </div>
 <h2><p>Optional outputs and temporary files</p>
-</h2><p>Let&#8217;s consider the following pipeline, with an <strong>optional output</strong> from
+</h2><p>Let’s consider the following pipeline, with an <strong>optional output</strong> from
 the intermediate output:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [28]:
+<span></span>In [33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1199,7 +1150,7 @@ the intermediate output:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [29]:
+<span></span>In [34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1219,7 +1170,7 @@ work because <em>node1</em> needs to write its output into a file. As its
 current state, <em>pipeline5.intermediate</em> is actually mandatory.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [30]:
+<span></span>In [35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1246,7 +1197,7 @@ current state, <em>pipeline5.intermediate</em> is actually mandatory.</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [31]:
+<span></span>In [36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1261,7 +1212,7 @@ breaks the link between <em>node1.output</em> and <em>intermediate</em>. This is
 job of <strong>optional output switches</strong>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [32]:
+<span></span>In [37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1279,7 +1230,7 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [33]:
+<span></span>In [38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1296,7 +1247,7 @@ job of <strong>optional output switches</strong>:</p>
 <em>node1.output</em> gets a temporary value.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [34]:
+<span></span>In [39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1318,7 +1269,7 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [35]:
+<span></span>In [40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1329,7 +1280,7 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [36]:
+<span></span>In [41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1339,7 +1290,7 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [37]:
+<span></span>In [42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1354,7 +1305,7 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [38]:
+<span></span>In [43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1368,41 +1319,22 @@ job of <strong>optional output switches</strong>:</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-red-fg">----------------------------------------------------------------------</span>
-<span class="ansi-red-fg">IOError</span>                              Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-38-5cd9e1a67378&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> pipeline6<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">print</span><span class="ansi-blue-fg">(</span>open<span class="ansi-blue-fg">(</span>intermediate<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">IOError</span>: [Errno 2] No such file or directory: &#39;/tmp/dummy_intermediate.txt&#39;
+* I ate 5 cakes this morning. *
+* Let&#39;s eat 3 or 4 more. *
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [39]:
+<span></span>In [44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="c1"># cleanup</span>
 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">intermediate</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">----------------------------------------------------------------------</span>
-<span class="ansi-red-fg">OSError</span>                              Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-39-e6a8f561bee7&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-red-fg"># cleanup</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> os<span class="ansi-blue-fg">.</span>unlink<span class="ansi-blue-fg">(</span>outfile<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span>os<span class="ansi-blue-fg">.</span>unlink<span class="ansi-blue-fg">(</span>intermediate<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">OSError</span>: [Errno 2] No such file or directory: &#39;/tmp/dummy_intermediate.txt&#39;
-</pre></div></div>
 </div>
 <h1><p>StudyConfig</p>
 </h1><p><p>StudyConfig is a placeholder for study-wide parameters, settings, paths
@@ -1422,7 +1354,7 @@ pipeline:</p>
 </li></ul><p>For instance:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [40]:
+<span></span>In [45]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1453,7 +1385,8 @@ output_directory :   &lt;undefined&gt;
 process_output_directory :   False
 study_name :   None
 fsl_config :   &lt;undefined&gt;
-use_fsl :   False
+fsl_prefix :   &lt;undefined&gt;
+use_fsl :   &lt;undefined&gt;
 matlab_exec :   &lt;undefined&gt;
 use_matlab :   False
 use_smart_caching :   False
@@ -1462,12 +1395,13 @@ somaworkflow_computing_resource :   &lt;undefined&gt;
 somaworkflow_config_file :   &lt;undefined&gt;
 somaworkflow_keep_failed_workflows :   True
 somaworkflow_keep_succeeded_workflows :   False
-somaworkflow_computing_resources_config :   &lt;soma.controller.controller.OpenKeyController object at 0x7fbd75cce4d0&gt;
+somaworkflow_computing_resources_config :   &lt;soma.controller.controller.OpenKeyController object at 0x7f8572b49230&gt;
 spm_standalone :   False
 spm_directory :   &lt;undefined&gt;
 spm_exec :   &lt;undefined&gt;
 use_spm :   False
-shared_directory :   /mnt/sys2/home/riviere/build-cmake/build-stable-release/build_files/capsul/../../share/brainvisa-share-4.6
+spm_version :   &lt;undefined&gt;
+shared_directory :   /home/yc176684/brainvisa/build/share/brainvisa-share-4.6
 input_fom :
 output_fom :
 shared_fom :
@@ -1481,9 +1415,9 @@ path_completion :   &lt;undefined&gt;
 </pre></div></div>
 </div>
 <p>Let show how to configure FSL:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [41]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1498,47 +1432,14 @@ path_completion :   &lt;undefined&gt;
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Method to execute a process or a pipline in a study configuration
-         environment.
-
-         Depending on the studies_config settings, it may be a sequential run,
-         or a parallel run, which can involve remote execution (through soma-
-         workflow).
-
-         Only pipeline nodes can be filtered on the &#39;execute_qc_nodes&#39;
-         attribute.
-
-         A valid output directory is exepcted to execute the process or the
-         pepeline without soma-workflow.
-
-        Parameters
-        ----------
-        process_or_pipeline: Process or Pipeline instance (mandatory)
-            the process or pipeline we want to execute
-        output_directory: Directory name (optional)
-            the output directory to use for process execution. This replaces
-            self.output_directory but left it unchanged.
-        execute_qc_nodes: bool (optional, default False)
-            if True execute process nodes that are taged as qualtity control
-            process nodes.
-        verbose: int
-            if different from zero, print console messages.
-
-</pre></div></div>
-</div>
 <h2><p>Execution of the pipeline</p>
 </h2><p>In this section a simple execution is performed on your machine using
 one CPU (if more than one CPU are used it means that the called external
 software is parallelized). We just have to call the StudyConfig run
 method:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [42]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1547,29 +1448,6 @@ method:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-________________________________________________________________________________
-[Process] Calling __main__.Process2...
-__main__.Process2(b=blop)
-________________________________________________________________________________
-[Memory] Calling __main__.Process2...
-__main__.Process2(b=blop)
-Process2 execution, a: 0.0 , b: blop
-____________________________________________________________________0.0s, 0.0min
-________________________________________________________________________________
-[Process] Calling __main__.Process1...
-__main__.Process1(ff=0.0, f=13.2)
-________________________________________________________________________________
-[Memory] Calling __main__.Process1...
-__main__.Process1(ff=0.0, f=13.2)
-Process1 execution, f: 13.2 , ff: 0.0
-____________________________________________________________________0.0s, 0.0min
-</pre></div></div>
-</div>
 <h1><p>Distributed execution using Soma-Workflow</p>
 </h1><p>Capsul can execute a pipeline through Soma-Workflow in order to address
 large parallelized pipelines, or huge datasets in the case of population
@@ -1577,9 +1455,9 @@ imaging studies.</p>
 <p><strong>Limitation:</strong></p>
 <p>Currently, when used in Soma-Workflow, process outputs can only be
 files. Output numbers, strings, etc. will be lost.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [43]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1591,20 +1469,11 @@ files. Output numbers, strings, etc. will be lost.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-jobs: [&lt;soma_workflow.client_types.Job object at 0x7fbd75cb9410&gt;, &lt;soma_workflow.client_types.Job object at 0x7fbd75cb9490&gt;]
-dependencies: set([(&lt;soma_workflow.client_types.Job object at 0x7fbd75cb9490&gt;, &lt;soma_workflow.client_types.Job object at 0x7fbd75cb9410&gt;)])
-</pre></div></div>
-</div>
 <p>The workwlow can be saved and reloaded in soma_workflow_gui, or used
 in a soma-workflow controller:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [44]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1622,31 +1491,25 @@ in a soma-workflow controller:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-execution status: workflow_done
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
+<p>ok if we don’t use it anymore, we can remove this workflow file.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[44]:
+<span></span>In [3]:
 </pre></div>
 </div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>True
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="s1">&#39;/tmp/pipeline2.workflow&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>More transparently, Soma-Workflow execution can be used from
-StudyConfig: For this, StudyConfig should have &#8220;SomaWorkflowConfig&#8221;
+StudyConfig: For this, StudyConfig should have “SomaWorkflowConfig”
 amongst its modules, and it should be enabled (which should be the
 default when the module is loaded in the config).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [45]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1659,9 +1522,9 @@ default when the module is loaded in the config).</p>
 </div>
 <p>If we wanted more control over the executed workflow, we could have
 added things:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [46]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1684,25 +1547,6 @@ added things:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Success. Workflow was kept in database.
-workflow id: 123
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>Out[46]:
-</pre></div>
-</div>
-<div class="output_area highlight-none"><div class="highlight"><pre>
-<span></span>True
-</pre></div>
-</div>
-</div>
 <h1><p>Parameters completion using FOM (File Organization Model)</p>
 </h1><p>FOMs allow to complete file names in large pipelines with many
 parameters from a small set of attributes. To illustrate this feature,
@@ -1710,7 +1554,7 @@ we will first create a pipeline with several such parameters, from a XML
 description.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [47]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1779,7 +1623,7 @@ description.</p>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [48]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1799,7 +1643,7 @@ description.</p>
 <h4>FOM definition<a class="headerlink" href="#FOM-definition" title="Permalink to this headline">¶</a></h4>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [49]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1851,9 +1695,9 @@ description.</p>
 <h2><p>File names completion using FOM</p>
 </h2><p>FOM completion is used through the attributes completion system
 ProcessCompletionEngine.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [50]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1914,25 +1758,17 @@ ProcessCompletionEngine.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-completion engine type: FomProcessCompletionEngine
-</pre></div></div>
-</div>
-<p><p>Note how the output &#8220;image_out5&#8221; depends on the proc_select2 switch
+<p><p>Note how the output “image_out5” depends on the proc_select2 switch
 value:</p>
-</p><p><p>While &#8220;image_out1&#8221; is fixed via the FOM completion, its value
-&#8220;back-propagates&#8221; to both &#8220;proc1.output_image&#8221; and
-&#8220;proc2.output_image&#8221;. For &#8220;image_out5&#8221; the FOM does not impose its
-value, it is deduced from either &#8220;proc3.output_image&#8221; (in turn set via
-the global &#8220;image_out3&#8221;) or &#8220;proc4.output_image&#8221;, depending on the
+</p><p><p>While “image_out1” is fixed via the FOM completion, its value
+“back-propagates” to both “proc1.output_image” and
+“proc2.output_image”. For “image_out5” the FOM does not impose its
+value, it is deduced from either “proc3.output_image” (in turn set via
+the global “image_out3”) or “proc4.output_image”, depending on the
 proc_select2 swtch value.</p>
-</p><div class="nbinput docutils container">
+</p><div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [51]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1945,25 +1781,14 @@ proc_select2 swtch value.</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-switch proc_select2 value: proc3
-output image_out5: /data/capsul_demo/subjects_irm2/out_image_irm2_3.nii.gz
-switch proc_select2 value: proc4
-output image_out5: /data/capsul_demo/subjects_irm2/out_image_irm2_4.nii.gz
-</pre></div></div>
-</div>
 <h2><p>Use Nipype in Capsul</p>
 </h2><p>It is possible to use all the nipype interfaces (FSL, SPM, FreeSurfer,
-...) as building blocks in Capsul. This step requires nipype to be
+…) as building blocks in Capsul. This step requires nipype to be
 properly installed as well as the software we want to use. For instance
 if we want to perform a brain extraction with FSL we can simply write:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [52]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
@@ -1981,127 +1806,6 @@ if we want to perform a brain extraction with FSL we can simply write:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
- Base class used to wrap nipype interfaces.
-
-
-.. note::
-
-    * Type &#39;NipypeProcess.help()&#39; for a full description of this process parameters.
-    * Type &#39;&lt;NipypeProcess&gt;.get_input_spec()&#39; for a full description of this process input trait types.
-    * Type &#39;&lt;NipypeProcess&gt;.get_output_spec()&#39; for a full description of this process output trait types.
-
-
-Inputs
-~~~~~~
-
-[Mandatory]
-
-in_file: an existing file name ([&#39;File&#39;] - mandatory)
-    input file to skull strip
-
-[Optional]
-
-remove_eyes: a boolean ([&#39;Bool&#39;] - optional)
-    eye &amp; optic nerve cleanup (can be useful in SIENA)
-no_output: a boolean ([&#39;Bool&#39;] - optional)
-    Don&#39;t generate segmented output
-functional: a boolean ([&#39;Bool&#39;] - optional)
-    apply to 4D fMRI data
-radius: an integer (int or long) ([&#39;Int&#39;] - optional)
-    head radius
-threshold: a boolean ([&#39;Bool&#39;] - optional)
-    apply thresholding to segmented brain image and mask
-surfaces: a boolean ([&#39;Bool&#39;] - optional)
-    run bet2 and then betsurf to get additional skull and scalp
-    surfaces (includes registrations)
-outline: a boolean ([&#39;Bool&#39;] - optional)
-    create surface outline image
-t2_guided: a file name ([&#39;File&#39;] - optional)
-    as with creating surfaces, when also feeding in non-brain-
-    extracted T2 (includes registrations)
-ignore_exception: a boolean ([&#39;Bool&#39;] - optional)
-    Print an error message instead of throwing an exception in case
-    the interface fails to run
-vertical_gradient: a float ([&#39;Float&#39;] - optional)
-    vertical gradient in fractional intensity threshold (-1, 1)
-frac: a float ([&#39;Float&#39;] - optional)
-    fractional intensity threshold
-reduce_bias: a boolean ([&#39;Bool&#39;] - optional)
-    bias field and neck cleanup
-args: a string ([&#39;Str&#39;] - optional)
-    Additional parameters to the command
-output_directory: a directory name ([&#39;Directory&#39;] - optional)
-    No description.
-padding: a boolean ([&#39;Bool&#39;] - optional)
-    improve BET if FOV is very small in Z (by temporarily padding end
-    slices)
-mesh: a boolean ([&#39;Bool&#39;] - optional)
-    generate a vtk mesh brain surface
-robust: a boolean ([&#39;Bool&#39;] - optional)
-    robust brain centre estimation (iterates BET several times)
-out_file: a file name ([&#39;File&#39;] - optional)
-    name of output skull stripped image
-center: a legal value ([&#39;List_Int&#39;] - optional)
-    center of gravity in voxels
-skull: a boolean ([&#39;Bool&#39;] - optional)
-    create skull image
-mask: a boolean ([&#39;Bool&#39;] - optional)
-    create binary mask image
-synchronize: an integer (int or long) ([&#39;Int&#39;] - optional)
-    No description.
-terminal_output: a legal value ([&#39;Enum&#39;] - optional)
-    Control terminal output: `stream` - displays to terminal
-    immediately (default), `allatonce` - waits till command is
-    finished to display output, `file` - writes output to file, `none`
-    - output is ignored
-environ: a legal value ([&#39;Dict_Str_Str&#39;] - optional)
-    Environment variables
-output_type: a legal value ([&#39;Enum&#39;] - optional)
-    FSL output type
-
-Outputs
-~~~~~~~
-
-_outskull_mesh_file: a file name
-    path/name of outskull mesh outline (if generated)
-_outskin_mesh_file: a file name
-    path/name of outskin mesh outline (if generated)
-_skull_mask_file: a file name
-    path/name of skull mask (if generated)
-_inskull_mask_file: a file name
-    path/name of inskull mask (if generated)
-_outskull_mask_file: a file name
-    path/name of outskull mask (if generated)
-_out_file: a file name
-    path/name of skullstripped file (if generated)
-_outline_file: a file name
-    path/name of outline file (if generated)
-_inskull_mesh_file: a file name
-    path/name of inskull mesh outline (if generated)
-_outskin_mask_file: a file name
-    path/name of outskin mask (if generated)
-_meshfile: a file name
-    path/name of vtk mesh file (if generated)
-_mask_file: a file name
-    path/name of binary brain mask (if generated)
-
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-/usr/lib/python2.7/dist-packages/nipype/interfaces/fsl/base.py:116: UserWarning: FSL environment variables not set. setting output type to NIFTI
-  warnings.warn((&#39;FSL environment variables not set. setting output &#39;
-</pre></div></div>
-</div>
 <p>As shown it is possible to set the BET algorithm input parameters. Note
 that in capsul the standard nipype outputs are prefixed with
 underscores. We can execute this Process but unfortunatelly, as
@@ -2110,13 +1814,25 @@ study confit, otherwise the pipeline will not run. As we have done it
 above, we can run it:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [53]:
+<span></span>In [ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="k">if</span> <span class="n">study_config</span><span class="o">.</span><span class="n">use_nipype</span><span class="p">:</span>
     <span class="n">study_config</span><span class="o">.</span><span class="n">reset_process_counter</span><span class="p">()</span>
     <span class="n">study_config</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">betpipe</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<h2><p>Now Cleanup the files we have created…</p>
+</h2><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none"><div class="highlight"><pre>
+<span></span>In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">shutil</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="s1">&#39;/tmp/capsul_demo&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

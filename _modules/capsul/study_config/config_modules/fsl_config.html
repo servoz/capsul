@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../../../../_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="../../../../_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -126,20 +123,13 @@
           <div class="body" role="main">
             
   <h1>Source code for capsul.study_config.config_modules.fsl_config</h1><div class="highlight"><pre>
-<span></span><span class="c1">##########################################################################</span>
-<span class="c1"># CAPSUL - Copyright (C) CEA, 2013</span>
-<span class="c1"># Distributed under the terms of the CeCILL-B license, as published by</span>
-<span class="c1"># the CEA-CNRS-INRIA. Refer to the LICENSE file or to</span>
-<span class="c1"># http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html</span>
-<span class="c1"># for details.</span>
-<span class="c1">##########################################################################</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Undefined</span>
-<span class="kn">from</span> <span class="nn">capsul.study_config.config_utils</span> <span class="k">import</span> <span class="n">environment</span>
-<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="k">import</span> <span class="n">StudyConfigModule</span>
+<span class="kn">from</span> <span class="nn">traits.api</span> <span class="k">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Undefined</span><span class="p">,</span> <span class="n">String</span>
 
+<span class="kn">from</span> <span class="nn">capsul.study_config.study_config</span> <span class="k">import</span> <span class="n">StudyConfigModule</span>
+<span class="kn">from</span> <span class="nn">capsul.subprocess.fsl</span> <span class="k">import</span> <span class="n">check_fsl_configuration</span>
 
 <div class="viewcode-block" id="FSLConfig"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.fsl_config.FSLConfig.html#capsul.study_config.config_modules.fsl_config.FSLConfig">[docs]</a><span class="k">class</span> <span class="nc">FSLConfig</span><span class="p">(</span><span class="n">StudyConfigModule</span><span class="p">):</span>
 <div class="viewcode-block" id="FSLConfig.__init__"><a class="viewcode-back" href="../../../../api_tree/generated/capsul-studyconfig/capsul.study_config.config_modules.fsl_config.FSLConfig.html#capsul.study_config.config_modules.fsl_config.FSLConfig.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_config</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
@@ -148,6 +138,8 @@
             <span class="n">Undefined</span><span class="p">,</span>
             <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Parameter to specify the fsl.sh path&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s1">&#39;fsl_prefix&#39;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="n">Undefined</span><span class="p">,</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Prefix to add to FSL commands&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">add_trait</span><span class="p">(</span><span class="s1">&#39;use_fsl&#39;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">(</span>
             <span class="n">Undefined</span><span class="p">,</span>
             <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -158,55 +150,8 @@
         <span class="sd">&quot;&quot;&quot; Set up FSL environment variables according to current</span>
 <span class="sd">        configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="c1"># Configuration is explicitely asking not to use FSL</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="ow">is</span> <span class="n">Undefined</span><span class="p">:</span>
-            <span class="c1"># If use_fsl is not defined, FSL configuration will</span>
-            <span class="c1"># be done if possible but there will be no error if it cannot be</span>
-            <span class="c1"># done.</span>
-            <span class="n">force_configuration</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># If use_fsl is True configuration must be valid otherwise</span>
-            <span class="c1"># an EnvironmentError is raised</span>
-            <span class="n">force_configuration</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Get the fsl.sh path from the study configuration elements</span>
-        <span class="n">fsl_config_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">fsl_config</span>
-
-        <span class="c1"># If the fsl.sh path has been defined</span>
-        <span class="k">if</span> <span class="n">fsl_config_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Undefined</span> <span class="ow">and</span> \
-           <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fsl_config_file</span><span class="p">):</span>
-            <span class="c1"># Parse the fsl environment</span>
-            <span class="n">envfsl</span> <span class="o">=</span> <span class="n">environment</span><span class="p">(</span><span class="n">fsl_config_file</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;FSLDIR&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">envfsl</span> <span class="ow">and</span> <span class="s2">&quot;FSLDIR&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-                <span class="c1"># assume the fsl.sh script is in $FSLDIR/etc/fslconf/fsl.sh</span>
-                <span class="n">envfsl</span><span class="p">[</span><span class="s2">&quot;FSLDIR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fsl_config_file</span><span class="p">)))</span>
-            <span class="k">if</span> <span class="n">envfsl</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FSLDIR&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FSLDIR&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-                <span class="c1"># Set the fsl environment</span>
-                <span class="k">for</span> <span class="n">envname</span><span class="p">,</span> <span class="n">envval</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">envfsl</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">envname</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">envname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;FSL&quot;</span><span class="p">):</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">envname</span><span class="p">]</span> <span class="o">=</span> <span class="n">envval</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">envname</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">envval</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">envname</span><span class="p">]</span> <span class="o">=</span> <span class="n">envval</span>
-
-                <span class="c1"># No error detected in configuration, set use_fsl to</span>
-                <span class="c1"># True</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Error in configuration, do not let use_fsl = Undefined</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">if</span> <span class="n">force_configuration</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span>
-                    <span class="s2">&quot;No valid FSL configuration file specified. &quot;</span>
-                    <span class="s2">&quot;It is impossible to configure FSL.&quot;</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">initialize_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_module</span><span class="p">,</span> <span class="s1">&#39;use_fsl&#39;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">check_fsl_configuration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">study_config</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

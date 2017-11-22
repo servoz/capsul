@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -142,10 +139,10 @@ before instantiating StudyConfig. A default modules list is used when no
 modules are specified: StudyConfig.default_modules</p>
 <p>StudyConfig configuration is loaded from a global file and then from a
 study specific file (based on study_name parameter). The global
-configuration file name is either in os.environ[&#8216;CAPSUL_CONFIG&#8217;] or
-in &#8220;~/.config/capsul/config.json&#8221;. The study specific configuration
+configuration file name is either in os.environ[‘CAPSUL_CONFIG’] or
+in “~/.config/capsul/config.json”. The study specific configuration
 file name is either defined in the global configuration or in
-&#8220;~/.config/capsul/&lt;study_name&gt;/config.json&#8221;.</p>
+“~/.config/capsul/&lt;study_name&gt;/config.json”.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="k">import</span> <span class="n">StudyConfig</span>
 
 <span class="n">study_config</span> <span class="o">=</span> <span class="n">StudyConfig</span><span class="p">(</span><span class="n">modules</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;SPMConfig&#39;</span><span class="p">,</span> <span class="s1">&#39;FomConfig&#39;</span><span class="p">])</span>
@@ -174,7 +171,7 @@ file name is either defined in the global configuration or in
 <td>(bool (default True)) Create parent directories of all output File or Directory before running a process</td>
 </tr>
 <tr class="row-odd"><td><cite>process_output_directory</cite></td>
-<td>(bool (default False)) Create a process specific output_directory by appending a subdirectory to output_directory. This subdirectory is named &#8216;&lt;count&gt;-&lt;name&gt;&#8217; where &lt;count&gt; if self.process_counter and &lt;name&gt; is the name of the process.</td>
+<td>(bool (default False)) Create a process specific output_directory by appending a subdirectory to output_directory. This subdirectory is named ‘&lt;count&gt;-&lt;name&gt;’ where &lt;count&gt; if self.process_counter and &lt;name&gt; is the name of the process.</td>
 </tr>
 </tbody>
 </table>
@@ -185,7 +182,7 @@ file name is either defined in the global configuration or in
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.run" title="capsul.study_config.study_config.StudyConfig.run"><code class="xref py py-obj docutils literal"><span class="pre">run</span></code></a>(process_or_pipeline[,&nbsp;output_directory,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.run" title="capsul.study_config.study_config.StudyConfig.run"><code class="xref py py-obj docutils literal"><span class="pre">run</span></code></a>(process_or_pipeline[,&nbsp;output_directory,&nbsp;…])</td>
 <td>Method to execute a process or a pipline in a study configuration  environment.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.reset_process_counter" title="capsul.study_config.study_config.StudyConfig.reset_process_counter"><code class="xref py py-obj docutils literal"><span class="pre">reset_process_counter</span></code></a>()</td>
@@ -195,10 +192,10 @@ file name is either defined in the global configuration or in
 <td>Method to set the value of a parameter.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.get_trait" title="capsul.study_config.study_config.StudyConfig.get_trait"><code class="xref py py-obj docutils literal"><span class="pre">get_trait</span></code></a>(trait_name)</td>
-<td>Method to access the &#8216;trait_name&#8217; study configuration element.</td>
+<td>Method to access the ‘trait_name’ study configuration element.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.get_trait_value" title="capsul.study_config.study_config.StudyConfig.get_trait_value"><code class="xref py py-obj docutils literal"><span class="pre">get_trait_value</span></code></a>(trait_name)</td>
-<td>Method to access the value of the &#8216;trait_name&#8217; study configuration element.</td>
+<td>Method to access the value of the ‘trait_name’ study configuration element.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.study_config.study_config.StudyConfig.update_study_configuration" title="capsul.study_config.study_config.StudyConfig.update_study_configuration"><code class="xref py py-obj docutils literal"><span class="pre">update_study_configuration</span></code></a>(json_fname)</td>
 <td>Update the study configuration from a json file.</td>
@@ -317,7 +314,7 @@ parameters.</p>
 <dl class="method">
 <dt id="capsul.study_config.study_config.StudyConfig.get_trait">
 <code class="descname">get_trait</code><span class="sig-paren">(</span><em>trait_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/study_config.html#StudyConfig.get_trait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.study_config.StudyConfig.get_trait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to access the &#8216;trait_name&#8217; study configuration element.</p>
+<dd><p>Method to access the ‘trait_name’ study configuration element.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -337,13 +334,13 @@ parameters.</p>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>If the &#8216;trait_name&#8217; element is not found, return None</p>
+<p>If the ‘trait_name’ element is not found, return None</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.study_config.study_config.StudyConfig.get_trait_value">
 <code class="descname">get_trait_value</code><span class="sig-paren">(</span><em>trait_name</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/study_config.html#StudyConfig.get_trait_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.study_config.StudyConfig.get_trait_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to access the value of the &#8216;trait_name&#8217; study
+<dd><p>Method to access the value of the ‘trait_name’ study
 configuration element.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -383,7 +380,7 @@ initialization.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>config_module_name: Name of the module to load (e.g. &#8220;FSLConfig&#8221;).</strong></p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>config_module_name: Name of the module to load (e.g. “FSLConfig”).</strong></p>
 <p class="last"><strong>config: dictionary containing the configuration of the study.</strong></p>
 </td>
 </tr>
@@ -398,17 +395,17 @@ initialization.</p>
 in self study_name) and returns a dictionary that is a merge between
 global options and study specific options.</p>
 <p>Global option are taken from environment variable CAPSUL_CONFIG if
-it is defined, otherwise from &#8220;~/.config/capsul/config.json&#8221; if it
+it is defined, otherwise from “~/.config/capsul/config.json” if it
 exists.</p>
 <p>The configuration for a study can be defined the global configuration
-if it contains a dictionary in it &#8220;studies_config&#8221; option and if there
+if it contains a dictionary in it “studies_config” option and if there
 is a key corresponding to self.study_name in this dictionary. If the
 corresponding value is a string, it must be a valid json configuration
 file name (either absolute or relative to the global configuration
 file). Otherwise, the corresponding value must be a dictionary
 containing study specific configuration values.
 If no study configuration is found from global configuration, then
-a file named &#8220;~/.config/capsul/%s/config.json&#8221; (where %s is
+a file named “~/.config/capsul/%s/config.json” (where %s is
 self.study_name) is used if it exists.</p>
 </dd></dl>
 
@@ -427,7 +424,7 @@ self.study_name) is used if it exists.</p>
 <p>Depending on the studies_config settings, it may be a sequential run,
 or a parallel run, which can involve remote execution (through soma-
 workflow).</p>
-<p>Only pipeline nodes can be filtered on the &#8216;execute_qc_nodes&#8217;
+<p>Only pipeline nodes can be filtered on the ‘execute_qc_nodes’
 attribute.</p>
 <p class="last">A valid output directory is exepcted to execute the process or the
 pepeline without soma-workflow.</p>
@@ -483,7 +480,7 @@ process nodes.</p>
 <dt id="capsul.study_config.study_config.StudyConfig.set_study_configuration">
 <code class="descname">set_study_configuration</code><span class="sig-paren">(</span><em>new_config</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/study_config/study_config.html#StudyConfig.set_study_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.study_config.study_config.StudyConfig.set_study_configuration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method to set the new configuration of the study.</p>
-<p>If a study configuration element can&#8217;t be updated properly,
+<p>If a study configuration element can’t be updated properly,
 send an error message to the logger.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

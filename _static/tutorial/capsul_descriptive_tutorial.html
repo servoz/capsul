@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../css/bootstrap-responsive.css"/>
   <link rel="icon" href="../capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../nature.css" type="text/css" />
     <link rel="stylesheet" href="../pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../jquery.js"></script>
     <script type="text/javascript" src="../underscore.js"></script>
     <script type="text/javascript" src="../doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -287,7 +284,11 @@ div.nboutput div.output_area.stderr {
 .ansi-white-intense-fg { color: #A1A6B2; }
 .ansi-white-intense-bg { background-color: #A1A6B2; }
 
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
 .ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
 </style>
 <h1><p>Capsul: Collaborative Analysis Platform : Simple, Unifying, Lean</p>
 </h1><div style="text-align: center"><p>Credit: Antoine Grigis</p>
@@ -307,7 +308,7 @@ the Capsul version:</p>
 <span></span>In [1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="c1"># just to ensure compatibility of this notebook with python 2 and 3</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="c1"># the following to avoid display when this notebook is converted to sphinx doc</span>
@@ -325,7 +326,7 @@ the Capsul version:</p>
 <span></span>In [2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">capsul</span>
 <span class="k">print</span><span class="p">(</span><span class="n">capsul</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
@@ -336,19 +337,19 @@ the Capsul version:</p>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2.1.0
+2.1.1
 </pre></div></div>
 </div>
 <h2><p>Use a function as a building block</p>
 </h2><p>It is possible to convert a function in Process and thus use it as a
 building block of a pipeline. In the following example we will use the
-&#8216;a_function_to_wrap&#8217; test function:</p>
+‘a_function_to_wrap’ test function:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">capsul.process.test.test_load_from_description</span> <span class="kn">import</span> <span class="n">a_function_to_wrap</span>
 
@@ -382,10 +383,10 @@ def a_function_to_wrap(fname, directory, value, enum, list_of_str):
 </pre></div></div>
 </div>
 <p>This is a pure Python function with the Process description in the
-docstring between the &lt;process&gt;...&lt;/process&gt; tags. Inside those tags,
+docstring between the &lt;process&gt;…&lt;/process&gt; tags. Inside those tags,
 each returned and input parameters are described in the function order.
 The parameters are typed and a description is asked in order to generate
-proper tooltips or documentations. The &#8216;reference&#8217; output parameter is
+proper tooltips or documentations. The ‘reference’ output parameter is
 optional.</p>
 <p>We can now create a Process from this Python function:</p>
 <div class="nbinput docutils container">
@@ -393,7 +394,7 @@ optional.</p>
 <span></span>In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
 
 <span class="n">funcprocess</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.test_load_from_description.a_function_to_wrap&quot;</span><span class="p">)</span>
@@ -456,7 +457,7 @@ string: a string
 <span></span>In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="n">funcprocess</span><span class="o">.</span><span class="n">list_of_str</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
 <span class="n">funcprocess</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">4.3</span>
 <span class="n">funcprocess</span><span class="o">.</span><span class="n">enum</span> <span class="o">=</span> <span class="s2">&quot;c&quot;</span>
@@ -479,14 +480,14 @@ ALL FUNCTION PARAMETERS::
 <h2><p>Defining a Pipeline</p>
 </h2><p>A Pipeline can be described from an xml file. For the documentation of
 the description glossary, please refere to the capsul documentation. In
-the following example we will use the &#8216;xml_pipeline.xml&#8217; test
+the following example we will use the ‘xml_pipeline.xml’ test
 description:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">capsul.process.test</span> <span class="kn">as</span> <span class="nn">test</span>
 
@@ -542,7 +543,7 @@ description:</p>
 <span></span>In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
 
 <span class="n">xmlpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.xml_pipeline&quot;</span><span class="p">)</span>
@@ -593,12 +594,12 @@ out1: a string
 </div>
 <p>One major advantage of the capsul pipeline system is to be able to
 represent graphically the processing sequence:</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
 <span></span>In [8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="k">if</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_gui&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">soma.qt_gui</span> <span class="kn">import</span> <span class="n">qt_backend</span>
@@ -622,6 +623,14 @@ represent graphically the processing sequence:</p>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+app created: True
+</pre></div></div>
+</div>
 <h2><p>A structure to switch between processings</p>
 </h2><p>In Capsul it is possible to define a building block which aims to select
 a sequence of processings. It is done with a Switch building block as
@@ -631,7 +640,7 @@ follows:</p>
 <span></span>In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">capsul.process.test</span> <span class="kn">as</span> <span class="nn">test</span>
 
@@ -759,7 +768,7 @@ follows:</p>
 <span></span>In [10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
 
 <span class="n">xmlpipe</span> <span class="o">=</span> <span class="n">get_process_instance</span><span class="p">(</span><span class="s2">&quot;capsul.process.test.test_pipeline&quot;</span><span class="p">)</span>
@@ -812,7 +821,7 @@ output_1: a file name
 <span></span>In [11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="k">if</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_gui&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">soma.qt_gui.qt_backend</span> <span class="kn">import</span> <span class="n">QtGui</span>
@@ -836,15 +845,15 @@ output_1: a file name
 </div>
 <h2><p>Use Nipype in Capsul</p>
 </h2><p>It is possible to use all the nipype interfaces (FSL, SPM, FreeSurfer,
-...) as building blocks in Capsul. This step requires nipype to be
+…) as building blocks in Capsul. This step requires nipype to be
 properly installed as well as the software we want to use. For instance
 if we want to perform a brain extraction with FSL we can simply write:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [12]:
+<span></span>In [ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">get_process_instance</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -858,127 +867,6 @@ if we want to perform a brain extraction with FSL we can simply write:</p>
     <span class="n">betpipe</span><span class="o">.</span><span class="n">in_file</span><span class="o">=</span><span class="s2">&quot;/tmp/capsul_demo/MNI152_T1_2mm.nii.gz&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
- Base class used to wrap nipype interfaces.
-
-
-.. note::
-
-    * Type &#39;NipypeProcess.help()&#39; for a full description of this process parameters.
-    * Type &#39;&lt;NipypeProcess&gt;.get_input_spec()&#39; for a full description of this process input trait types.
-    * Type &#39;&lt;NipypeProcess&gt;.get_output_spec()&#39; for a full description of this process output trait types.
-
-
-Inputs
-~~~~~~
-
-[Mandatory]
-
-in_file: an existing file name ([&#39;File&#39;] - mandatory)
-    input file to skull strip
-
-[Optional]
-
-remove_eyes: a boolean ([&#39;Bool&#39;] - optional)
-    eye &amp; optic nerve cleanup (can be useful in SIENA)
-no_output: a boolean ([&#39;Bool&#39;] - optional)
-    Don&#39;t generate segmented output
-functional: a boolean ([&#39;Bool&#39;] - optional)
-    apply to 4D fMRI data
-radius: an integer (int or long) ([&#39;Int&#39;] - optional)
-    head radius
-threshold: a boolean ([&#39;Bool&#39;] - optional)
-    apply thresholding to segmented brain image and mask
-surfaces: a boolean ([&#39;Bool&#39;] - optional)
-    run bet2 and then betsurf to get additional skull and scalp
-    surfaces (includes registrations)
-outline: a boolean ([&#39;Bool&#39;] - optional)
-    create surface outline image
-t2_guided: a file name ([&#39;File&#39;] - optional)
-    as with creating surfaces, when also feeding in non-brain-
-    extracted T2 (includes registrations)
-ignore_exception: a boolean ([&#39;Bool&#39;] - optional)
-    Print an error message instead of throwing an exception in case
-    the interface fails to run
-vertical_gradient: a float ([&#39;Float&#39;] - optional)
-    vertical gradient in fractional intensity threshold (-1, 1)
-frac: a float ([&#39;Float&#39;] - optional)
-    fractional intensity threshold
-reduce_bias: a boolean ([&#39;Bool&#39;] - optional)
-    bias field and neck cleanup
-args: a string ([&#39;Str&#39;] - optional)
-    Additional parameters to the command
-output_directory: a directory name ([&#39;Directory&#39;] - optional)
-    No description.
-padding: a boolean ([&#39;Bool&#39;] - optional)
-    improve BET if FOV is very small in Z (by temporarily padding end
-    slices)
-mesh: a boolean ([&#39;Bool&#39;] - optional)
-    generate a vtk mesh brain surface
-robust: a boolean ([&#39;Bool&#39;] - optional)
-    robust brain centre estimation (iterates BET several times)
-out_file: a file name ([&#39;File&#39;] - optional)
-    name of output skull stripped image
-center: a legal value ([&#39;List_Int&#39;] - optional)
-    center of gravity in voxels
-skull: a boolean ([&#39;Bool&#39;] - optional)
-    create skull image
-mask: a boolean ([&#39;Bool&#39;] - optional)
-    create binary mask image
-synchronize: an integer (int or long) ([&#39;Int&#39;] - optional)
-    No description.
-terminal_output: a legal value ([&#39;Enum&#39;] - optional)
-    Control terminal output: `stream` - displays to terminal
-    immediately (default), `allatonce` - waits till command is
-    finished to display output, `file` - writes output to file, `none`
-    - output is ignored
-environ: a legal value ([&#39;Dict_Str_Str&#39;] - optional)
-    Environment variables
-output_type: a legal value ([&#39;Enum&#39;] - optional)
-    FSL output type
-
-Outputs
-~~~~~~~
-
-_outskull_mesh_file: a file name
-    path/name of outskull mesh outline (if generated)
-_outskin_mesh_file: a file name
-    path/name of outskin mesh outline (if generated)
-_skull_mask_file: a file name
-    path/name of skull mask (if generated)
-_inskull_mask_file: a file name
-    path/name of inskull mask (if generated)
-_outskull_mask_file: a file name
-    path/name of outskull mask (if generated)
-_out_file: a file name
-    path/name of skullstripped file (if generated)
-_outline_file: a file name
-    path/name of outline file (if generated)
-_inskull_mesh_file: a file name
-    path/name of inskull mesh outline (if generated)
-_outskin_mask_file: a file name
-    path/name of outskin mask (if generated)
-_meshfile: a file name
-    path/name of vtk mesh file (if generated)
-_mask_file: a file name
-    path/name of binary brain mask (if generated)
-
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="stderr output_area docutils container">
-<div class="highlight"><pre>
-/usr/lib/python2.7/dist-packages/nipype/interfaces/fsl/base.py:116: UserWarning: FSL environment variables not set. setting output type to NIFTI
-  warnings.warn((&#39;FSL environment variables not set. setting output &#39;
-</pre></div></div>
 </div>
 <p>As shown it is possible to set the BET algorithm input parameters. Note
 that in capsul the standard nipype outputs are prefixed with
@@ -998,12 +886,12 @@ pipeline:</p>
 </li><li><p>Generate some logging</p>
 </li><li><p>Soma-Worflow to handle population imaging</p>
 </li></ul><p>Let show how to configure FSL:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [13]:
+<span></span>In [ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">capsul.api</span> <span class="kn">import</span> <span class="n">StudyConfig</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 
@@ -1017,74 +905,24 @@ pipeline:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;create_output_directories&#39;: True,
- &#39;fsl_config&#39;: &#39;/etc/fsl/4.1/fsl.sh&#39;,
- &#39;generate_logging&#39;: False,
- &#39;input_directory&#39;: &lt;undefined&gt;,
- &#39;output_directory&#39;: &#39;/tmp/capsul_demo&#39;,
- &#39;process_output_directory&#39;: False,
- &#39;study_name&#39;: None,
- &#39;use_fsl&#39;: False,
- &#39;use_smart_caching&#39;: True}
-Method to execute a process or a pipline in a study configuration
-         environment.
-
-         Depending on the studies_config settings, it may be a sequential run,
-         or a parallel run, which can involve remote execution (through soma-
-         workflow).
-
-         Only pipeline nodes can be filtered on the &#39;execute_qc_nodes&#39;
-         attribute.
-
-         A valid output directory is exepcted to execute the process or the
-         pepeline without soma-workflow.
-
-        Parameters
-        ----------
-        process_or_pipeline: Process or Pipeline instance (mandatory)
-            the process or pipeline we want to execute
-        output_directory: Directory name (optional)
-            the output directory to use for process execution. This replaces
-            self.output_directory but left it unchanged.
-        execute_qc_nodes: bool (optional, default False)
-            if True execute process nodes that are taged as qualtity control
-            process nodes.
-        verbose: int
-            if different from zero, print console messages.
-
-</pre></div></div>
-</div>
 <h2><p>Execution of the pipeline</p>
 </h2><p>In this section a simple execution is performed on your machine using
 one CPU (if more than one CPU are used it means that the called external
 software is parallelized). We just have to call the StudyConfig run
 method:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none"><div class="highlight"><pre>
-<span></span>In [14]:
+<span></span>In [ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython"><div class="highlight"><pre>
-<span></span><span class="k">if</span> <span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span><span class="p">:</span>
+<div class="input_area highlight-ipython2"><div class="highlight"><pre>
+<span></span><span class="k">if</span> <span class="n">study_config</span><span class="o">.</span><span class="n">use_fsl</span> <span class="ow">and</span> <span class="n">nipype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
     <span class="n">study_config</span><span class="o">.</span><span class="n">reset_process_counter</span><span class="p">()</span>
     <span class="n">study_config</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">betpipe</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="k">print</span><span class="p">(</span><span class="s1">&#39;FSL is not available or not correctly configured&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-FSL is not available or not correctly configured
-</pre></div></div>
 </div>
 <h2><p>Distributed execution top handle population imaging</p>
 </h2><p>Capsul can execute a pipeline through Soma-Workflow in order to address

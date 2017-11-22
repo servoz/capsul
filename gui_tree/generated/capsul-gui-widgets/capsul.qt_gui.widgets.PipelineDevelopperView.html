@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -177,7 +174,7 @@ parent box.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.__init__" title="capsul.qt_gui.widgets.PipelineDevelopperView.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>([pipeline,&nbsp;parent,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.__init__" title="capsul.qt_gui.widgets.PipelineDevelopperView.__init__"><code class="xref py py-obj docutils literal"><span class="pre">__init__</span></code></a>([pipeline,&nbsp;parent,&nbsp;…])</td>
 <td>PipelineDevelopperView</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_pipeline" title="capsul.qt_gui.widgets.PipelineDevelopperView.set_pipeline"><code class="xref py py-obj docutils literal"><span class="pre">set_pipeline</span></code></a>(pipeline)</td>
@@ -195,10 +192,10 @@ parent box.</p>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.zoom_out" title="capsul.qt_gui.widgets.PipelineDevelopperView.zoom_out"><code class="xref py py-obj docutils literal"><span class="pre">zoom_out</span></code></a>()</td>
 <td>Zoom the view out, applying a 1/1.2 zool factor</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline" title="capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline"><code class="xref py py-obj docutils literal"><span class="pre">add_embedded_subpipeline</span></code></a>(subpipeline_name[,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline" title="capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline"><code class="xref py py-obj docutils literal"><span class="pre">add_embedded_subpipeline</span></code></a>(subpipeline_name[,&nbsp;…])</td>
 <td>Adds an embedded sub-pipeline inside its parent node.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked" title="capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked"><code class="xref py py-obj docutils literal"><span class="pre">onLoadSubPipelineClicked</span></code></a>(node_name,&nbsp;...)</td>
+<tr class="row-even"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked" title="capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked"><code class="xref py py-obj docutils literal"><span class="pre">onLoadSubPipelineClicked</span></code></a>(node_name,&nbsp;…)</td>
 <td>Event to load a open a sub-pipeline view.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onOpenProcessController" title="capsul.qt_gui.widgets.PipelineDevelopperView.onOpenProcessController"><code class="xref py py-obj docutils literal"><span class="pre">onOpenProcessController</span></code></a>(node_name,&nbsp;process)</td>
@@ -211,7 +208,7 @@ parent box.</p>
 <td>Ask for a filename using the file dialog, and save a graphviz/dot representation of the pipeline.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.reset_initial_nodes_positions" title="capsul.qt_gui.widgets.PipelineDevelopperView.reset_initial_nodes_positions"><code class="xref py py-obj docutils literal"><span class="pre">reset_initial_nodes_positions</span></code></a>()</td>
-<td>Set each pipeline node to its &#8220;saved&#8221; position, ie the one which may be found in the &#8220;node_position&#8221; variable of the pipeline.</td>
+<td>Set each pipeline node to its “saved” position, ie the one which may be found in the “node_position” variable of the pipeline.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.qt_gui.widgets.PipelineDevelopperView.window" title="capsul.qt_gui.widgets.PipelineDevelopperView.window"><code class="xref py py-obj docutils literal"><span class="pre">window</span></code></a>()</td>
 <td>window() is overloaded from QWidget.window() to handle embedded views</td>
@@ -314,51 +311,51 @@ specified, then edition will be activated anyway.</p>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">add_embedded_subpipeline</code><span class="sig-paren">(</span><em>subpipeline_name</em>, <em>scale=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_embedded_subpipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_embedded_subpipeline</code><span class="sig-paren">(</span><em>subpipeline_name</em>, <em>scale=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_embedded_subpipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_embedded_subpipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an embedded sub-pipeline inside its parent node.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.add_iterative_process">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">add_iterative_process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_iterative_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_iterative_process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_iterative_process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_iterative_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_iterative_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert an iterative process node in the pipeline. Asks for the process
 module/name, the node name, and iterative plugs before inserting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.add_optional_output_switch">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">add_optional_output_switch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_optional_output_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_optional_output_switch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_optional_output_switch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_optional_output_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_optional_output_switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert an optional output switch node in the pipeline. Asks for the
 switch inputs/outputs, and the node name before inserting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.add_process">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">add_process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_process" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_process</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a process node in the pipeline. Asks for the process
 module/name, and the node name before inserting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.add_switch">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">add_switch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_switch" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_switch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.add_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.add_switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Insert a switch node in the pipeline. Asks for the switch
 inputs/outputs, and the node name before inserting.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.auto_dot_node_positions">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">auto_dot_node_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.auto_dot_node_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.auto_dot_node_positions" title="Permalink to this definition">¶</a></dt>
+<code class="descname">auto_dot_node_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.auto_dot_node_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.auto_dot_node_positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate pipeline nodes positions using graphviz/dot, and place the
 pipeline view nodes accordingly.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.colored_parameters">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">colored_parameters</code><em class="property"> = True</em><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.colored_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="descname">colored_parameters</code><em class="property"> = True</em><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.colored_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>If enabled (default), parameters in nodes boxes are displayed with color
 codes representing their state, and the state of their values: output
-parameters, empty values, existing files, non-existing files...</p>
+parameters, empty values, existing files, non-existing files…</p>
 <p>When colored_parameters is set, however, callbacks have to be installed to
 track changes in traits values, so this actually has an overhead.
 When colored_parameters is used, the color code is as follows:</p>
@@ -380,32 +377,32 @@ When colored_parameters is used, the color code is as follows:</p>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.edition_enabled">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">edition_enabled</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.edition_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.edition_enabled" title="Permalink to this definition">¶</a></dt>
+<code class="descname">edition_enabled</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.edition_enabled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.edition_enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the editable state</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.is_logical_view">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">is_logical_view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.is_logical_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.is_logical_view" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_logical_view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.is_logical_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.is_logical_view" title="Permalink to this definition">¶</a></dt>
 <dd><p>in logical view mode, plugs and links between plugs are hidden, only
 links between nodes are displayed.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.link_right_clicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">link_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.link_right_clicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">link_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.link_right_clicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal emitted when a link is right-clicked</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.node_right_clicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">node_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.node_right_clicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">node_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.node_right_clicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal emitted when a node box is right-clicked</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">onLoadSubPipelineClicked</code><span class="sig-paren">(</span><em>node_name</em>, <em>sub_pipeline</em>, <em>modifiers</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.onLoadSubPipelineClicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">onLoadSubPipelineClicked</code><span class="sig-paren">(</span><em>node_name</em>, <em>sub_pipeline</em>, <em>modifiers</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.onLoadSubPipelineClicked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onLoadSubPipelineClicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event to load a open a sub-pipeline view.
 If ctrl is pressed the new view will be embedded in its parent node
 box.</p>
@@ -413,76 +410,76 @@ box.</p>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.onOpenProcessController">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">onOpenProcessController</code><span class="sig-paren">(</span><em>node_name</em>, <em>process</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.onOpenProcessController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onOpenProcessController" title="Permalink to this definition">¶</a></dt>
+<code class="descname">onOpenProcessController</code><span class="sig-paren">(</span><em>node_name</em>, <em>process</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.onOpenProcessController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.onOpenProcessController" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event to open a sub-process/sub-pipeline controller</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.open_background_menu">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">open_background_menu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.open_background_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.open_background_menu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">open_background_menu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.open_background_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.open_background_menu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the right-click menu when triggered from the pipeline backround.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.open_node_menu">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">open_node_menu</code><span class="sig-paren">(</span><em>node_name</em>, <em>process</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.open_node_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.open_node_menu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">open_node_menu</code><span class="sig-paren">(</span><em>node_name</em>, <em>process</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.open_node_menu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.open_node_menu" title="Permalink to this definition">¶</a></dt>
 <dd><p>right-click popup menu for nodes</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.plug_clicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">plug_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.plug_clicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plug_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.plug_clicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal emitted when a plug is clicked</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.plug_right_clicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">plug_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.plug_right_clicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plug_right_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.plug_right_clicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal emitted when a plug is right-clicked</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.reset_initial_nodes_positions">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">reset_initial_nodes_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.reset_initial_nodes_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.reset_initial_nodes_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set each pipeline node to its &#8220;saved&#8221; position, ie the one which may
-be found in the &#8220;node_position&#8221; variable of the pipeline.</p>
+<code class="descname">reset_initial_nodes_positions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.reset_initial_nodes_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.reset_initial_nodes_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set each pipeline node to its “saved” position, ie the one which may
+be found in the “node_position” variable of the pipeline.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.save_dot_image_ui">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">save_dot_image_ui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.save_dot_image_ui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.save_dot_image_ui" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_dot_image_ui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.save_dot_image_ui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.save_dot_image_ui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for a filename using the file dialog, and save a graphviz/dot
 representation of the pipeline.
 The pipeline representation follows the current visualization mode
-(&#8220;regular&#8221; or &#8220;logical&#8221; with smaller boxes) with one link of a given
+(“regular” or “logical” with smaller boxes) with one link of a given
 type (active, weak) between two given boxes: all parameters are not
 represented.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.save_pipeline">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">save_pipeline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.save_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.save_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save_pipeline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.save_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.save_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask for a filename using the file dialog, and save the pipeline as a
 XML or python file.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.scene">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">scene</code><em class="property"> = None</em><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.scene" title="Permalink to this definition">¶</a></dt>
+<code class="descname">scene</code><em class="property"> = None</em><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.scene" title="Permalink to this definition">¶</a></dt>
 <dd><p>type: PipelineScene</p>
 <p>the main scene.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.set_enable_edition">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">set_enable_edition</code><span class="sig-paren">(</span><em>state=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_enable_edition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_enable_edition" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_enable_edition</code><span class="sig-paren">(</span><em>state=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_enable_edition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_enable_edition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the editable state. Edition allows to modify a pipeline: adding /
 removing process boxes and switches, drawing links, etc.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.set_logical_view">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">set_logical_view</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_logical_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_logical_view" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_logical_view</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_logical_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_logical_view" title="Permalink to this definition">¶</a></dt>
 <dd><p>in logical view mode, plugs and links between plugs are hidden, only
 links between nodes are displayed.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -501,36 +498,36 @@ links between nodes are displayed.</p>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.set_pipeline">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">set_pipeline</code><span class="sig-paren">(</span><em>pipeline</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_pipeline" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_pipeline</code><span class="sig-paren">(</span><em>pipeline</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.set_pipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.set_pipeline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assigns a new pipeline to the view.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.subpipeline_clicked">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">subpipeline_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.subpipeline_clicked" title="Permalink to this definition">¶</a></dt>
+<code class="descname">subpipeline_clicked</code><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.subpipeline_clicked" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signal emitted when a sub pipeline has to be open.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.window">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.window" title="Permalink to this definition">¶</a></dt>
+<code class="descname">window</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.window" title="Permalink to this definition">¶</a></dt>
 <dd><p>window() is overloaded from QWidget.window() to handle embedded views
 cases.
 A PipelineDevelopperView may be displayed inside a NodeGWidget.
-In this case, we want to go up to the parent scene&#8217;s window to the
-&#8220;real&#8221; top window, where QWidget.window() will end in the current
+In this case, we want to go up to the parent scene’s window to the
+“real” top window, where QWidget.window() will end in the current
 graphics scene.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.zoom_in">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">zoom_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.zoom_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.zoom_in" title="Permalink to this definition">¶</a></dt>
+<code class="descname">zoom_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.zoom_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.zoom_in" title="Permalink to this definition">¶</a></dt>
 <dd><p>Zoom the view in, applying a 1.2 zoom factor</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="capsul.qt_gui.widgets.PipelineDevelopperView.zoom_out">
-<code class="descclassname">PipelineDevelopperView.</code><code class="descname">zoom_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.zoom_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.zoom_out" title="Permalink to this definition">¶</a></dt>
+<code class="descname">zoom_out</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/qt_gui/widgets/pipeline_developper_view.html#PipelineDevelopperView.zoom_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.qt_gui.widgets.PipelineDevelopperView.zoom_out" title="Permalink to this definition">¶</a></dt>
 <dd><p>Zoom the view out, applying a 1/1.2 zool factor</p>
 </dd></dl>
 

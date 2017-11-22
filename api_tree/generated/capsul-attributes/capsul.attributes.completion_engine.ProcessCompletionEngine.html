@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -178,7 +175,7 @@ the correct type of ProcessCompletionEngine for a given process / name:
 <td>Get attributes Controller associated to a process</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#capsul.attributes.completion_engine.ProcessCompletionEngine.complete_parameters" title="capsul.attributes.completion_engine.ProcessCompletionEngine.complete_parameters"><code class="xref py py-obj docutils literal"><span class="pre">complete_parameters</span></code></a>([process_inputs])</td>
-<td>Completes file parameters from given inputs parameters, which may include both &#8220;regular&#8221; process parameters (file names) and attributes.</td>
+<td>Completes file parameters from given inputs parameters, which may include both “regular” process parameters (file names) and attributes.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#capsul.attributes.completion_engine.ProcessCompletionEngine.set_parameters" title="capsul.attributes.completion_engine.ProcessCompletionEngine.set_parameters"><code class="xref py py-obj docutils literal"><span class="pre">set_parameters</span></code></a>(process_inputs)</td>
 <td>Set the given parameters dict to the given process.</td>
@@ -237,16 +234,16 @@ when install_auto_completion() has been called.</p>
 <dt id="capsul.attributes.completion_engine.ProcessCompletionEngine.complete_parameters">
 <code class="descname">complete_parameters</code><span class="sig-paren">(</span><em>process_inputs={}</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/attributes/completion_engine.html#ProcessCompletionEngine.complete_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.attributes.completion_engine.ProcessCompletionEngine.complete_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Completes file parameters from given inputs parameters, which may
-include both &#8220;regular&#8221; process parameters (file names) and attributes.</p>
+include both “regular” process parameters (file names) and attributes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>process_inputs: dict (optional)</strong></p>
 <blockquote class="last">
-<div><p>parameters to be set on the process. It may include &#8220;regular&#8221;
+<div><p>parameters to be set on the process. It may include “regular”
 process parameters, and attributes used for completion. Attributes
-should be in a sub-dictionary under the key &#8220;capsul_attributes&#8221;.</p>
+should be in a sub-dictionary under the key “capsul_attributes”.</p>
 </div></blockquote>
 </td>
 </tr>

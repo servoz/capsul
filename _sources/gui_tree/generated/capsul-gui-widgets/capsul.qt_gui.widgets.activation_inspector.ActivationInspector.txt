@@ -1,0 +1,13 @@
+:orphan:
+
+capsul.qt_gui.widgets.activation_inspector.ActivationInspector
+==============================================================
+
+.. currentmodule:: capsul.qt_gui.widgets.activation_inspector
+
+.. autoclass:: ActivationInspector
+
+   
+   .. automethod:: __init__
+   
+

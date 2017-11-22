@@ -1,11 +1,10 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
   
     <title>CAPSUL &#8212; CAPSUL - Chain algorithm in pipelines and execute in many contexts</title>
   <!-- htmltitle is before nature.css - we use this hack to load bootstrap first -->
@@ -14,14 +13,12 @@
   <link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.css"/>
   <link rel="icon" href="../../../_static/capsul_logo.svg"/>
 
-    
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '2.1.0',
+        VERSION:     '2.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -31,7 +28,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" title="Search" href="../../../search.html" />
   
    
@@ -56,7 +53,7 @@
   </script>
 
   </head>
-  <body role="document">
+  <body>
 
   <div class="header" style="display: inline; width: 80%; margin-left:10%;">
     <a href="../../../index.html">
@@ -104,7 +101,7 @@
 
         <!-- info setup -->
           <p class="doc-version">
-           This documentation is for CAPSUL <strong>version 2.1.0</strong>
+           This documentation is for CAPSUL <strong>version 2.1.1</strong>
           </p>
 <!--        <p class="citing">
           If you use the software, please do not esitate to 
@@ -135,25 +132,25 @@
 <em class="property">class </em><code class="descclassname">capsul.pipeline.pipeline_nodes.</code><code class="descname">Switch</code><span class="sig-paren">(</span><em>pipeline</em>, <em>name</em>, <em>inputs</em>, <em>outputs</em>, <em>make_optional=()</em>, <em>output_types=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/capsul/pipeline/pipeline_nodes.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#capsul.pipeline.pipeline_nodes.Switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switch node to select a specific Process.</p>
 <p>A switch commutes a group of inputs to its outputs, according to its
-&#8220;switch&#8221; trait value. Each group may be typically linked to a different
-process. Processes not &#8220;selected&#8221; by the switch are disabled, if possible.
+“switch” trait value. Each group may be typically linked to a different
+process. Processes not “selected” by the switch are disabled, if possible.
 Values are also propagated through inputs/outputs of the switch
 (see below).</p>
 <p>Inputs / outputs:</p>
-<p>Say the switch &#8220;my_switch&#8221; has 2 outputs, &#8220;param1&#8221; and &#8220;param2&#8221;. It will
-be connected to the outputs of 2 processing nodes, &#8220;node1&#8221; and &#8220;node2&#8221;,
+<p>Say the switch “my_switch” has 2 outputs, “param1” and “param2”. It will
+be connected to the outputs of 2 processing nodes, “node1” and “node2”,
 both having 2 outputs: node1.out1, node1.out2, node2.out1, node2.out2.
 The switch will thus have 4 entries, in 2 groups, named for instance
-&#8220;node1&#8221; and &#8220;node2&#8221;. The switch will link the outputs of node1 or
+“node1” and “node2”. The switch will link the outputs of node1 or
 node2 to its outputs. The switch inputs will be named as follows:</p>
 <ul class="simple">
-<li>1st group: &#8220;node1_switch_param1&#8221;, &#8220;node1_switch_param2&#8221;</li>
-<li>2nd group: &#8220;node2_switch_param1&#8221;, &#8220;node2_switch_param2&#8221;</li>
-<li>When my_switch.switch value is &#8220;node1&#8221;, my_switch.node1_switch_param1
+<li>1st group: “node1_switch_param1”, “node1_switch_param2”</li>
+<li>2nd group: “node2_switch_param1”, “node2_switch_param2”</li>
+<li>When my_switch.switch value is “node1”, my_switch.node1_switch_param1
 is connected to my_switch.param1 and my_switch.node1_switch_param2 is
 connected to my_switch.param2. The processing node node2 is disabled
 (unselected).</li>
-<li>When my_switch.switch value is &#8220;node2&#8221;, my_switch.node2_switch_param1
+<li>When my_switch.switch value is “node2”, my_switch.node2_switch_param1
 is connected to my_switch.param1 and my_switch.node2_switch_param2 is
 connected to my_switch.param2. The processing node node1 is disabled
 (unselected).</li>
@@ -165,10 +162,10 @@ outputs will reflect the selected inputs, which means their values will
 be the same as the corresponding inputs.</li>
 <li>But in many cases, parameters values will be given from the output
 (if the switch output is one of the pipeline outputs, this one will be
-visible from the &#8220;outside world, not the switch inputs). In this case,
+visible from the “outside world, not the switch inputs). In this case,
 values set as a switch input propagate to its inputs.</li>
 <li>An exception is when a switch input is linked to the parent pipeline
-inputs: its value is also visible from &#8220;outside&#8221; and should not be set
+inputs: its value is also visible from “outside” and should not be set
 via output values via the switch. In this specific case, output values
 are not propagated to such inputs.</li>
 </ul>
