@@ -9,9 +9,9 @@
 import sys
 
 # Capsul current version
-version_major = 2
-version_minor = 1
-version_micro = 3
+version_major = 3
+version_minor = 0
+version_micro = 0
 version_extra = ""
 
 # The following variables are here for backward compatibility in order to
