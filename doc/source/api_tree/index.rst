@@ -96,6 +96,13 @@ Functions
     get_process_instance
 
 
+:mod:`capsul.engine`: Engines Configuration
+===============================================
+
+.. automodule:: capsul.engine
+    :members:
+
+
 :mod:`capsul.study_config`: Study Configuration
 ===============================================
 
