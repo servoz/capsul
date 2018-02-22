@@ -1,21 +1,8 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
 from __future__ import print_function
 
-# System import
 import logging
 import six
 
-# Define the logger
-logger = logging.getLogger(__name__)
-
-# Trait import
 import traits.api as traits
 from traits.api import Enum
 from traits.api import Str
@@ -23,11 +10,9 @@ from traits.api import Bool
 from traits.api import Any
 from traits.api import Undefined
 
-# Capsul import
 from soma.controller.trait_utils import trait_ids
 from soma.controller.trait_utils import is_trait_pathname
 
-# Soma import
 from soma.controller import Controller
 from soma.sorted_dictionary import SortedDictionary
 from soma.utils.functiontools import SomaPartial

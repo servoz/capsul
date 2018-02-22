@@ -1,23 +1,9 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
-# System import
 import logging
 import six
 
-# Define the logger
-logger = logging.getLogger(__name__)
-
-# Soma import
 from soma.qt_gui.qt_backend import QtGui, QtCore
 from soma.qt_gui.controller_widget import ControllerWidget
 
-# Capsul import
 from capsul.qt_gui.widgets.viewer_widget import ViewerWidget
 from capsul.api import Pipeline
 from capsul.pipeline.pipeline_nodes import Switch, PipelineNode
@@ -71,10 +57,6 @@ class BoardWidget(QtGui.QWidget):
         # Create the board
         self._fill_trees()
 
-    ###########################################################################
-    # Methods   
-    ###########################################################################
-
     def create_output_widget(self):
         """ Method to create the output controller widget built 
         from the class controller output traits
@@ -111,10 +93,6 @@ class BoardWidget(QtGui.QWidget):
         self.board_tree.headerItem().setText(2, "Execution Time")
         self.board_tree.headerItem().setText(3, "Memory")
         self.board_tree.headerItem().setText(4, "Logs")
-
-    ###########################################################################
-    # Private methods   
-    ###########################################################################
 
     def _title_for(self, title):
         """ Method to tune a title name.

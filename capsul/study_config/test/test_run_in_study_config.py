@@ -1,22 +1,11 @@
-##########################################################################
-# Capsul - Copyright (C) CEA, 2014
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
-# System import
 import unittest
 import tempfile
 import shutil
 import os
 
-# Capsul import
 from capsul.api import Process, get_process_instance
 from capsul.study_config.study_config import StudyConfig
 
-# Trait import
 from traits.api import Float, Directory
 
 

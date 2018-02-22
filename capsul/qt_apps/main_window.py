@@ -1,12 +1,3 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
-# System import
 import os
 import logging
 import six
@@ -14,11 +5,9 @@ import six
 # Define the logger
 logger = logging.getLogger(__name__)
 
-# Soma import
 from soma.qt_gui.qt_backend import QtCore, QtGui, QtWebKit
 from soma.qt_gui.controller_widget import ScrollControllerWidget
 
-# Capsul import
 from capsul.qt_apps.utils.window import MyQUiLoader
 from capsul.qt_apps.utils.fill_treectrl import fill_treectrl
 from capsul.qt_gui.widgets import (PipelineDevelopperView, PipelineUserView)

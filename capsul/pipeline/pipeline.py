@@ -1,15 +1,6 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
 from __future__ import print_function
 from __future__ import absolute_import
 
-# System import
 import logging
 from copy import deepcopy
 import tempfile
@@ -18,10 +9,6 @@ import shutil
 import six
 from soma.utils.weak_proxy import weak_proxy, get_ref
 
-# Define the logger
-logger = logging.getLogger(__name__)
-
-# Trait import
 try:
     import traits.api as traits
     from traits.api import (File, Enum, Bool,
@@ -31,7 +18,6 @@ except ImportError:
     from enthought.traits.api import (File, Enum, Bool,
                                       Event, Directory, Trait, List, Set)
 
-# Capsul import
 from capsul.api import Process, NipypeProcess
 from .topological_sort import GraphNode
 from .topological_sort import Graph
@@ -41,7 +27,6 @@ from .pipeline_nodes import PipelineNode
 from .pipeline_nodes import Switch
 from .pipeline_nodes import OptionalOutputSwitch
 
-# Soma import
 from soma.controller import Controller
 from soma.controller import ControllerTrait
 from soma.sorted_dictionary import SortedDictionary
@@ -1353,7 +1338,6 @@ class Pipeline(Process):
 
         # Generate the output workflow representation
         self.workflow_repr = "->".join([x[0] for x in ordered_list])
-        logger.debug("Workflow: {0}". format(self.workflow_repr))
 
         # Generate the final workflow by flattenin graphs structures
         workflow_list = []

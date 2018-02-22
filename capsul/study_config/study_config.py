@@ -1,14 +1,5 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
 from __future__ import print_function
 
-# System import
 import os
 import logging
 import json
@@ -22,13 +13,10 @@ else:
 # Define the logger
 logger = logging.getLogger(__name__)
 
-# Trait import
 from traits.api import File, Directory, Bool, String, Undefined
 
-# Soma import
 from soma.controller import Controller
 
-# Capsul import
 from capsul.pipeline.pipeline import Pipeline
 from capsul.process.process import Process
 from capsul.study_config.run import run_process
