@@ -1,24 +1,10 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
-# System import
 import os
 import logging
 import six
 
-# CAPSUL import
 from capsul.study_config.memory import Memory
 
-# TRAIT import
 from traits.api import Undefined
-
-# Define the logger
-logger = logging.getLogger(__name__)
 
 
 def run_process(output_dir, process_instance, cachedir=None,
@@ -41,8 +27,8 @@ def run_process(output_dir, process_instance, cachedir=None,
 
     Returns
     -------
-    returncode: ProcessResult
-        contains all execution information.
+    returncode: any
+        value returned by the Process _run_process() method.
     output_log_file: str
         the path to the process execution log file.
     """
@@ -98,9 +84,13 @@ def run_process(output_dir, process_instance, cachedir=None,
         if len(missing) != 0:
             raise ValueError('In process %s: missing mandatory parameters: %s'
                              % (process_instance.name, ', '.join(missing)))
-        process_instance._before_run_process()
+        before = getattr(process_instance, '_before_run_process', None)
+        if before is not None:
+            before()
         returncode = process_instance._run_process()
-        returncode = process_instance._after_run_process(returncode)
+        after = getattr(process_instance, '_after_run_process', None)
+        if after is not None:
+            returncode = after(returncode)
 
     # Save the process log
     if generate_logging:

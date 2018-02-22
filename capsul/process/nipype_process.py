@@ -1,4 +1,3 @@
-# System import
 import sys
 import glob
 import os
@@ -68,7 +67,6 @@ class FileCopyProcess(Process):
     def _before_run_process(self):
         """ Method to copy files before executing the process.
         """
-        super(FileCopyProcess, self)._before_run_process()
         # The copy option is activated
         if self.activate_copy:
 
@@ -83,7 +81,6 @@ class FileCopyProcess(Process):
         """ Method to clean-up temporary workspace after process
         execution.
         """
-        run_process_result = super(FileCopyProcess, self)._after_run_process(run_process_result)
         # The copy option is activated
         if self.activate_copy:
             # Clean the workspace
@@ -320,6 +317,7 @@ class NipypeProcess(FileCopyProcess):
         runtime: InterfaceResult
             object containing the running results
         """
+        self._before_run_process()
         try:
             cwd = os.getcwd()
         except OSError:
@@ -357,6 +355,8 @@ class NipypeProcess(FileCopyProcess):
         if cwd is not None:
             os.chdir(cwd)
 
+        results = self._after_run_process(results)
+        
         return results
 
     @classmethod

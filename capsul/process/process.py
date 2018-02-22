@@ -1,12 +1,3 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
-# System import
 import os
 import operator
 from socket import getfqdn
@@ -21,19 +12,16 @@ import six
 import sys
 import functools
 
-# Trait import
 from traits.trait_base import _Undefined
 from traits.api import Directory, Undefined, Int, List, Bool, File
 from traits.trait_handlers import BaseTraitHandler
 
-# Soma import
 from soma.controller import Controller
 from soma.controller import trait_ids
 from soma.controller.trait_utils import is_trait_value_defined
 from soma.controller.trait_utils import is_trait_pathname
 from soma.controller.trait_utils import get_trait_desc
 
-# Capsul import
 from capsul.utils.version_utils import get_tool_version
 
 if sys.version_info[0] <= 3:
@@ -172,18 +160,11 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
     -------
     __call__
     _run_process
-    _get_log
     add_trait
-    save_log
     help
     get_input_help
     get_output_help
     get_commandline
-    get_log
-    get_input_spec
-    get_output_spec
-    get_inputs
-    get_outputs
     set_parameter
     get_parameter
 
@@ -266,10 +247,6 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
         kwargs: dict (optional)
             should correspond to the declared parameter traits.
 
-        Returns
-        -------
-        results:  ProcessResult object
-            contains all execution information.
         """
         # Execute the process
         returncode = self.get_study_config().run(self, **kwargs)
@@ -283,10 +260,6 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
         return self.__call__(**kwargs)
 
     
-    ####################################################################
-    # Private methods
-    ####################################################################
-
     def _run_process(self):
         """Runs the processings when the instance is called.
 
@@ -325,149 +298,6 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
                 "redefined in process ({0})".format(
                     self.__class__.__name__))
     
-    def _before_run_process(self):
-        """This method is called by StudyConfig.run() before calling
-        _run_process(). By default it does nothing but can be overriden
-        in derived classes.
-        """
-        
-    def _after_run_process(self, run_process_result):
-        """This method is called by StudyConfig.run() after calling
-        _run_process(). It is expected to return the final result of the
-        process. By default it does nothing but can be overriden
-        in derived classes.
-        """
-        return run_process_result
-        
-
-    def _get_log(self, exec_info):
-        """ Method that generate the logging structure from the execution
-        information and class attributes.
-
-        Parameters
-        ----------
-        exec_info: dict (mandatory)
-            the execution informations,
-            the dictionnary is supposed to contain a runtime attribute.
-
-        Returns
-        -------
-        log: dict
-            the logging information.
-        """
-        # Set all the execution runtime information in the log
-        log = exec_info.runtime
-
-        # Add the process identifiaction class attribute
-        log["process"] = self.id
-
-        # Add the process inputs and outputs
-        log["inputs"] = exec_info.inputs.copy()
-        log["outputs"] = exec_info.outputs.copy()
-
-        # Need to take the representation of undefined input or outputs
-        # traits
-        for parameter_type in ["inputs", "outputs"]:
-            for key, value in six.iteritems(log[parameter_type]):
-                if value is Undefined:
-                    log[parameter_type][key] = repr(value)
-
-        return log
-
-    def _rst_table(self, data):
-        """ Create a rst formated table.
-
-        Parameters
-        ----------
-        data: list of list of str (mandatory)
-            the table line-cell centent.
-
-        Returns
-        -------
-        rsttable: list of str
-            the rst formated table containing the input data.
-        """
-        # Output rst table
-        rsttable = []
-
-        # Get the size of the largest row in order to
-        # format properly the rst table (do not forget the '+' and '*')
-        row_widths = [len(item)
-                      for item in functools.reduce(operator.add, data)]
-        width = max(row_widths) + 11
-
-        # Generate the rst table
-
-        # > table synthax
-        rsttable.append("+" + "-" * width + "+")
-        # > go through the table lines
-        for table_row in data:
-            # > go through the cell lines
-            for index, cell_row in enumerate(table_row):
-                # > set the parameter name in bold
-                if index == 0 and ":" in cell_row:
-                    delimiter_index = cell_row.index(":")
-                    cell_row = ("**" + cell_row[:delimiter_index] + "**" +
-                                cell_row[delimiter_index:])
-                # >  add table rst content
-                rsttable.append(
-                    "| | {0}".format(cell_row) +
-                    " " * (width - len(cell_row) - 3) +
-                    "|")
-            # > close cell
-            rsttable.append("+" + "-" * width + "+")
-
-        return rsttable
-
-    ####################################################################
-    # Public methods
-    ####################################################################
-
-    def save_log(self, returncode):
-        """ Method to save process execution informations in json format.
-
-        If the class attribute `log_file` is not set, a log.json output
-        file is generated in the process call current working directory.
-
-        Parameters
-        ----------
-        returncode: ProcessResult
-            the process result return code.
-        """
-        # Build the logging information
-        exec_info = self._get_log(returncode)
-
-        # Generate an output log file name if necessary
-        if not self.log_file:
-            self.log_file = os.path.join(exec_info["cwd"], "log.json")
-
-        # Dump the log
-        json_struct = json.dumps(exec_info, sort_keys=True,
-                                 check_circular=True, indent=4)
-
-        # Save the json structure
-        with open(self.log_file, "w") as f:
-            f.write(unicode(json_struct))
-
-    @classmethod
-    def help(cls, returnhelp=False):
-        """ Method to print the full help.
-
-        Parameters
-        ----------
-        cls: process class (mandatory)
-            a process class
-        returnhelp: bool (optional, default False)
-            if True return the help string message,
-            otherwise display it on the console.
-        """
-        cls_instance = cls()
-        return cls_instance.get_help(returnhelp)
-
-    ####################################################################
-    # Accessors
-    ####################################################################
-
     def get_commandline(self):
         """ Method to generate a comandline representation of the process.
 
@@ -553,7 +383,8 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
 
         return commandline
 
-    def make_commandline_argument(self, *args):
+    @staticmethod
+    def make_commandline_argument(*args):
         """This helper function may be used to build non-trivial commandline
         arguments in get_commandline implementations.
         Basically it concatenates arguments, but it also takes care of keeping
@@ -579,82 +410,68 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
                 built_arg += arg
             else:
                 built_arg = built_arg + repr(arg)
-        return built_arg
+        return built_arg        
 
-    def get_log(self):
-        """ Load the logging file.
+    def _rst_table(self, data):
+        """ Create a rst formated table.
 
-        .. note:
-
-            If no log file found, return None
-
-        Returns
-        -------
-        log: dict
-            the content of the log file.
-        """
-        if os.path.isfile(self.log_file):
-            with open(self.log_file) as json_file:
-                return json.load(json_file)
-        else:
-            return None
-
-    def get_input_spec(self):
-        """ Method to access the process input specifications.
+        Parameters
+        ----------
+        data: list of list of str (mandatory)
+            the table line-cell centent.
 
         Returns
         -------
-        outputs: str
-            a string representation of all the input trait specifications.
+        rsttable: list of str
+            the rst formated table containing the input data.
         """
-        output = "\nINPUT SPECIFICATIONS\n\n"
-        # self.traits(output=False) skips params with no output property
-        for trait_name, trait in six.iteritems(self.user_traits()):
-            if not trait.output:
-                output += "{0}: {1}\n".format(
-                    trait_name, trait_ids(self.trait(trait_name)))
-        return output
+        # Output rst table
+        rsttable = []
 
-    def get_output_spec(self):
-        """ Method to access the process output specifications.
+        # Get the size of the largest row in order to
+        # format properly the rst table (do not forget the '+' and '*')
+        row_widths = [len(item)
+                      for item in functools.reduce(operator.add, data)]
+        width = max(row_widths) + 11
 
-        Returns
-        -------
-        outputs: str
-            a string representation of all the output trait specifications.
+        # Generate the rst table
+
+        # > table synthax
+        rsttable.append("+" + "-" * width + "+")
+        # > go through the table lines
+        for table_row in data:
+            # > go through the cell lines
+            for index, cell_row in enumerate(table_row):
+                # > set the parameter name in bold
+                if index == 0 and ":" in cell_row:
+                    delimiter_index = cell_row.index(":")
+                    cell_row = ("**" + cell_row[:delimiter_index] + "**" +
+                                cell_row[delimiter_index:])
+                # >  add table rst content
+                rsttable.append(
+                    "| | {0}".format(cell_row) +
+                    " " * (width - len(cell_row) - 3) +
+                    "|")
+            # > close cell
+            rsttable.append("+" + "-" * width + "+")
+
+        return rsttable
+
+    @classmethod
+    def help(cls, returnhelp=False):
+        """ Method to print the full help.
+
+        Parameters
+        ----------
+        cls: process class (mandatory)
+            a process class
+        returnhelp: bool (optional, default False)
+            if True return the help string message,
+            otherwise display it on the console.
         """
-        output = "\nOUTPUT SPECIFICATIONS\n\n"
-        for trait_name, trait in six.iteritems(self.traits(output=True)):
-            output += "{0}: {1}\n".format(
-                trait_name, trait_ids(self.trait(trait_name)))
-        return output
+        cls_instance = cls()
+        return cls_instance.get_help(returnhelp)
 
-    def get_inputs(self):
-        """ Method to access the process inputs.
-
-        Returns
-        -------
-        outputs: dict
-            a dictionary with all the input trait names and values.
-        """
-        output = {}
-        for trait_name, trait in six.iteritems(self.user_traits()):
-            if not trait.output:
-                output[trait_name] = getattr(self, trait_name)
-        return output
-
-    def get_outputs(self):
-        """ Method to access the process outputs.
-
-        Returns
-        -------
-        outputs: dict
-            a dictionary with all the output trait names and values.
-        """
-        output = {}
-        for trait_name, trait in six.iteritems(self.traits(output=True)):
-            output[trait_name] = getattr(self, trait_name)
-        return output
 
     def get_help(self, returnhelp=False):
         """ Generate description of a process parameters.
@@ -920,30 +737,3 @@ class InteractiveProcess(Process):
     (is_interactive = False).
     '''
     is_interactive = Bool(False)
-
-class ProcessResult(object):
-    """ Object that contains running information a particular Process.
-
-    Parameters
-    ----------
-    process : Process class (mandatory)
-        A copy of the `Process` class that was called.
-    runtime : dict (mandatory)
-        Execution attributes.
-    returncode: dict (mandatory)
-        Execution raw attributes
-    inputs :  dict (optional)
-        Representation of the process inputs.
-    outputs : dict (optional)
-        Representation of the process outputs.
-    """
-
-    def __init__(self, process, runtime, returncode, inputs=None,
-                 outputs=None):
-        """ Initialize the ProcessResult class.
-        """
-        self.process = process
-        self.runtime = runtime
-        self.returncode = returncode
-        self.inputs = inputs
-        self.outputs = outputs

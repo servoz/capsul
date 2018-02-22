@@ -1,14 +1,3 @@
-##########################################################################
-# CAPS - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-#
-# Based on the nipype memory code: http://nipy.sourceforge.net/nipype/
-##########################################################################
-
-# System import
 from __future__ import with_statement
 import os
 import hashlib
@@ -20,10 +9,8 @@ import logging
 import six
 import sys
 
-# CAPSUL import
-from capsul.process.process import Process, ProcessResult
+from capsul.process.process import Process
 
-# NIPYPE import
 try:
     from nipype.interfaces.base import InterfaceResult
 except ImportError:
@@ -32,7 +19,7 @@ except ImportError:
     class InterfaceResult(object):
         pass
 
-# TRAITS import
+
 from traits.api import Undefined
 
 if sys.version_info[0] >= 3:
@@ -705,14 +692,6 @@ class CapsulResultEncoder(json.JSONEncoder):
     """ Deal with ProcessResult in json.
     """
     def default(self, obj):
-        # File special case
-        if isinstance(obj, ProcessResult):
-            result_dict = {}
-            for name in ["runtime", "returncode", "inputs",
-                         "outputs"]:
-                result_dict[name] = tuple_json_encoder(getattr(obj, name))
-            return result_dict
-
         # Undefined parameter special case
         if isinstance(obj, Undefined.__class__):
             return "<undefined_trait_value>"
