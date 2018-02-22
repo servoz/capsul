@@ -1,11 +1,3 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
 from __future__ import absolute_import
 
 import os
@@ -241,7 +233,7 @@ def save_xml_pipeline(pipeline, xml_file):
     from capsul.pipeline.pipeline_nodes import ProcessNode, Switch, \
         OptionalOutputSwitch
     from capsul.pipeline.process_iteration import ProcessIteration
-    from capsul.process.process import NipypeProcess
+    from capsul.api import NipypeProcess
 
     def _write_process(process, parent, name):
         procnode = ET.SubElement(parent, 'process')

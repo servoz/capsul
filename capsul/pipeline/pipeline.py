@@ -32,7 +32,7 @@ except ImportError:
                                       Event, Directory, Trait, List, Set)
 
 # Capsul import
-from capsul.process.process import Process, NipypeProcess
+from capsul.api import Process, NipypeProcess
 from .topological_sort import GraphNode
 from .topological_sort import Graph
 from .pipeline_nodes import Plug

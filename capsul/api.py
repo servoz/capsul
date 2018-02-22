@@ -6,8 +6,9 @@
 # for details.
 ##########################################################################
 
-from capsul.process.process import (Process, NipypeProcess, ProcessResult,
-                                    FileCopyProcess, InteractiveProcess)
+from capsul.process.process import (Process, ProcessResult,
+                                    InteractiveProcess)
+from capsul.process.nipype_process import NipypeProcess, FileCopyProcess
 from capsul.pipeline.pipeline import Pipeline
 from capsul.pipeline.pipeline_nodes import Plug
 from capsul.pipeline.pipeline_nodes import Node

@@ -1,31 +1,381 @@
-##########################################################################
-# CAPSUL - Copyright (C) CEA, 2013
-# Distributed under the terms of the CeCILL-B license, as published by
-# the CEA-CNRS-INRIA. Refer to the LICENSE file or to
-# http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html
-# for details.
-##########################################################################
-
 # System import
 import sys
+import glob
 import os
 import types
 import logging
 import traceback
 import six
+import shutil
+
+from traits.api import Directory, CTrait, Undefined, Int
+
+from soma.controller.trait_utils import trait_ids
+from capsul.api import Process
 
 # Define the logger
 logger = logging.getLogger(__name__)
 
-# Trait import
-from traits.api import Directory, CTrait, Undefined
 
-# Soma import
-from soma.controller.trait_utils import trait_ids
+class FileCopyProcess(Process):
+    """ A specific process that copies all the input files.
 
-# Capsul import
-from .process import NipypeProcess
+    Attributes
+    ----------
+    `copied_inputs` : list of 2-uplet
+        the list of copied files (src, dest).
 
+    Methods
+    -------
+    __call__
+    _update_input_traits
+    _get_process_arguments
+    _copy_input_files
+    """
+    def __init__(self, activate_copy=True, inputs_to_copy=None,
+                 inputs_to_clean=None, destination=None):
+        """ Initialize the FileCopyProcess class.
+
+        Parameters
+        ----------
+        activate_copy: bool (default True)
+            if False this class is transparent and behaves as a Process class.
+        inputs_to_copy: list of str (optional, default None)
+            the list of inputs to copy.
+            If None, all the input files are copied.
+        inputs_to_clean: list of str (optional, default None)
+            some copied inputs that can be deleted at the end of the
+            processing.
+        destination: str (optional default None)
+            where the files are copied.
+            If None, files are copied in a '_workspace' folder included in the
+            image folder.
+        """
+        # Inheritance
+        super(FileCopyProcess, self).__init__()
+
+        # Class parameters
+        self.activate_copy = activate_copy
+        self.destination = destination
+        if self.activate_copy:
+            self.inputs_to_clean = inputs_to_clean or []
+            if inputs_to_copy is None:
+                self.inputs_to_copy = self.user_traits().keys()
+            else:
+                self.inputs_to_copy = inputs_to_copy
+            self.copied_inputs = None
+
+    def _before_run_process(self):
+        """ Method to copy files before executing the process.
+        """
+        super(FileCopyProcess, self)._before_run_process()
+        # The copy option is activated
+        if self.activate_copy:
+
+            # Copy the desired items
+            self._update_input_traits()
+
+            # Set the process inputs
+            for name, value in six.iteritems(self.copied_inputs):
+                self.set_parameter(name, value)
+
+    def _after_run_process(self, run_process_result):
+        """ Method to clean-up temporary workspace after process
+        execution.
+        """
+        run_process_result = super(FileCopyProcess, self)._after_run_process(run_process_result)
+        # The copy option is activated
+        if self.activate_copy:
+            # Clean the workspace
+            self._clean_workspace()
+        return run_process_result
+
+    def _clean_workspace(self):
+        """ Removed som copied inputs that can be deleted at the end of the
+        processing.
+        """
+        for to_rm_name in self.inputs_to_clean:
+            if to_rm_name in self.copied_inputs:
+                self._rm_files(self.copied_inputs[to_rm_name])
+
+    def _rm_files(self, python_object):
+        """ Remove a set of copied files from the filesystem.
+
+        Parameters
+        ----------
+        python_object: object
+            a generic python object.
+        """
+        # Deal with dictionary
+        if isinstance(python_object, dict):
+            for val in python_object.values():
+                self._rm_files(val)
+
+        # Deal with tuple and list
+        elif isinstance(python_object, (list, tuple)):
+            for val in python_object:
+                self._rm_files(val)
+
+        # Otherwise start the deletion if the object is a file
+        else:
+            if (isinstance(python_object, basestring) and
+                    os.path.isfile(python_object)):
+                os.remove(python_object)
+
+    def _update_input_traits(self):
+        """ Update the process input traits: input files are copied.
+        """
+        # Get the new trait values
+        input_parameters = self._get_process_arguments()
+        self.copied_inputs = self._copy_input_files(input_parameters)
+
+    def _copy_input_files(self, python_object):
+        """ Recursive method that copy the input process files.
+
+        Parameters
+        ----------
+        python_object: object
+            a generic python object.
+
+        Returns
+        -------
+        out: object
+            the copied-file input object.
+        """
+        # Deal with dictionary
+        # Create an output dict that will contain the copied file locations
+        # and the other values
+        if isinstance(python_object, dict):
+            out = {}
+            for key, val in python_object.items():
+                if val is not Undefined:
+                    out[key] = self._copy_input_files(val)
+
+        # Deal with tuple and list
+        # Create an output list or tuple that will contain the copied file
+        # locations and the other values
+        elif isinstance(python_object, (list, tuple)):
+            out = []
+            for val in python_object:
+                if val is not Undefined:
+                    out.append(self._copy_input_files(val))
+            if isinstance(python_object, tuple):
+                out = tuple(out)
+
+        # Otherwise start the copy (with metadata cp -p) if the object is
+        # a file
+        else:
+            out = python_object
+            if (python_object is not Undefined and
+                    isinstance(python_object, basestring) and
+                    os.path.isfile(python_object)):
+                srcdir = os.path.dirname(python_object)
+                if self.destination is None:
+                    destdir = os.path.join(srcdir, "_workspace")
+                else:
+                    destdir = self.destination
+                if not os.path.exists(destdir):
+                    os.makedirs(destdir)
+                fname = os.path.basename(python_object)
+                out = os.path.join(destdir, fname)
+                shutil.copy2(python_object, out)
+                
+                # Copy associated .mat files
+                name = fname.split(".")[0]
+                matfnames = glob.glob(os.path.join(
+                    os.path.dirname(python_object), name + ".*"))
+                for matfname in matfnames:
+                    extrafname = os.path.basename(matfname)
+                    extraout = os.path.join(destdir, extrafname)
+                    shutil.copy2(matfname, extraout)
+
+        return out
+
+    def _get_process_arguments(self):
+        """ Get the process arguments.
+
+        The user process traits are accessed through the user_traits()
+        method that returns a sorted dictionary.
+
+        Returns
+        -------
+        input_parameters: dict
+            the process input parameters.
+        """
+        # Store for input parameters
+        input_parameters = {}
+
+        # Go through all the user traits
+        for name, trait in six.iteritems(self.user_traits()):
+            if trait.output:
+                continue
+            # Check if the target parameter is in the check list
+            if name in self.inputs_to_copy:
+                # Get the trait value
+                value = self.get_parameter(name)
+                # Skip undefined trait attributes and outputs
+                if value is not Undefined:
+                    # Store the input parameter
+                    input_parameters[name] = value
+
+        return input_parameters
+
+
+class NipypeProcess(FileCopyProcess):
+    """ Base class used to wrap nipype interfaces.
+    """
+    def __init__(self, nipype_instance, *args, **kwargs):
+        """ Initialize the NipypeProcess class.
+
+        NipypeProcess instance get automatically an additional user trait
+        'output_directory'.
+
+        This class also fix also some lake of the nipye version '0.10.0'.
+
+        Parameters
+        ----------
+        nipype_instance: nipype interface (mandatory)
+            the nipype interface we want to wrap in capsul.
+
+        Attributes
+        ----------
+        _nipype_interface : Interface
+            private attribute to store the nipye interface
+        _nipype_module : str
+            private attribute to store the nipye module name
+        _nipype_class : str
+            private attribute to store the nipye class name
+        _nipype_interface_name : str
+            private attribute to store the nipye interface name
+        """
+        # Set some class attributes that characterize the nipype interface
+        self._nipype_interface = nipype_instance
+        self._nipype_module = nipype_instance.__class__.__module__
+        self._nipype_class = nipype_instance.__class__.__name__
+        msplit = self._nipype_module.split(".")
+        if len(msplit) > 2:
+            self._nipype_interface_name = msplit[2]
+        else:
+            self._nipype_interface_name = 'custom'
+
+        # Inheritance: activate input files copy for spm interfaces.
+        if self._nipype_interface_name == "spm":
+            # Copy only 'copyfile' nipype traits
+            inputs_to_copy = self._nipype_interface.inputs.traits(
+                copyfile=True).keys()
+            super(NipypeProcess, self).__init__(
+                activate_copy=True, inputs_to_copy=inputs_to_copy,
+                *args, **kwargs)
+        else:
+            super(NipypeProcess, self).__init__(
+                  activate_copy=False, *args, **kwargs)
+
+        # Replace the process name and identification attributes
+        self.id = ".".join([self._nipype_module, self._nipype_class])
+        self.name = self._nipype_interface.__class__.__name__
+
+        # Add a new trait to store the processing output directory
+        super(Process, self).add_trait(
+            "output_directory", Directory(Undefined, exists=True,
+                                          optional=True))
+
+        # Add a 'synchronize' nipype input trait that will be used to trigger
+        # manually the output nipype/capsul traits sync.
+        super(Process, self).add_trait("synchronize", Int(0, optional=True))
+
+
+    def set_output_directory(self, out_dir):
+        """ Set the process output directory.
+
+        Parameters
+        ----------
+        out_dir: str (mandatory)
+            the output directory
+        """
+        self.output_directory = out_dir
+
+    def set_usedefault(self, parameter, value):
+        """ Set the value of the usedefault attribute on a given parameter.
+
+        Parameters
+        ----------
+        parameter: str (mandatory)
+            name of the parameter to modify.
+        value: bool (mandatory)
+            value set to the usedefault attribute
+        """
+        setattr(self._nipype_interface.inputs, parameter, value)
+
+    def _before_run_process(self):
+        if self._nipype_interface_name == "spm":
+            # Set the spm working
+            self.destination = self.output_directory
+        super(NipypeProcess, self)._before_run_process()
+    
+    def _run_process(self):
+        """ Method that do the processings when the instance is called.
+
+        Returns
+        -------
+        runtime: InterfaceResult
+            object containing the running results
+        """
+        try:
+            cwd = os.getcwd()
+        except OSError:
+            cwd = None
+        if self.output_directory is None or self.output_directory is Undefined:
+            raise ValueError('output_directory is not set but is mandatory '
+                             'to run a NipypeProcess')
+        os.chdir(self.output_directory)
+        self.synchronize += 1
+
+        # Force nipype update
+        for trait_name in self._nipype_interface.inputs.traits().keys():
+            if trait_name in self.user_traits():
+                old = getattr(self._nipype_interface.inputs, trait_name)
+                new = getattr(self, trait_name)
+                if old is Undefined and old != new:
+                    setattr(self._nipype_interface.inputs, trait_name, new)
+
+        results = self._nipype_interface.run()
+        self.synchronize += 1
+        
+        # For spm, need to move the batch
+        # (create in cwd: cf nipype.interfaces.matlab.matlab l.181)
+        if self._nipype_interface_name == "spm":
+            mfile = os.path.join(
+                os.getcwd(),
+                self._nipype_interface.mlab.inputs.script_file)
+            destmfile = os.path.join(
+                self.output_directory,
+                self._nipype_interface.mlab.inputs.script_file)
+            if os.path.isfile(mfile):
+                shutil.move(mfile, destmfile)
+        
+        # Restore cwd
+        if cwd is not None:
+            os.chdir(cwd)
+
+        return results
+
+    @classmethod
+    def help(cls, nipype_interface, returnhelp=False):
+        """ Method to print the full wraped nipype interface help.
+
+        Parameters
+        ----------
+        cls: process class (mandatory)
+            a nipype process class
+        nipype_instance: nipype interface (mandatory)
+            a nipype interface object that will be documented.
+        returnhelp: bool (optional, default False)
+            if True return the help string message,
+            otherwise display it on the console.
+        """
+        from .nipype_process import nipype_factory
+        cls_instance = nipype_factory(nipype_interface)
+        return cls_instance.get_help(returnhelp)
 
 def nipype_factory(nipype_instance):
     """ From a nipype class instance generate dynamically a process
