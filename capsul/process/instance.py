@@ -27,7 +27,7 @@ if sys.version_info[0] >= 3:
 process_xml_re = re.compile(r'<process.*</process>', re.DOTALL)
 
 
-def is_process(item):
+def is_process_definition(item):
     """ Check if the input item is a process class or function with decorator
     or XML docstring which makes it seen as a process
     """
@@ -45,7 +45,32 @@ def is_process(item):
     return False
 
 
-def get_process_instance(process_or_id, study_config=None, **kwargs):
+def _execfile(filename):
+    # This chunk of code cannot be put inline in python 2.6
+    glob_dict = {}
+    exec(compile(open(filename, "rb").read(), filename, 'exec'),
+          glob_dict, glob_dict)
+    return glob_dict
+
+
+def _find_single_process(module_dict, filename):
+    ''' Scan objects in module_dict and find out if a single one of them is
+    a process
+    '''
+    object_name = None
+    for name, item in six.iteritems(module_dict):
+        if is_process_definition(item):
+            if object_name is not None:
+                raise KeyError(
+                    'file %s contains several processes. Please '
+                    'specify which one shoule be used using '
+                    'filename.py#ProcessName or '
+                    'module.submodule.ProcessName' % filename)
+            object_name = name
+    return object_name
+
+
+def get_process_instance(process_or_id, **kwargs):
     """ Return a Process instance given an identifier.
 
     Note that it is convenient to create a process from a StudyConfig instance:
@@ -86,9 +111,6 @@ def get_process_instance(process_or_id, study_config=None, **kwargs):
     ----------
     process_or_id: instance or class description (mandatory)
         a process/nipype interface instance/class or a string description.
-    study_config: StudyConfig instance (optional)
-        A Process instance belongs to a StudyConfig framework. If not specified
-        the study_config can be set afterwards.
     kwargs:
         default values of the process instance parameters.
 
@@ -97,53 +119,7 @@ def get_process_instance(process_or_id, study_config=None, **kwargs):
     result: Process
         an initialized process instance.
     """
-    # NOTE
-    # here we make a bidouille to make study_config accessible from processes
-    # constructors. It is used for instance in ProcessIteration.
-    # This is not elegant, not thread-safe, and forbids to have one pipeline
-    # build a second one in a different study_config context.
-    # I don't have a better solution, however.
-    import capsul.study_config.study_config as study_cmod
-    set_study_config = (study_config is not None
-                        and study_cmod._default_study_config
-                            is not study_config)
-
-    try:
-        if set_study_config:
-            old_default_study_config = study_cmod._default_study_config
-            study_cmod._default_study_config = study_config
-        return _get_process_instance(process_or_id, study_config=study_config,
-                                     **kwargs)
-    finally:
-        if set_study_config:
-            study_cmod._default_study_config = old_default_study_config
-
-
-def _execfile(filename):
-    # This chunk of code cannot be put inline in python 2.6
-    glob_dict = {}
-    exec(compile(open(filename, "rb").read(), filename, 'exec'),
-          glob_dict, glob_dict)
-    return glob_dict
-
-def _get_process_instance(process_or_id, study_config=None, **kwargs):
-
-    def _find_single_process(module_dict, filename):
-        ''' Scan objects in module_dict and find out if a single one of them is
-        a process
-        '''
-        object_name = None
-        for name, item in six.iteritems(module_dict):
-            if is_process(item):
-                if object_name is not None:
-                    raise KeyError(
-                        'file %s contains several processes. Please '
-                        'specify which one shoule be used using '
-                        'filename.py#ProcessName or '
-                        'module.submodule.ProcessName' % filename)
-                object_name = name
-        return object_name
-
+    
     result = None
     # If the function 'process_or_id' parameter is already a Process
     # instance.
@@ -183,7 +159,6 @@ def _get_process_instance(process_or_id, study_config=None, **kwargs):
             raise ValueError('Cannot find XML description to make function {0} a process'.format(process_or_id))
         
     # If the function 'process_or_id' parameter is a class string
-    # description
     elif isinstance(process_or_id, basestring):
         py_url = os.path.basename(process_or_id).split('#')
         object_name = None
@@ -217,7 +192,7 @@ def _get_process_instance(process_or_id, study_config=None, **kwargs):
             try:
                 module = importlib.import_module(module_name)
                 if object_name not in module.__dict__ \
-                        or not is_process(getattr(module, object_name)):
+                        or not is_process_definition(getattr(module, object_name)):
                     # maybe a module with a single process in it
                     module = importlib.import_module(process_or_id)
                     module_dict = module.__dict__
@@ -321,10 +296,4 @@ def _get_process_instance(process_or_id, study_config=None, **kwargs):
     for name, value in six.iteritems(kwargs):
         result.set_parameter(name, value)
 
-    if study_config is not None:
-        if result.study_config is not None \
-                and result.study_config is not study_config:
-            raise ValueError("StudyConfig mismatch in get_process_instance "
-                             "for process %s" % result)
-        result.set_study_config(study_config)
     return result

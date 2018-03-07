@@ -241,7 +241,7 @@ if __name__ == "__main__":
         from soma.qt_gui.qt_backend import QtGui
         from capsul.qt_gui.widgets import PipelineDevelopperView
         #from capsul.qt_gui.widgets import PipelineUserView
-        from capsul.process import get_process_instance
+        from capsul.api import get_process_instance
 
         app = QtGui.QApplication(sys.argv)
         pipeline = get_process_instance(MainTestPipeline)

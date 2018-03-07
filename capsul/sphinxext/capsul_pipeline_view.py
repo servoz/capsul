@@ -54,7 +54,7 @@ short_names = dict([x.split("=") for x in options.short_names])
 
 # Capsul import
 from capsul.qt_apps.utils.find_pipelines import find_pipeline_and_process
-from capsul.process import get_process_instance
+from capsul.api import get_process_instance
 from capsul.pipeline import pipeline_tools
 from capsul.sphinxext.pipelinedocgen import PipelineHelpWriter
 

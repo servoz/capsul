@@ -3,7 +3,7 @@ import six
 from traits.api import List, Undefined
 
 from capsul.process.process import Process
-from capsul.study_config.process_instance import get_process_instance
+from capsul.api import get_process_instance
 import capsul.study_config as study_cmod
 from capsul.attributes.completion_engine import ProcessCompletionEngine
 from traits.api import File, Directory

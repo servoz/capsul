@@ -369,17 +369,12 @@ class Pipeline(Process):
         # the module level because there are circular dependencies between
         # modules. For instance, Pipeline class needs get_process_instance
         # which needs create_xml_pipeline which needs Pipeline class.
-        from capsul.study_config.process_instance import get_process_instance
+        from capsul.api import get_process_instance
         # Create a process node
         process = get_process_instance(process, study_config=self.study_config,
                                        **kwargs)
         # set full contextual name on process instance
         self._set_subprocess_context_name(process, name)
-
-        # Update the kwargs parameters values according to process
-        # default values
-        for k, v in six.iteritems(process.default_values):
-            kwargs.setdefault(k, v)
 
         # Update the list of files item to copy
         if inputs_to_copy is not None and hasattr(process, "inputs_to_copy"):
@@ -1345,130 +1340,6 @@ class Pipeline(Process):
 
         return workflow_list
 
-    def _check_temporary_files_for_node(self, node, temp_files):
-        """ Check temporary outputs and allocate files for them.
-
-        Temporary files or directories will be appended to the temp_files list,
-        and the node parameters will be set to temp file names.
-
-        This internal function is called by the sequential execution,
-        _run_process() (also used through __call__()).
-        The pipeline state will be restored at the end of execution using
-        _free_temporary_files().
-
-        Parameters
-        ----------
-        node: Node
-            node to check temporary outputs on
-        temp_files: list
-            list of temporary files for the pipeline execution. The list will
-            be modified (completed).
-        """
-        process = getattr(node, 'process', None)
-        if process is not None and isinstance(process, NipypeProcess):
-            #nipype processes do not use temporaries, they produce output
-            # file names
-            return
-
-        for plug_name, plug in six.iteritems(node.plugs):
-            value = node.get_plug_value(plug_name)
-            if not plug.activated or not plug.enabled:
-                continue
-            trait = node.get_trait(plug_name)
-            if not trait.output:
-                continue
-            if hasattr(trait, 'inner_traits') \
-                    and len(trait.inner_traits) != 0 \
-                    and isinstance(trait.inner_traits[0].trait_type,
-                                   (traits.File, traits.Directory)):
-                if len([x for x in value if x in ('', traits.Undefined)]) == 0:
-                    continue
-            elif value not in (traits.Undefined, '') \
-                    or ((not isinstance(trait.trait_type, traits.File)
-                          and not isinstance(trait.trait_type, traits.Directory))
-                         or len(plug.links_to) == 0):
-                continue
-            # check that it is really temporary: not exported
-            # to the main pipeline
-            if self.pipeline_node in [link[2]
-                                      for link in plug.links_to]:
-                # it is visible out of the pipeline: not temporary
-                continue
-            # if we get here, we are a temporary.
-            if isinstance(value, list):
-                if trait.inner_traits[0].trait_type is traits.Directory:
-                    new_value = []
-                    tmpdirs = []
-                    for i in range(len(value)):
-                        if value[i] in ('', traits.Undefined):
-                            tmpdir = tempfile.mkdtemp(suffix='capsul_run')
-                            new_value.append(tmpdir)
-                            tmpdirs.append(tmpdir)
-                        else:
-                            new_value.append(value[i])
-                    temp_files.append((node, plug_name, tmpdirs, value))
-                    node.set_plug_value(plug_name, new_value)
-                else:
-                    new_value = []
-                    tmpfiles = []
-                    if trait.inner_traits[0].allowed_extensions:
-                        suffix = 'capsul' + trait.allowed_extensions[0]
-                    else:
-                        suffix = 'capsul'
-                    for i in range(len(value)):
-                        if value[i] in ('', traits.Undefined):
-                            tmpfile = tempfile.mkstemp(suffix=suffix)
-                            tmpfiles.append(tmpfile[1])
-                            os.close(tmpfile[0])
-                            new_value.append(tmpfile[1])
-                        else:
-                            new_value.append(value[i])
-                    node.set_plug_value(plug_name, new_value)
-                    temp_files.append((node, plug_name, tmpfiles, value))
-            else:
-                if trait.trait_type is traits.Directory:
-                    tmpdir = tempfile.mkdtemp(suffix='capsul_run')
-                    temp_files.append((node, plug_name, tmpdir, value))
-                    node.set_plug_value(plug_name, tmpdir)
-                else:
-                    if trait.allowed_extensions:
-                        suffix = 'capsul' + trait.allowed_extensions[0]
-                    else:
-                        suffix = 'capsul'
-                    tmpfile = tempfile.mkstemp(suffix=suffix)
-                    node.set_plug_value(plug_name, tmpfile[1])
-                    os.close(tmpfile[0])
-                    temp_files.append((node, plug_name, tmpfile[1], value))
-
-    def _free_temporary_files(self, temp_files):
-        """ Delete and reset temp files after the pipeline execution.
-
-        This internal function is called at the end of _run_process()
-        (sequential execution)
-        """
-        #
-        for node, plug_name, tmpfiles, value in temp_files:
-            node.set_plug_value(plug_name, value)
-            if not isinstance(tmpfiles, list):
-                tmpfiles = [tmpfiles]
-            for tmpfile in tmpfiles:
-                if os.path.isdir(tmpfile):
-                    try:
-                        shutil.rmtree(tmpfile)
-                    except:
-                        pass
-                else:
-                    try:
-                        os.unlink(tmpfile)
-                    except:
-                        pass
-                # handle additional files (.hdr, .minf...)
-                # TODO
-                if os.path.exists(tmpfile + '.minf'):
-                    try:
-                        os.unlink(tmpfile + '.minf')
-                    except:
-                        pass
 
     def _run_process(self):
         '''
