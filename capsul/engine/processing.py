@@ -1,13 +1,17 @@
 from __future__ import print_function
 
+import six  
 import os
 import os.path as osp
 import json
 import tempfile
 
+from soma.controller import Controller
 from soma.serialization import JSONSerializable
 from soma.undefined import undefined
+from soma.topological_sort import Graph
 
+from capsul.pipeline.pipeline import Pipeline, Switch
 from capsul.engine import ProcessingEngine
 
 class Status(object):
@@ -25,7 +29,7 @@ class ExecutionContext(JSONSerializable):
     def __init__(self, env=None, temporary_directory=None):
         self.env=env
         if not temporary_directory:
-            self.temporary_directory = default_temporary_directory
+            self.temporary_directory = self.default_temporary_directory
         else:
             self.temporary_directory = temporary_directory
         
@@ -37,11 +41,92 @@ class ExecutionContext(JSONSerializable):
             kwargs['temporary_directory'] = self.temporary_directory
         return ['capsul.engine.processing.ExecutionContext', kwargs]
 
-
-
 default_execution_context = ExecutionContext()
 
+class ExecutionGraph(Graph):    
+    def __init__(self, process, remove_disabled_steps=True):
+        """ Create an execution graph for a process or pipeline
 
+        Parameters
+        ----------
+        process: the process or pipeline used to create teh execution graph
+        remove_disabled_steps: bool (optional)
+            When set, disabled steps (and their children) will not be included
+            in the workflow graph.
+            Default: True
+        """
+
+        # Create a graph and a list of graph node edges
+        super(ExecutionGraph, self).__init__(   )
+        if isinstance(process, Pipeline):
+            if remove_disabled_steps:
+                steps = getattr(process, 'pipeline_steps', Controller())
+                disabled_nodes = set()
+                for step, trait in six.iteritems(steps.user_traits()):
+                    if not getattr(steps, step):
+                        disabled_nodes.update(
+                            [process.nodes[node] for node in trait.nodes])
+            
+            # First step: create a new node for each process execution node in
+            # the pipeline and its sub-pipelines
+            
+            # Create a stack containing all nodes to process. It is
+            # initialized with all the top level pipeline nodes.
+            # the pipeline nodes.
+            stack = []
+            for node_name, node in six.iteritems(process.nodes):
+                # Do not consider the pipeline node
+                if node_name == "":
+                    continue
+                stack.append((node_name, node))
+            
+            created_nodes = {}
+            #print('!1! stack =', stack)
+            while stack:
+                node_name, node = stack.pop(0)
+                # Select only active Process nodes
+                if node.activated \
+                        and not isinstance(node, Switch) \
+                        and (not remove_disabled_steps
+                                or node not in disabled_nodes):
+                    # If a Pipeline is found, add its nodes to the stack
+                    if isinstance(node.process, Pipeline):
+                        for nn, n in six.iteritems(node.process.nodes):
+                            # Do not consider the pipeline node
+                            if nn == "":
+                                continue
+                            stack.append((node_name + '.' + nn, n))
+                    # If a Processnode is found: simply create a node for it
+                    else:
+                        self.create_node(node_name, node.process)
+                        #print('!1.1! create_node', node_name, node)
+                        created_nodes[node] = node_name
+            
+            # Second step: create the dependency links between the created
+            # nodes. For this, we follow all links starting from a created
+            # node (going through pipeline nodes and switch nodes) to check
+            # if it connects to another process node.
+            for source_node, source_node_name in six.iteritems(created_nodes):
+                #print('!2!', source_node_name, source_node)
+                stack = list((plug_name, plug) for plug_name, plug in six.iteritems(source_node.plugs) if plug.activated and plug.output)
+                while stack:
+                    plug_name, plug = stack.pop(0)
+                    #print('!2.1!', plug_name)
+                    for (dest_node_name, dest_plug_name, dest_node, dest_plug,
+                            weak_link) in plug.links_to:
+                        if dest_node.activated:
+                            if isinstance(dest_node, Switch):
+                                #print('!2.1!')
+                                stack.extend((n, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output and dest_plug_name.endswith('_switch_' + n))
+                            elif isinstance(dest_node.process, Pipeline):
+                                #print('!2.2!', dest_node_name, dest_node.process.id)
+                                stack.append((dest_plug_name, dest_plug))
+                                #stack.extend((n, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output)
+                            else:
+                                dest_node_name = created_nodes.get(dest_node)
+                                if dest_node_name:
+                                    self.add_link(source_node_name, dest_node_name)
+                                #print('!2.3!', source_node_name, dest_node_name)
 
 
 ###############################
@@ -476,18 +561,109 @@ def get_environ_parameter(name, default=undefined):
     return None
 
 if __name__ == '__main__':
+    from traits.api import File
+    from capsul.api import get_process_instance, Process, Pipeline
+    from pprint import pprint
+
+    class Identity(Process):
+        input_image = File(optional=False, output=False)
+        output_image = File(optional=False, output=True)
+    
+    class MyPipeline(Pipeline):
+        """Pipeline to test execution graph generation
+        """
+        def pipeline_definition(self):
+
+            # Create processes
+            self.add_process('first_pipeline',
+                'capsul.process.test.test_pipeline')
+            self.add_process('pipeline_1',
+                'capsul.process.test.test_pipeline',
+                make_optional=['output_1', 'output_10','output_100'])
+            self.add_process('pipeline_10',
+                'capsul.process.test.test_pipeline',
+                make_optional=['output_1', 'output_10','output_100'])
+            self.add_process('pipeline_100',
+                'capsul.process.test.test_pipeline',
+                make_optional=['output_1', 'output_10','output_100'])
+            self.add_switch('select_threshold', ['threshold_1', 'threshold_10', 'threshold_100'], ['output_a', 'output_b', 'output_c'])
+            self.add_process('identity_a', Identity)
+            self.add_process('identity_b', Identity)
+            self.add_process('identity_c', Identity)
+            
+            self.export_parameter('first_pipeline', 'select_method')
+            self.add_link('select_method->pipeline_1.select_method')
+            self.add_link('select_method->pipeline_10.select_method')
+            self.add_link('select_method->pipeline_100.select_method')
+            
+            self.add_link('first_pipeline.output_1->pipeline_1.input_image')
+            self.add_link('first_pipeline.output_10->pipeline_10.input_image')
+            self.add_link('first_pipeline.output_100->pipeline_100.input_image')
+            
+            self.add_link('pipeline_1.output_1->select_threshold.threshold_1_switch_output_a')
+            self.add_link('pipeline_1.output_10->select_threshold.threshold_10_switch_output_a')
+            self.add_link('pipeline_1.output_100->select_threshold.threshold_100_switch_output_a')
+            
+            self.add_link('pipeline_10.output_1->select_threshold.threshold_1_switch_output_b')
+            self.add_link('pipeline_10.output_10->select_threshold.threshold_10_switch_output_b')
+            self.add_link('pipeline_10.output_100->select_threshold.threshold_100_switch_output_b')
+            
+            self.add_link('pipeline_100.output_1->select_threshold.threshold_1_switch_output_c')
+            self.add_link('pipeline_100.output_10->select_threshold.threshold_10_switch_output_c')
+            self.add_link('pipeline_100.output_100->select_threshold.threshold_100_switch_output_c')
+
+            self.add_link('select_threshold.output_a->identity_a.input_image')
+            self.add_link('select_threshold.output_b->identity_b.input_image')
+            self.add_link('select_threshold.output_c->identity_c.input_image')
+            
+            self.export_parameter('identity_a', 'output_image', 'output_a')
+            self.export_parameter('identity_b', 'output_image', 'output_b')
+            self.export_parameter('identity_c', 'output_image', 'output_c')
+            self.node_position = {'first_pipeline': (118.0, 486.0),
+                                  'identity_a': (870.0, 644.0),
+                                  'identity_b': (867.0, 742.0),
+                                  'identity_c': (866.0, 846.0),
+                                  'inputs': (-107.0, 491.0),
+                                  'outputs': (1111.0, 723.0),
+                                  'pipeline_1': (329.0, 334.0),
+                                  'pipeline_10': (331.0, 533.0),
+                                  'pipeline_100': (334.0, 738.0),
+                                  'select_threshold': (559.0, 453.0)}
+    
+    pipeline = get_process_instance(MyPipeline)
+
     import sys
-    from soma.serialization import from_json
-    from capsul.api import get_process_instance
+    from soma.qt_gui.qt_backend import QtGui
+    from capsul.qt_gui.widgets import PipelineDevelopperView
+    from soma.qt_gui.controller_widget import ControllerWidget
+
+    app = QtGui.QApplication(sys.argv)
     
-    process_id = get_environ_parameter('process')
-    kwargs = get_environ_parameter('process_parameters')
-    execution_context = from_json(get_parameter('execution_context'))
-    process = get_process_instance(process_id, **kwargs)
-    if isinstance(process, Pipeline):
-        # TODO
-    else:
-        process.run_process()
-    execution_context.run(process)
+    view = PipelineDevelopperView(pipeline, allow_open_controller=True, show_sub_pipelines=True)
+    view.show()
+
+    xp = ExecutionGraph(pipeline)
+    pprint(xp._nodes)
+    pprint(xp._links)
+    pipeline.select_method = 'lower than'
+    xp = ExecutionGraph(pipeline)
+    pprint(xp._nodes)
+    pprint(xp._links)
+
+    app.exec_()
     
     
+    
+    #from soma.serialization import from_json
+    #from capsul.api import get_process_instance
+    
+    #process_id = get_environ_parameter('process')
+    #kwargs = get_environ_parameter('process_parameters')
+    #execution_context = from_json(get_parameter('execution_context'))
+    #process = get_process_instance(process_id, **kwargs)
+    #if isinstance(process, Pipeline):
+        #pass
+        ## TODO
+    #else:
+        #process.run_process()
+    #execution_context.run(process)

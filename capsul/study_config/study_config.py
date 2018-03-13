@@ -21,7 +21,7 @@ from capsul.pipeline.pipeline import Pipeline
 from capsul.process.process import Process
 from capsul.study_config.run import run_process
 from capsul.pipeline.pipeline_nodes import Node
-from capsul.study_config.process_instance import get_process_instance
+from capsul.process.instance import get_process_instance
 
 if sys.version_info[0] >= 3:
     basestring = str

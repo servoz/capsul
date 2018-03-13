@@ -18,7 +18,8 @@ except ImportError:
     from enthought.traits.api import (File, Enum, Bool,
                                       Event, Directory, Trait, List, Set)
 
-from capsul.api import Process, NipypeProcess
+from ..process.process import Process
+from ..process.nipype_process import NipypeProcess
 from .topological_sort import GraphNode
 from .topological_sort import Graph
 from .pipeline_nodes import Plug
@@ -371,7 +372,7 @@ class Pipeline(Process):
         # which needs create_xml_pipeline which needs Pipeline class.
         from capsul.api import get_process_instance
         # Create a process node
-        process = get_process_instance(process, study_config=self.study_config,
+        process = get_process_instance(process,
                                        **kwargs)
         # set full contextual name on process instance
         self._set_subprocess_context_name(process, name)
@@ -458,7 +459,6 @@ class Pipeline(Process):
             self.add_process(
                 name,
                 ProcessIteration(process, iterative_plugs,
-                                 study_config=self.study_config,
                                  context_name=context_name),
                 do_not_export, make_optional, **kwargs)
             return

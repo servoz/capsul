@@ -20,8 +20,6 @@ from soma.controller.trait_utils import is_trait_value_defined
 from soma.controller.trait_utils import is_trait_pathname
 from soma.controller.trait_utils import get_trait_desc
 
-from capsul.engine.processing import default_execution_context
-
 if sys.version_info[0] <= 3:
     unicode = str
     basestring = str
@@ -270,6 +268,7 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
             should correspond to the declared parameter traits.
 
         """
+        from capsul.engine.processing import default_execution_context
         for k, v in six.iteritems(kwargs):
             self.set_parameter(k, v)
         default_execution_context.run(self)

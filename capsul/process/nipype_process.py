@@ -10,7 +10,7 @@ import shutil
 from traits.api import Directory, CTrait, Undefined, Int
 
 from soma.controller.trait_utils import trait_ids
-from capsul.api import Process
+from capsul.process.process import Process
 
 # Define the logger
 logger = logging.getLogger(__name__)

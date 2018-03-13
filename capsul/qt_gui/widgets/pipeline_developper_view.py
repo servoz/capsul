@@ -23,7 +23,7 @@ from capsul.pipeline.process_iteration import ProcessIteration
 from capsul.qt_gui.widgets.pipeline_file_warning_widget \
     import PipelineFileWarningWidget
 import capsul.pipeline.xml as capsulxml
-from capsul.study_config import process_instance
+from capsul.process.instance import is_process_definition
 from soma.controller import Controller
 from soma.utils.functiontools import SomaPartial
 
@@ -1720,7 +1720,7 @@ class PipelineDevelopperView(QtGui.QGraphicsView):
             file_dict = self.load_py(filename)
             processes = []
             for name, item in six.iteritems(file_dict):
-                if process_instance.is_process(item) or inspect.ismodule(item):
+                if is_process_definition(item) or inspect.ismodule(item):
                     processes.append(name)
             return processes
 
@@ -1744,7 +1744,7 @@ class PipelineDevelopperView(QtGui.QGraphicsView):
                     # add process/pipeline objects in current_mod
                     procs = [item for k, item
                                 in six.iteritems(mod.__dict__)
-                             if process_instance.is_process(item)
+                             if is_process_definition(item)
                                 or inspect.ismodule(item)]
                     compl.update(['.'.join([current_mod, c.__name__])
                                   for c in procs])
