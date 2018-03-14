@@ -43,6 +43,49 @@ class ExecutionContext(JSONSerializable):
 
 default_execution_context = ExecutionContext()
 
+class FlatPipeline(Pipeline):
+    def __init__(self, execution_graph):
+        self.execution_graph = execution_graph
+        super(FlatPipeline, self).__init__()
+        
+    def pipeline_definition(self):
+        for node_name, node in six.iteritems(self.execution_graph._nodes):
+            self.add_process(node_name.replace('.','_'), node.meta)
+        for source_node, source_plug, dest_node, dest_plug in self.execution_graph._parameter_links:
+            if source_node:
+                source = '%s.%s' % (source_node.replace('.','_'), source_plug)
+            else:
+                source = source_plug
+            if dest_node:
+                dest = '%s.%s' % (dest_node.replace('.','_'), dest_plug)
+            else:
+                dest = dest_plug
+            try:
+                self.add_link('%s->%s' % (source, dest))
+            except ValueError as e:
+                print('WARNING:', e)
+    
+    def export_parameter(self, node_name, plug_name, export_name=None):
+        if export_name is None:
+            export_name = '%s_%s' % (node_name, plug_name)
+        super(FlatPipeline, 
+              self).export_parameter(node_name, plug_name, 
+                                     export_name)
+
+    def add_link(self, link, weak_link=False):
+        if weak_link:
+            raise ValueError('FlatPipeline does not support weak links')
+        source, dest = link.split('->')
+        if '.' not in source and source not in self.nodes[''].plugs:
+            dest_node, dest_plug = dest.rsplit('.', 1)
+            self.export_parameter(dest_node, dest_plug, source)
+        elif '.' not in dest and dest not in self.nodes[''].plugs:
+            source_node, source_plug = source.rsplit('.', 1)
+            self.export_parameter(source_node, source_plug, dest)
+        else:
+            super(FlatPipeline, self).add_link(link, weak_link)
+
+
 class ExecutionGraph(Graph):    
     def __init__(self, process, remove_disabled_steps=True):
         """ Create an execution graph for a process or pipeline
@@ -57,7 +100,8 @@ class ExecutionGraph(Graph):
         """
 
         # Create a graph and a list of graph node edges
-        super(ExecutionGraph, self).__init__(   )
+        super(ExecutionGraph, self).__init__()
+        self._parameter_links = set()
         if isinstance(process, Pipeline):
             if remove_disabled_steps:
                 steps = getattr(process, 'pipeline_steps', Controller())
@@ -91,9 +135,17 @@ class ExecutionGraph(Graph):
                                 or node not in disabled_nodes):
                     # If a Pipeline is found, add its nodes to the stack
                     if isinstance(node.process, Pipeline):
+                        if remove_disabled_steps:
+                            steps = getattr(node.process, 'pipeline_steps', Controller())
+                            disabled_sub_nodes = set()
+                            for step, trait in six.iteritems(steps.user_traits()):
+                                if not getattr(steps, step):
+                                    disabled_sub_nodes.update(
+                                        [node.process.nodes[i] for i in trait.nodes])
                         for nn, n in six.iteritems(node.process.nodes):
                             # Do not consider the pipeline node
-                            if nn == "":
+                            if nn == "" or (remove_disabled_steps and 
+                                            node in disabled_nodes):
                                 continue
                             stack.append((node_name + '.' + nn, n))
                     # If a Processnode is found: simply create a node for it
@@ -101,6 +153,39 @@ class ExecutionGraph(Graph):
                         self.create_node(node_name, node.process)
                         #print('!1.1! create_node', node_name, node)
                         created_nodes[node] = node_name
+            
+            for pipeline_plug_name, pipeline_plug in six.iteritems(process.nodes[''].plugs):
+                if pipeline_plug.output:
+                    stack = [pipeline_plug]
+                    while stack:
+                        plug = stack.pop(0)
+                        for (node_name, plug_name, node, plug,
+                                weak_link) in plug.links_from:
+                            if node.activated:
+                                if isinstance(node, Switch):
+                                    stack.extend(p for n, p in node.plugs.iteritems() if p.activated and not p.output and n.endswith('_switch_' + plug_name))
+                                elif isinstance(node.process, Pipeline):
+                                    stack.append(plug)
+                                else:
+                                    source_node_name = created_nodes.get(node)
+                                    if source_node_name:
+                                        self.add_parameter_link(source_node_name, plug_name, '', pipeline_plug_name)
+                else:
+                    stack = [pipeline_plug]
+                    while stack:
+                        plug = stack.pop(0)
+                        for (node_name, plug_name, node, plug,
+                                weak_link) in plug.links_to:
+                            if node.activated:
+                                if isinstance(node, Switch):
+                                    stack.extend(p for n, p in node.plugs.iteritems() if p.activated and p.output and plug_name.endswith('_switch_' + n))
+                                elif isinstance(node.process, Pipeline):
+                                    stack.append(plug)
+                                else:
+                                    dest_node_name = created_nodes.get(node)
+                                    if dest_node_name:
+                                        self.add_parameter_link('', pipeline_plug_name, dest_node_name, plug_name)
+                                        
             
             # Second step: create the dependency links between the created
             # nodes. For this, we follow all links starting from a created
@@ -110,25 +195,28 @@ class ExecutionGraph(Graph):
                 #print('!2!', source_node_name, source_node)
                 stack = list((plug_name, plug) for plug_name, plug in six.iteritems(source_node.plugs) if plug.activated and plug.output)
                 while stack:
-                    plug_name, plug = stack.pop(0)
-                    #print('!2.1!', plug_name)
+                    source_plug_name, source_plug = stack.pop(0)
+                    #print('!2.1!', source_plug_name)
                     for (dest_node_name, dest_plug_name, dest_node, dest_plug,
-                            weak_link) in plug.links_to:
+                            weak_link) in source_plug.links_to:
                         if dest_node.activated:
                             if isinstance(dest_node, Switch):
                                 #print('!2.1!')
-                                stack.extend((n, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output and dest_plug_name.endswith('_switch_' + n))
+                                stack.extend((source_plug_name, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output and dest_plug_name.endswith('_switch_' + n))
                             elif isinstance(dest_node.process, Pipeline):
                                 #print('!2.2!', dest_node_name, dest_node.process.id)
-                                stack.append((dest_plug_name, dest_plug))
+                                stack.append((source_plug_name, dest_plug))
                                 #stack.extend((n, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output)
                             else:
                                 dest_node_name = created_nodes.get(dest_node)
                                 if dest_node_name:
+                                    self.add_parameter_link(source_node_name, source_plug_name, dest_node_name, dest_plug_name)
                                     self.add_link(source_node_name, dest_node_name)
                                 #print('!2.3!', source_node_name, dest_node_name)
+    def add_parameter_link(self, source_node_name, source_plug_name, dest_node_name, dest_plug_name):
+        self._parameter_links.add((source_node_name, source_plug_name, dest_node_name, dest_plug_name))
 
-
+        
 ###############################
 # Backup from Process class
 ################################
@@ -561,94 +649,43 @@ def get_environ_parameter(name, default=undefined):
     return None
 
 if __name__ == '__main__':
-    from traits.api import File
-    from capsul.api import get_process_instance, Process, Pipeline
+    import sys
     from pprint import pprint
 
-    class Identity(Process):
-        input_image = File(optional=False, output=False)
-        output_image = File(optional=False, output=True)
-    
-    class MyPipeline(Pipeline):
-        """Pipeline to test execution graph generation
-        """
-        def pipeline_definition(self):
-
-            # Create processes
-            self.add_process('first_pipeline',
-                'capsul.process.test.test_pipeline')
-            self.add_process('pipeline_1',
-                'capsul.process.test.test_pipeline',
-                make_optional=['output_1', 'output_10','output_100'])
-            self.add_process('pipeline_10',
-                'capsul.process.test.test_pipeline',
-                make_optional=['output_1', 'output_10','output_100'])
-            self.add_process('pipeline_100',
-                'capsul.process.test.test_pipeline',
-                make_optional=['output_1', 'output_10','output_100'])
-            self.add_switch('select_threshold', ['threshold_1', 'threshold_10', 'threshold_100'], ['output_a', 'output_b', 'output_c'])
-            self.add_process('identity_a', Identity)
-            self.add_process('identity_b', Identity)
-            self.add_process('identity_c', Identity)
-            
-            self.export_parameter('first_pipeline', 'select_method')
-            self.add_link('select_method->pipeline_1.select_method')
-            self.add_link('select_method->pipeline_10.select_method')
-            self.add_link('select_method->pipeline_100.select_method')
-            
-            self.add_link('first_pipeline.output_1->pipeline_1.input_image')
-            self.add_link('first_pipeline.output_10->pipeline_10.input_image')
-            self.add_link('first_pipeline.output_100->pipeline_100.input_image')
-            
-            self.add_link('pipeline_1.output_1->select_threshold.threshold_1_switch_output_a')
-            self.add_link('pipeline_1.output_10->select_threshold.threshold_10_switch_output_a')
-            self.add_link('pipeline_1.output_100->select_threshold.threshold_100_switch_output_a')
-            
-            self.add_link('pipeline_10.output_1->select_threshold.threshold_1_switch_output_b')
-            self.add_link('pipeline_10.output_10->select_threshold.threshold_10_switch_output_b')
-            self.add_link('pipeline_10.output_100->select_threshold.threshold_100_switch_output_b')
-            
-            self.add_link('pipeline_100.output_1->select_threshold.threshold_1_switch_output_c')
-            self.add_link('pipeline_100.output_10->select_threshold.threshold_10_switch_output_c')
-            self.add_link('pipeline_100.output_100->select_threshold.threshold_100_switch_output_c')
-
-            self.add_link('select_threshold.output_a->identity_a.input_image')
-            self.add_link('select_threshold.output_b->identity_b.input_image')
-            self.add_link('select_threshold.output_c->identity_c.input_image')
-            
-            self.export_parameter('identity_a', 'output_image', 'output_a')
-            self.export_parameter('identity_b', 'output_image', 'output_b')
-            self.export_parameter('identity_c', 'output_image', 'output_c')
-            self.node_position = {'first_pipeline': (118.0, 486.0),
-                                  'identity_a': (870.0, 644.0),
-                                  'identity_b': (867.0, 742.0),
-                                  'identity_c': (866.0, 846.0),
-                                  'inputs': (-107.0, 491.0),
-                                  'outputs': (1111.0, 723.0),
-                                  'pipeline_1': (329.0, 334.0),
-                                  'pipeline_10': (331.0, 533.0),
-                                  'pipeline_100': (334.0, 738.0),
-                                  'select_threshold': (559.0, 453.0)}
-    
-    pipeline = get_process_instance(MyPipeline)
-
-    import sys
     from soma.qt_gui.qt_backend import QtGui
-    from capsul.qt_gui.widgets import PipelineDevelopperView
     from soma.qt_gui.controller_widget import ControllerWidget
 
+    from traits.api import File
+
+    from capsul.api import get_process_instance, Process, Pipeline
+    from capsul.qt_gui.widgets import PipelineDevelopperView
+
     app = QtGui.QApplication(sys.argv)
+
     
+    pipeline = get_process_instance('capsul.pipeline.test.test_complex_pipeline_activations.ComplexPipeline')
+    #pipeline = get_process_instance('capsul.process.test.test_pipeline')
+    
+    def show_execution_graph():
+        global flat_view
+        
+        xp = ExecutionGraph(pipeline)
+        pprint(xp._nodes)
+        pprint(xp._links)
+        pprint(xp._parameter_links)
+        flat_pipeline = FlatPipeline(xp)
+        flat_view = PipelineDevelopperView(flat_pipeline, 
+                                           allow_open_controller=True,
+                                           show_sub_pipelines=True)
+        flat_view.auto_dot_node_positions()
+        flat_view.show()
+    
+    show_execution_graph()
+    pipeline.on_trait_change(show_execution_graph)
+            
     view = PipelineDevelopperView(pipeline, allow_open_controller=True, show_sub_pipelines=True)
     view.show()
 
-    xp = ExecutionGraph(pipeline)
-    pprint(xp._nodes)
-    pprint(xp._links)
-    pipeline.select_method = 'lower than'
-    xp = ExecutionGraph(pipeline)
-    pprint(xp._nodes)
-    pprint(xp._links)
 
     app.exec_()
     
