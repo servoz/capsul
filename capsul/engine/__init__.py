@@ -1,17 +1,17 @@
 '''
 This module defines the main API to interact with Capsul processes.
 In order to execute a process, it is mandatory to have an instance of
-:py:class:`CapsulEngine`. Such an instance can be created with constructor
+:py:class:`Platform`. Such an instance can be created with constructor
 or by using a JSON representation of the instance (created by 
-:py:meth:`CapsulEngine.to_json`) with
+:py:meth:`Platform.to_json`) with
 :py:func:`soma.serialization.from_json`
 '''
 
 from soma.serialization import JSONSerializable, from_json
 
-class CapsulEngine(JSONSerializable):
+class Platform(JSONSerializable):
     '''
-    `CapsulEngine` is the main class for using processes in Capsul.
+    `Platform` is the main class for using processes in Capsul.
     
     .. py:attribute:: metadata_engine
     
@@ -25,8 +25,9 @@ class CapsulEngine(JSONSerializable):
 
         :py:class:`DatabaseEngine` instance used by this platform
     '''
-    def __init__(self, metadata_engine,
+    def __init__(self, workflow_engine, metadata_engine,
                  processing_engine, database_engine):
+        self.workflow_engine = workflow_engine
         self.metadata_engine = metadata_engine
         self.processing_engine = processing_engine
         self.database_engine = database_engine
@@ -104,17 +105,51 @@ class CapsulEngine(JSONSerializable):
                  'processing_engine': self.processing_engine.to_json()}
         if self.database_engine is not None:
             kwargs['database_engine'] = self.database_engine.to_json()
-        return ['capsul.engine.capsul_engine', kwargs]
+        return ['capsul.engine.platform', kwargs]
 
-def capsul_engine(self, metadata_engine, processing_engine, database_engine):
+def platform(self, workflow_engine, metadata_engine, processing_engine,
+             database_engine):
     '''
-    Factory to create a `CapsulEngine`instance from its JSON serialization.
+    Factory to create a `Platform`instance from its JSON serialization.
     '''
-    return CapsulEngine(from_json(metadata_engine),
-                        from_json(processing_engine),
-                        from_json(database_engine))
+    return Platform(from_json(workflow_engine),
+                    from_json(metadata_engine),
+                    from_json(processing_engine),
+                    from_json(database_engine))
 
 
+
+class WorkflowEngine(JSONSerializable):
+    '''
+    A WorkflowEngine is used to convert a process or pipeline into a Workflow.
+    Basically, a workflow is a series of command lines with dependencies (i.e.
+    links saying that a command must be run before another). But, a workflow
+    can contain more advanced features for dealing with :
+      - File transfers
+      - Temporary files management
+      - Dynamic output management
+      - Dynamic exectution of commands (i.e. running commands that are
+        produced by other commands).
+    '''
+    def __init__(self, execution_context):
+        '''
+        Creation of a WorkflowEngine. A workflow engine is always connected
+        to an execution context.
+        '''
+        self._execution_context = execution_context
+    
+    @property
+    def execution_context(self):
+        '''
+        ExecutionContext instance attached to this WorkflowEngine.
+        '''
+        return self._execution_context
+
+    def workflow(self, process):
+        '''
+        Creates a workflow for a process or pipeline.
+        '''
+        raise NotImplementedError()
 
 class ProcessingEngine(JSONSerializable):
     '''
@@ -122,18 +157,18 @@ class ProcessingEngine(JSONSerializable):
     API. It is used to define the minimum API required for Platform but
     could be replaced by a real Soma Workflow class.
     '''
-    
-    def submit(self, process):
+
+    def submit(self, workflow):
         '''
-        Start execution of a process as soon as possible. Returns a job
+        Start execution of a workflow as soon as possible. Returns a workflow
         identifier.
         '''
         raise NotImplementedError()
 
 
-    def status(self, job_id):
+    def status(self, workflow_id):
         '''
-        Returns a simple status of the process execution (or None if processing_id
+        Returns a simple status of the workflow execution (or None if workflow_id
         is not known) :
             'not_submitted':
                 The job was not submitted yet to soma-workflow.
@@ -158,15 +193,24 @@ class ProcessingEngine(JSONSerializable):
         raise NotImplementedError()
 
 
-    def state(self, job_id):
+    def state(self, workflow_id):
         '''
-        Returns the full state of the process execution (or None if processing_id
+        Returns the full state of the workflow execution (or None if workflow_id
         is not known).
         '''
         raise NotImplementedError()
 
+    def wait(self, workflow_id, timeout=None):
+        '''
+        Wait for a workflow execution to be finished.
+        Returns the status of the workflow (or None if workflow_id
+        is not known).
+        '''
+        raise NotImplementedError()
+
+
 class DatabaseEngine(JSONSerializable):
-    def new_process_history(self, capsul_engine, process, process_metadata):
+    def new_process_history(self, platform, process, process_metadata):
         raise NotImplementedError()
 
     def get_process_history(self, process_history_id):
@@ -189,17 +233,21 @@ class DatabaseEngine(JSONSerializable):
 
 
 class MetadataEngine(JSONSerializable):
-    def metadata_parameters(self, process):
+    def meta_parameters(self, process):
         '''
-        Returns a Controller whose traits defines a set of non file parameters
-        that are used to generate file names for all process parameters.
-        See generate_paths() method.
+        Returns a Controller whose traits defines an alternative parameter 
+        set for the given process. This alternative parameter set is called
+        meta parameters of the process. The returned controller must have a
+        `meta_links` attribute containing a dictionary that associate each
+        meta parameter to the process parameter(s) that can be modified if
+        the meta parameter value is changed.
         '''
         raise NotImplementedError()
     
-    def generate_paths(self, process, context_parameters):
+    def set_process_parameters(self, meta_parameters, process):
         '''
-        Set a value for parameters of the process that requires a path.
+        Set the process parameters according to the value of its
+        meta parameters.
         '''
         raise NotImplementedError()
     

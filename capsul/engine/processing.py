@@ -5,6 +5,8 @@ import os
 import os.path as osp
 import json
 import tempfile
+import sqlite3
+
 
 from soma.controller import Controller
 from soma.serialization import JSONSerializable
@@ -14,67 +16,156 @@ from soma.topological_sort import Graph
 from capsul.pipeline.pipeline import Pipeline, Switch
 from capsul.engine import ProcessingEngine
 
-class Status(object):
-    not_submitted = 0
-    pending = 1
-    queued = 2
-    running = 3
-    done = 4
-    failed = 5
+class JobStatus(object):
+    ready = 0
+    waiting = 1
+    started = 2
+    success = 3
+    failure = 4
     undetermined = 5
-    
-class ExecutionContext(JSONSerializable):
-    default_temporary_directory = '/tmp'
-    
-    def __init__(self, env=None, temporary_directory=None):
-        self.env=env
-        if not temporary_directory:
-            self.temporary_directory = self.default_temporary_directory
-        else:
-            self.temporary_directory = temporary_directory
-        
-    def to_json(self):
-        kwargs = {}
-        if self.env:
-            kwargs['env'] = self.env
-        if self.temporary_directory != default_temporary_directory:
-            kwargs['temporary_directory'] = self.temporary_directory
-        return ['capsul.engine.processing.ExecutionContext', kwargs]
 
-default_execution_context = ExecutionContext()
-
-class FlatPipeline(Pipeline):
-    def __init__(self, execution_graph):
-        self.execution_graph = execution_graph
-        super(FlatPipeline, self).__init__()
+class ExecutionPipeline(Pipeline):
+    def __init__(self, pipeline, remove_disabled_steps=True):
+        self.pipeline = pipeline
+        self.remove_disabled_steps = remove_disabled_steps
+        self.nodes_dependency = set()
+        super(ExecutionPipeline, self).__init__()
         
     def pipeline_definition(self):
-        for node_name, node in six.iteritems(self.execution_graph._nodes):
-            self.add_process(node_name.replace('.','_'), node.meta)
-        for source_node, source_plug, dest_node, dest_plug in self.execution_graph._parameter_links:
-            if source_node:
-                source = '%s.%s' % (source_node.replace('.','_'), source_plug)
+        if self.remove_disabled_steps:
+            steps = getattr(self.pipeline, 'pipeline_steps', Controller())
+            disabled_nodes = set()
+            for step, trait in six.iteritems(steps.user_traits()):
+                if not getattr(steps, step):
+                    disabled_nodes.update(
+                        [self.pipeline.nodes[node] for node in trait.nodes])
+        
+        # First step: create a process node for each activated process execution
+        # node in the pipeline and its sub-pipelines
+        
+        # Create a stack containing all nodes to consider. It is
+        # initialized with all the top level pipeline nodes.
+        stack = []
+        for node_name, node in six.iteritems(self.pipeline.nodes):
+            # Do not consider the pipeline node
+            if node_name == "":
+                continue
+            stack.append((node_name, node))
+        
+        created_nodes = {}
+        while stack:
+            node_name, node = stack.pop(0)
+            # Select only active Process nodes
+            if node.activated \
+                    and not isinstance(node, Switch) \
+                    and (not self.remove_disabled_steps
+                            or node not in disabled_nodes):
+                if isinstance(node.process, Pipeline):
+                    # If a Pipeline is found, add its nodes to the stack
+                    if self.remove_disabled_steps:
+                        steps = getattr(node.process, 'pipeline_steps', Controller())
+                        disabled_sub_nodes = set()
+                        for step, trait in six.iteritems(steps.user_traits()):
+                            if not getattr(steps, step):
+                                disabled_sub_nodes.update(
+                                    [node.process.nodes[i] for i in trait.nodes])
+                    for nn, n in six.iteritems(node.process.nodes):
+                        # Do not consider the pipeline node
+                        if nn == "" or (self.remove_disabled_steps and 
+                                        node in disabled_nodes):
+                            continue
+                        stack.append((node_name + '_' + nn, n))
+                else:
+                    # If a Process node is found: simply create a process for it
+                    self.add_process(node_name, node.process)
+                    created_nodes[node] = node_name
+        
+        # Second step: create a link for all parameters that are connected to
+        # the main pipeline node. Starts from the pipeline node and follow all
+        # plugs (going throuhg sub-pipeline nodes and switch).
+        for pipeline_plug_name, pipeline_plug in six.iteritems(self.pipeline.nodes[''].plugs):
+            if pipeline_plug.output:
+                # The source plug is an output plug. Therefore, we follow
+                # iteratively the links_form until we reach a process node.
+                stack = [pipeline_plug]
+                while stack:
+                    plug = stack.pop(0)
+                    for (node_name, plug_name, node, plug,
+                            weak_link) in plug.links_from:
+                        if node.activated:
+                            if isinstance(node, Switch):
+                                stack.extend(p for n, p in node.plugs.iteritems()
+                                             if p.activated and not p.output and 
+                                                n.endswith('_switch_' + plug_name))
+                            elif isinstance(node.process, Pipeline):
+                                stack.append(plug)
+                            else:
+                                source_node_name = created_nodes.get(node)
+                                if source_node_name:
+                                    self.add_link('%s.%s->%s' % (source_node_name, 
+                                                                 plug_name, 
+                                                                 pipeline_plug_name))
             else:
-                source = source_plug
-            if dest_node:
-                dest = '%s.%s' % (dest_node.replace('.','_'), dest_plug)
-            else:
-                dest = dest_plug
-            try:
-                self.add_link('%s->%s' % (source, dest))
-            except ValueError as e:
-                print('WARNING:', e)
+                # The source plug is an input plug. Therefore, we follow
+                # iteratively the links_to until we reach a process node.
+                stack = [pipeline_plug]
+                while stack:
+                    plug = stack.pop(0)
+                    for (node_name, plug_name, node, plug,
+                            weak_link) in plug.links_to:
+                        if node.activated:
+                            if isinstance(node, Switch):
+                                stack.extend(p for n, p in node.plugs.iteritems() 
+                                             if p.activated and p.output and 
+                                                plug_name.endswith('_switch_' + n))
+                            elif isinstance(node.process, Pipeline):
+                                stack.append(plug)
+                            else:
+                                dest_node_name = created_nodes.get(node)
+                                if dest_node_name:
+                                    self.add_link('%s->%s.%s' % (pipeline_plug_name, 
+                                                                 dest_node_name, 
+                                                                 plug_name))
+                                    
+        
+        # Third step: create the parameters links between the created
+        # process nodes. For this, we follow all plugs starting from a created
+        # process node (going through pipeline nodes and switch nodes) to check
+        # if it connects to another process node.
+        for source_node, source_node_name in six.iteritems(created_nodes):
+            stack = list((plug_name, plug) 
+                         for plug_name, plug in
+                            six.iteritems(source_node.plugs) 
+                         if plug.activated and plug.output)
+            while stack:
+                source_plug_name, source_plug = stack.pop(0)
+                for (dest_node_name, dest_plug_name, dest_node, dest_plug,
+                        weak_link) in source_plug.links_to:
+                    if dest_node.activated:
+                        if isinstance(dest_node, Switch):
+                            stack.extend((source_plug_name, p)
+                                         for n, p in dest_node.plugs.iteritems()
+                                         if p.activated and p.output and 
+                                            dest_plug_name.endswith('_switch_' + n))
+                        elif isinstance(dest_node.process, Pipeline):
+                            stack.append((source_plug_name, dest_plug))
+                        else:
+                            dest_node_name = created_nodes.get(dest_node)
+                            if dest_node_name:
+                                self.add_link('%s.%s->%s.%s' % (source_node_name,
+                                                                source_plug_name, 
+                                                                dest_node_name, 
+                                                                dest_plug_name))
+                                self.nodes_dependency.add((source_node_name, dest_node_name))
     
-    def export_parameter(self, node_name, plug_name, export_name=None):
-        if export_name is None:
-            export_name = '%s_%s' % (node_name, plug_name)
-        super(FlatPipeline, 
-              self).export_parameter(node_name, plug_name, 
-                                     export_name)
-
     def add_link(self, link, weak_link=False):
+        '''
+        This specialization of add_link allow to create links to or from a
+        pipeline node even if the plug does not exists. In that case,
+        self.export_parameter is used to create the link.
+        '''
         if weak_link:
-            raise ValueError('FlatPipeline does not support weak links')
+            raise ValueError('ExecutionPipeline does not support weak links')
         source, dest = link.split('->')
         if '.' not in source and source not in self.nodes[''].plugs:
             dest_node, dest_plug = dest.rsplit('.', 1)
@@ -83,271 +174,143 @@ class FlatPipeline(Pipeline):
             source_node, source_plug = source.rsplit('.', 1)
             self.export_parameter(source_node, source_plug, dest)
         else:
-            super(FlatPipeline, self).add_link(link, weak_link)
+            super(ExecutionPipeline, self).add_link(link, weak_link)
 
 
-class ExecutionGraph(Graph):    
-    def __init__(self, process, remove_disabled_steps=True):
-        """ Create an execution graph for a process or pipeline
 
-        Parameters
-        ----------
-        process: the process or pipeline used to create teh execution graph
-        remove_disabled_steps: bool (optional)
-            When set, disabled steps (and their children) will not be included
-            in the workflow graph.
-            Default: True
-        """
+class Workflow(object):
+    def __init__(self, process, execution_context):
+        self.db = sqlite3.connect(':memory:')
+        self.db.execute('''
+            PRAGMA foreing_keys = NO;
+            CREATE TABLE jobs(id TEXT, 
+                              status INTEGER,
+                              command TEXT,
+                              env TEXT,
+                              message TEXT,
+                              CONSTRAINT pkey PRIMARY KEY id);
+            CREATE TABLE links(source TEXT NOT NULL,
+                               dest TEXT NOT NULL,
+                               FOREIGN KEY (source) REFERENCES jobs(id); 
+                               FOREIGN KEY (dest) REFERENCES jobs(id); 
+                               CONSTRAINT pkey PRIMARY KEY (source, dest) ON CONFLICT IGNORE);
+            ''')
+        self.execution_context = execution_context
+        
+        if isinstance(process, ExecutionPipeline):
+            self._init_from_execution_pipeline(process)
+        elif isinstance(process, Pipeline):
+            epipeline = ExecutionPipeline(process)
+            self._init_from_execution_pipeline(epipeline)
+        elif isinstance(process, Process):
+            cmd, env = self.execution_context.process_command_line(process)
+            self.add_job(cmd, env)
+        else:
+            raise ValueError('Wrong process type for workflow creation. '
+                             'Expect an instance of Process, Pipeline or '
+                             'ExecutionPipeline but got %s' % \
+                                 str(type(process)))
 
-        # Create a graph and a list of graph node edges
-        super(ExecutionGraph, self).__init__()
-        self._parameter_links = set()
-        if isinstance(process, Pipeline):
-            if remove_disabled_steps:
-                steps = getattr(process, 'pipeline_steps', Controller())
-                disabled_nodes = set()
-                for step, trait in six.iteritems(steps.user_traits()):
-                    if not getattr(steps, step):
-                        disabled_nodes.update(
-                            [process.nodes[node] for node in trait.nodes])
-            
-            # First step: create a new node for each process execution node in
-            # the pipeline and its sub-pipelines
-            
-            # Create a stack containing all nodes to process. It is
-            # initialized with all the top level pipeline nodes.
-            # the pipeline nodes.
-            stack = []
-            for node_name, node in six.iteritems(process.nodes):
-                # Do not consider the pipeline node
-                if node_name == "":
-                    continue
-                stack.append((node_name, node))
-            
-            created_nodes = {}
-            #print('!1! stack =', stack)
-            while stack:
-                node_name, node = stack.pop(0)
-                # Select only active Process nodes
-                if node.activated \
-                        and not isinstance(node, Switch) \
-                        and (not remove_disabled_steps
-                                or node not in disabled_nodes):
-                    # If a Pipeline is found, add its nodes to the stack
-                    if isinstance(node.process, Pipeline):
-                        if remove_disabled_steps:
-                            steps = getattr(node.process, 'pipeline_steps', Controller())
-                            disabled_sub_nodes = set()
-                            for step, trait in six.iteritems(steps.user_traits()):
-                                if not getattr(steps, step):
-                                    disabled_sub_nodes.update(
-                                        [node.process.nodes[i] for i in trait.nodes])
-                        for nn, n in six.iteritems(node.process.nodes):
-                            # Do not consider the pipeline node
-                            if nn == "" or (remove_disabled_steps and 
-                                            node in disabled_nodes):
-                                continue
-                            stack.append((node_name + '.' + nn, n))
-                    # If a Processnode is found: simply create a node for it
-                    else:
-                        self.create_node(node_name, node.process)
-                        #print('!1.1! create_node', node_name, node)
-                        created_nodes[node] = node_name
-            
-            for pipeline_plug_name, pipeline_plug in six.iteritems(process.nodes[''].plugs):
-                if pipeline_plug.output:
-                    stack = [pipeline_plug]
-                    while stack:
-                        plug = stack.pop(0)
-                        for (node_name, plug_name, node, plug,
-                                weak_link) in plug.links_from:
-                            if node.activated:
-                                if isinstance(node, Switch):
-                                    stack.extend(p for n, p in node.plugs.iteritems() if p.activated and not p.output and n.endswith('_switch_' + plug_name))
-                                elif isinstance(node.process, Pipeline):
-                                    stack.append(plug)
-                                else:
-                                    source_node_name = created_nodes.get(node)
-                                    if source_node_name:
-                                        self.add_parameter_link(source_node_name, plug_name, '', pipeline_plug_name)
-                else:
-                    stack = [pipeline_plug]
-                    while stack:
-                        plug = stack.pop(0)
-                        for (node_name, plug_name, node, plug,
-                                weak_link) in plug.links_to:
-                            if node.activated:
-                                if isinstance(node, Switch):
-                                    stack.extend(p for n, p in node.plugs.iteritems() if p.activated and p.output and plug_name.endswith('_switch_' + n))
-                                elif isinstance(node.process, Pipeline):
-                                    stack.append(plug)
-                                else:
-                                    dest_node_name = created_nodes.get(node)
-                                    if dest_node_name:
-                                        self.add_parameter_link('', pipeline_plug_name, dest_node_name, plug_name)
-                                        
-            
-            # Second step: create the dependency links between the created
-            # nodes. For this, we follow all links starting from a created
-            # node (going through pipeline nodes and switch nodes) to check
-            # if it connects to another process node.
-            for source_node, source_node_name in six.iteritems(created_nodes):
-                #print('!2!', source_node_name, source_node)
-                stack = list((plug_name, plug) for plug_name, plug in six.iteritems(source_node.plugs) if plug.activated and plug.output)
-                while stack:
-                    source_plug_name, source_plug = stack.pop(0)
-                    #print('!2.1!', source_plug_name)
-                    for (dest_node_name, dest_plug_name, dest_node, dest_plug,
-                            weak_link) in source_plug.links_to:
-                        if dest_node.activated:
-                            if isinstance(dest_node, Switch):
-                                #print('!2.1!')
-                                stack.extend((source_plug_name, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output and dest_plug_name.endswith('_switch_' + n))
-                            elif isinstance(dest_node.process, Pipeline):
-                                #print('!2.2!', dest_node_name, dest_node.process.id)
-                                stack.append((source_plug_name, dest_plug))
-                                #stack.extend((n, p) for n, p in dest_node.plugs.iteritems() if p.activated and p.output)
-                            else:
-                                dest_node_name = created_nodes.get(dest_node)
-                                if dest_node_name:
-                                    self.add_parameter_link(source_node_name, source_plug_name, dest_node_name, dest_plug_name)
-                                    self.add_link(source_node_name, dest_node_name)
-                                #print('!2.3!', source_node_name, dest_node_name)
-    def add_parameter_link(self, source_node_name, source_plug_name, dest_node_name, dest_plug_name):
-        self._parameter_links.add((source_node_name, source_plug_name, dest_node_name, dest_plug_name))
+    def _init_from_execution_pipeline(self, epipeline):
+        for node_name, node in six.iteritem(epipeline.nodes):
+            if node_name:
+                cmd, env = self.execution_context.process_command_line(node.process)
+                self.add_job(cmd, env, node_name)
+        for source, dest in epipeline.nodes_dependency:
+            self.add_link(source, dest)
+    
+    def add_job(self, command, env=None, id=None):
+        if id is None:
+            id = str(uuid4())
+        self.db.execute('INSERT INTO jobs (id, status, command, env) '
+                        'VALUES (?, ?, ?, ?);',
+                        [id, JobStatus.ready, command, json.dumps(env)])
+    
+    def add_link(self, source, dest):
+        self.db.execute('''INSERT INTO links VALUES (?,?);
+            UPDATE jobs SET status = ? WHERE id = ?;''',
+            [source, dest, JobStatus.waiting, dest])
+
+    @property
+    def links(self):
+        for row in self.db.execute('SELECT source, dest FROM links;'):
+            yield row
+        
+    def jobs_with_and_without_dependency(self):
+        jobs_with_dependency = set(i[0] for i in 
+                                   self.db.execute('SELECT DISTINCT dest FROM links;'))
+        return (jobs_with_dependency, set(self.jobs) - jobs_with_dependency)
+    
+    def jobs_linked_to(self, dest):
+        for row in self.db.execute('SELECT DISTINCT source FROM links WHERE dest=?;',
+                                   [dest]):
+            yield row[0]
+    
+    def jobs_linked_from(self, source):
+        for row in self.db.execute('SELECT DISTINCT dest FROM links WHERE source=?;',
+                                   [source]):
+            yield row[0]
+
+    def start_job(self):
+        cur = self.db.execute('SELECT id FROM jobs WHERE status = ?;',
+                              [JobStatus.ready])
+        row = cur.fetchone()
+        if row:
+            job_id = row[0]
+            self.db.execute('UPDATE jobs SET status = ? WHERE id = ?;',
+                            [JobStatus.started, job_id])
+            return job_id
+        return None
+    
+    def job_successful(self, job_id, message):
+        # Change the status of the job to "success"
+        self.db.execute('UPDATE jobs SET status = ?, message = ? WHERE id = ?;',
+                        [JobStatus.success, message, job_id])
+        # Look for all jobs directly connected to job_id
+        for row in self.db.execute('SELECT dest FROM links WHERE source = ?;',
+                                   [job_id]):
+            waiting_job = row[0]
+            # Count all jobs that are linked to waiting_job and have a status
+            # "ready", "started" or "waiting". If there is none, the job
+            # is ready to be started.
+            cur = self.db.execute('SELECT COUNT(*) '
+                                  'FROM jobs LEFT JOIN links '
+                                  'ON jobs.id = links.source '
+                                  'WHERE jobs.status IN (?, ?, ?) AND '
+                                        'links.dest = ?',
+                                  [JobStatus.ready,
+                                   JobStatus.waiting,
+                                   JobStatus.started,
+                                   waiting_job])
+            if cur.fetchone()[0] == 0:
+                self.db.execute('UPDATE jobs SET status = ? WHERE id = ?;',
+                                [JobStatus.ready, waiting_job])
+        
+    def job_failed(self, job_id, message):
+        # Change the job status to "failure"
+        self.db.execute('UPDATE jobs SET status = ?, message = ? WHERE id = ?;',
+                        [JobStatus.failure, message, job_id])
+        
+        waiting_jobs = [i[0] for in in 
+                        self.db.execute('SELECT dest FROM links WHERE source = ?;',
+                                        [job_id])]
+        other_message = 'Will never start because previous job %s failed.' % job_id
+        while waiting_jobs:
+            waiting_job = waiting_jobs.pop()
+            # Change the dependent job status to "failure"
+            self.db.execute('UPDATE jobs SET status = ?, message = ? WHERE id = ?;',
+                            [JobStatus.failure, other_message, waiting_job])
+            # Adds all jobs that are linked to waiting_jon and in "waiting" state
+            waiting_jobs.extend(i[0] for in in 
+                self.db.execute('SELECT links.dest '
+                    'FROM links LEFT JOIN jobs '
+                    'ON dest.dest = jobs.id '
+                    'WHERE links.source = ? AND '
+                    'jobs.status = ?;',
+                    [waiting_job, JobStatus.waiting])]
 
         
-###############################
-# Backup from Process class
-################################
-    #def get_commandline(self):
-        #""" Method to generate a comandline representation of the process.
-
-        #Either this :meth:`get_commandline` or :meth:`run_process` must be
-        #defined in derived classes. But not both. If the execution code of a
-        #process is in Python, it must be defined in :meth:`get_commandline`.
-        #On the other hand, if the process encapsulate a command line that does
-        #not need Python, one should use :meth:`get_commandline` to define it.
-
-        #Returns
-        #-------
-        #commandline: list of strings
-            #Arguments are in separate elements of the list.
-        #"""
-        #raise NotImplementedError(
-                #"Either get_commandline() or _run_process() should be "
-                #"redefined in process ({0})".format(self.id))
         
-        
-        
-        ## Get command line arguments (ie., the process user traits)
-        ## Build the python call expression, keeping apart file names.
-        ## File names are given separately since they might be modified
-        ## externally afterwards, typically to handle temporary files, or
-        ## file transfers with Soma-Workflow.
-
-        #class ArgPicker(object):
-            #""" This small object is only here to have a __repr__() representation which will print sys.argv[n] in a list when writing the commandline code.
-            #"""
-            #def __init__(self, num):
-                #self.num = num
-            #def __repr__(self):
-                #return 'sys.argv[%d]' % self.num
-
-        #reserved_params = ("nodes_activation", "selection_changed")
-        ## pathslist is for files referenced from lists: a list of files will
-        ## look like [sys.argv[5], sys.argv[6]...], then the corresponding
-        ## path args will be in additional arguments, here stored in pathslist
-        #pathslist = []
-        ## argsdict is the dict of non-path arguments, and will be printed
-        ## using repr()
-        #argsdict = {}
-        ## pathsdict is the dict of path arguments, and will be printed as a
-        ## series of arg_name, path_value, all in separate commandline arguments
-        #pathsdict = {}
-
-        #for trait_name, trait in six.iteritems(self.user_traits()):
-            #value = getattr(self, trait_name)
-            #if trait_name in reserved_params \
-                    #or not is_trait_value_defined(value):
-                #continue
-            #if is_trait_pathname(trait):
-                #pathsdict[trait_name] = value
-            #elif isinstance(trait.trait_type, List) \
-                    #and is_trait_pathname(trait.inner_traits[0]):
-                #plist = []
-                #for pathname in value:
-                    #if is_trait_value_defined(pathname):
-                        #plist.append(ArgPicker(len(pathslist) + 1))
-                        #pathslist.append(pathname)
-                    #else:
-                        #plist.append(pathname)
-                #argsdict[trait_name] = plist
-            #else:
-                #argsdict[trait_name] = value
-
-        ## Get the module and class names
-        #if hasattr(self, '_function'):
-            ## function with xml decorator
-            #module_name = self._function.__module__
-            #class_name = self._function.__name__
-            #call_name = class_name
-        #else:
-            #module_name = self.__class__.__module__
-            #class_name = self.name
-            #call_name = '%s()' % class_name
-
-        ## Construct the command line
-        #commandline = [
-            #"python",
-            #"-c",
-            #("import sys; from {0} import {1}; kwargs={2}; "
-             #"kwargs.update(dict((sys.argv[i * 2 + {3}], "
-             #"sys.argv[i * 2 + {4}]) "
-             #"for i in range(int((len(sys.argv) - {3}) / 2)))); "
-             #"{5}(**kwargs)").format(module_name, class_name,
-                                       #repr(argsdict), len(pathslist) + 1,
-                                       #len(pathslist) + 2,
-                                       #call_name).replace("'", '"')
-        #] + pathslist + sum([list(x) for x in pathsdict.items()], [])
-
-        #return commandline
-
-    #@staticmethod
-    #def make_commandline_argument(*args):
-        #"""This helper function may be used to build non-trivial commandline
-        #arguments in get_commandline implementations.
-        #Basically it concatenates arguments, but it also takes care of keeping
-        #track of temporary file objects (if any), and converts non-string
-        #arguments to strings (using repr()).
-
-        #Ex:
-
-        #>>> process.make_commandline_argument('param=', self.param)
-
-        #will return the same as:
-
-        #>>> 'param=' + self.param
-
-        #if self.param is a string (file name) or a temporary path.
-        #"""
-        #built_arg = ""
-        #temp = None
-        #for arg in args:
-            #if hasattr(arg, 'pattern'): # tempfile
-                #built_arg = built_arg + arg
-            #elif isinstance(arg, basestring):
-                #built_arg += arg
-            #else:
-                #built_arg = built_arg + repr(arg)
-        #return built_arg        
-
-
-###############################
-# End of backup from Process
-################################
-
-
 class LocalhostProcessingEngine(ProcessingEngine):    
     def get_commandline(self, process):
         #TODO
@@ -370,7 +333,7 @@ class LocalhostProcessingEngine(ProcessingEngine):
             return value not in (Undefined, None, '')
         return trait.output or value not in (Undefined, None)
     
-    def check_process_paramaters(self, process):
+    def check_process_parameters(self, process):
         '''
         Check that process parameters are all valid to call the process.
         Raises a ValueError if a mandatory paramameter is missing.
@@ -636,17 +599,136 @@ class LocalhostProcessingEngine(ProcessingEngine):
         #self.process_counter += 1
         #return returncode
 
-def get_environ_parameter(name, default=undefined):
-    var_name = 'capsul_' + name
-    try:
-        v = os.environ[var_name]
-    except KeyError:
-        if default is undefined:
-            raise ValueError("Missing environment variable '%s'" % var_name)
-        return default
-    if v:
-        return json.loads(v)
-    return None
+        
+###############################
+# Backup from Process class
+################################
+    #def get_commandline(self):
+        #""" Method to generate a comandline representation of the process.
+
+        #Either this :meth:`get_commandline` or :meth:`run_process` must be
+        #defined in derived classes. But not both. If the execution code of a
+        #process is in Python, it must be defined in :meth:`get_commandline`.
+        #On the other hand, if the process encapsulate a command line that does
+        #not need Python, one should use :meth:`get_commandline` to define it.
+
+        #Returns
+        #-------
+        #commandline: list of strings
+            #Arguments are in separate elements of the list.
+        #"""
+        #raise NotImplementedError(
+                #"Either get_commandline() or _run_process() should be "
+                #"redefined in process ({0})".format(self.id))
+        
+        
+        
+        ## Get command line arguments (ie., the process user traits)
+        ## Build the python call expression, keeping apart file names.
+        ## File names are given separately since they might be modified
+        ## externally afterwards, typically to handle temporary files, or
+        ## file transfers with Soma-Workflow.
+
+        #class ArgPicker(object):
+            #""" This small object is only here to have a __repr__() representation which will print sys.argv[n] in a list when writing the commandline code.
+            #"""
+            #def __init__(self, num):
+                #self.num = num
+            #def __repr__(self):
+                #return 'sys.argv[%d]' % self.num
+
+        #reserved_params = ("nodes_activation", "selection_changed")
+        ## pathslist is for files referenced from lists: a list of files will
+        ## look like [sys.argv[5], sys.argv[6]...], then the corresponding
+        ## path args will be in additional arguments, here stored in pathslist
+        #pathslist = []
+        ## argsdict is the dict of non-path arguments, and will be printed
+        ## using repr()
+        #argsdict = {}
+        ## pathsdict is the dict of path arguments, and will be printed as a
+        ## series of arg_name, path_value, all in separate commandline arguments
+        #pathsdict = {}
+
+        #for trait_name, trait in six.iteritems(self.user_traits()):
+            #value = getattr(self, trait_name)
+            #if trait_name in reserved_params \
+                    #or not is_trait_value_defined(value):
+                #continue
+            #if is_trait_pathname(trait):
+                #pathsdict[trait_name] = value
+            #elif isinstance(trait.trait_type, List) \
+                    #and is_trait_pathname(trait.inner_traits[0]):
+                #plist = []
+                #for pathname in value:
+                    #if is_trait_value_defined(pathname):
+                        #plist.append(ArgPicker(len(pathslist) + 1))
+                        #pathslist.append(pathname)
+                    #else:
+                        #plist.append(pathname)
+                #argsdict[trait_name] = plist
+            #else:
+                #argsdict[trait_name] = value
+
+        ## Get the module and class names
+        #if hasattr(self, '_function'):
+            ## function with xml decorator
+            #module_name = self._function.__module__
+            #class_name = self._function.__name__
+            #call_name = class_name
+        #else:
+            #module_name = self.__class__.__module__
+            #class_name = self.name
+            #call_name = '%s()' % class_name
+
+        ## Construct the command line
+        #commandline = [
+            #"python",
+            #"-c",
+            #("import sys; from {0} import {1}; kwargs={2}; "
+             #"kwargs.update(dict((sys.argv[i * 2 + {3}], "
+             #"sys.argv[i * 2 + {4}]) "
+             #"for i in range(int((len(sys.argv) - {3}) / 2)))); "
+             #"{5}(**kwargs)").format(module_name, class_name,
+                                       #repr(argsdict), len(pathslist) + 1,
+                                       #len(pathslist) + 2,
+                                       #call_name).replace("'", '"')
+        #] + pathslist + sum([list(x) for x in pathsdict.items()], [])
+
+        #return commandline
+
+    #@staticmethod
+    #def make_commandline_argument(*args):
+        #"""This helper function may be used to build non-trivial commandline
+        #arguments in get_commandline implementations.
+        #Basically it concatenates arguments, but it also takes care of keeping
+        #track of temporary file objects (if any), and converts non-string
+        #arguments to strings (using repr()).
+
+        #Ex:
+
+        #>>> process.make_commandline_argument('param=', self.param)
+
+        #will return the same as:
+
+        #>>> 'param=' + self.param
+
+        #if self.param is a string (file name) or a temporary path.
+        #"""
+        #built_arg = ""
+        #temp = None
+        #for arg in args:
+            #if hasattr(arg, 'pattern'): # tempfile
+                #built_arg = built_arg + arg
+            #elif isinstance(arg, basestring):
+                #built_arg += arg
+            #else:
+                #built_arg = built_arg + repr(arg)
+        #return built_arg        
+
+
+###############################
+# End of backup from Process
+################################
 
 if __name__ == '__main__':
     import sys
@@ -669,11 +751,11 @@ if __name__ == '__main__':
     def show_execution_graph():
         global flat_view
         
-        xp = ExecutionGraph(pipeline)
-        pprint(xp._nodes)
-        pprint(xp._links)
-        pprint(xp._parameter_links)
-        flat_pipeline = FlatPipeline(xp)
+        #xp = ExecutionGraph(pipeline)
+        #pprint(xp._nodes)
+        #pprint(xp._links)
+        #pprint(xp._parameter_links)
+        flat_pipeline = ExecutionPipeline(pipeline)
         flat_view = PipelineDevelopperView(flat_pipeline, 
                                            allow_open_controller=True,
                                            show_sub_pipelines=True)
@@ -688,19 +770,3 @@ if __name__ == '__main__':
 
 
     app.exec_()
-    
-    
-    
-    #from soma.serialization import from_json
-    #from capsul.api import get_process_instance
-    
-    #process_id = get_environ_parameter('process')
-    #kwargs = get_environ_parameter('process_parameters')
-    #execution_context = from_json(get_parameter('execution_context'))
-    #process = get_process_instance(process_id, **kwargs)
-    #if isinstance(process, Pipeline):
-        #pass
-        ## TODO
-    #else:
-        #process.run_process()
-    #execution_context.run(process)
