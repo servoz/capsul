@@ -31,15 +31,24 @@ class Platform(JSONSerializable):
         self.metadata_engine = metadata_engine
         self.processing_engine = processing_engine
         self.database_engine = database_engine
+    
+    
+    def get_process_in_platform(self, process_source):
+        '''
+        Returns a ProcessInPlatform instance for the given process
+        '''
+        process = self.workflow_engine.execution_context.get_process_instance(process_source)
+        return ProcessInPlatform(process)
         
     
-    def submit(self, process, **kwargs):
+    def submit(self, process_in_platform, **kwargs):
         '''
         Receive a processing query to be executed as soon as possible. 
         It creates a new ExecutionState instance and returns its uuid.
         '''
         # Split kwargs arguments between process parameters and metadata
         # parameters
+           
         process_metadata = self.metadata_engine.metadata_parameters(process)
         metadata_traits = process_metadata.user_traits()
         process_traits = process.user_traits()
@@ -107,7 +116,7 @@ class Platform(JSONSerializable):
             kwargs['database_engine'] = self.database_engine.to_json()
         return ['capsul.engine.platform', kwargs]
 
-def platform(self, workflow_engine, metadata_engine, processing_engine,
+def platform(workflow_engine, metadata_engine, processing_engine,
              database_engine):
     '''
     Factory to create a `Platform`instance from its JSON serialization.
@@ -210,22 +219,22 @@ class ProcessingEngine(JSONSerializable):
 
 
 class DatabaseEngine(JSONSerializable):
-    def new_process_history(self, platform, process, process_metadata):
+    def new_processing_history(self, processing_query):
         raise NotImplementedError()
 
-    def get_process_history(self, process_history_id):
+    def get_processing_history(self, processing_history_id):
         raise NotImplementedError()
 
-    def change_process_history(self, process_history_id,
+    def change_processing_history(self, processing_history_id,
                                status=None,
                                job_id=None,
                                job_state=None):
         raise NotImplementedError()
 
-    def status(self, process_history_id):
+    def status(self, processing_history_id):
         raise NotImplementedError()
 
-    def job_id(self, process_history_id):
+    def job_id(self, processing_history_id):
         raise NotImplementedError()
 
     def to_json(self):
@@ -268,3 +277,50 @@ class MetadataEngine(JSONSerializable):
         raise NotImplementedError()
 
 
+class ProcessingQuery(object):
+    '''
+    '''
+    def __init__(self, platform, process):
+        self.platform = platform
+        self.process = process
+        self.meta_parameters = self.platform.metadata_engine.meta_parameters(self.process)
+        self._parameters = {}
+        self._has_meta_parameters = False
+        
+    def set_parameters(**kwargs):        
+        process_traits = process.user_traits()
+        meta_parameters_traits = self.meta_parameters.user_traits()
+        for k, v in six.iteritems(kwargs):
+            if k in process_traits:
+                setattr(self.process, k, v)
+                self._parameters[k] = v
+            elif meta_parameters_traits is not None and k in meta_parameters_traits:
+                setattr(self.meta_parameters, k, v)
+                self._parameters[k] = v
+                has_metadata_parameters = True
+            else:
+                raise ValuError("Process %s got an unexpected argument '%s'" % (process.id, k))
+        
+        # Perform path completion if at least one metadata parameter was used
+        if self.has_metadata_parameters:
+            self.platform.metadata_engine.set_process_parameters(self.meta_parameters, self.process)
+
+    def to_json(self):
+        '''
+        Returns a dictionary containing JSON compatible representation of
+        thi processing query.
+        '''
+        kwargs = {'platform': self.platform.to_json(),
+                  'process': self.process.id,
+                  'parameters': self._parameters}
+        return ['capsul.engine.processing_query', kwargs]
+
+def processing_query(platform, process, parameters):
+    '''
+    Factory to create a `ProcessingQuery` instance from its JSON serialization.
+    '''
+    platform = from_json(platform)
+    process = platform.workflow_engine.execution_context.get_process_instance(process)
+    result = ProcessingQuery(platform, process)
+    result.set_parameters(**parameters)
+    
