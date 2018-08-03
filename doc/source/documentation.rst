@@ -2,8 +2,8 @@
 
   <div class="container-index">
 
-Documentation of the CAPSUL tools
-==================================
+CAPSUL Documentation
+=====================
 
 .. raw:: html
 
