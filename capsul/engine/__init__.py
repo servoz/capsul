@@ -6,125 +6,211 @@ or by using a JSON representation of the instance (created by
 :py:meth:`Platform.to_json`) with
 :py:func:`soma.serialization.from_json`
 '''
+import os.path as osp
 
 from soma.serialization import JSONSerializable, from_json
 
-class Platform(JSONSerializable):
-    '''
-    `Platform` is the main class for using processes in Capsul.
-    
-    .. py:attribute:: metadata_engine
-    
-        :py:class:`MetadataEngine` instance used by this platform
+from capsul.engine.database import PopulseDBEngine
 
-    .. py:attribute:: processing_engine
-    
-        :py:class:`ProcessingEngine` instance used by this platform
-    
-    .. py:attribute:: database_engine
 
-        :py:class:`DatabaseEngine` instance used by this platform
-    '''
-    def __init__(self, workflow_engine, metadata_engine,
-                 processing_engine, database_engine):
-        self.workflow_engine = workflow_engine
-        self.metadata_engine = metadata_engine
-        self.processing_engine = processing_engine
-        self.database_engine = database_engine
-    
-    
-    def get_process_in_platform(self, process_source):
-        '''
-        Returns a ProcessInPlatform instance for the given process
-        '''
-        process = self.workflow_engine.execution_context.get_process_instance(process_source)
-        return ProcessInPlatform(process)
-        
-    
-    def submit(self, process_in_platform, **kwargs):
-        '''
-        Receive a processing query to be executed as soon as possible. 
-        It creates a new ExecutionState instance and returns its uuid.
-        '''
-        # Split kwargs arguments between process parameters and metadata
-        # parameters
-           
-        process_metadata = self.metadata_engine.metadata_parameters(process)
-        metadata_traits = process_metadata.user_traits()
-        process_traits = process.user_traits()
-        has_metadata_parameters = False
-        for k, v in six.iteritems(kwargs):
-            if k in process_traits:
-                setattr(process, k, v)
-            elif metadata_traits is not None and k in metadata_traits:
-                setattr(process_metadata, k, v)
-                has_metadata_parameters = True
-            else:
-                raise ValuError("Process %s got an unexpected argument '%s'" % (process.id, k))
-        
-        # Perform path completion if at least one metadata parameter was used
-        if has_metadata_parameters:
-            self.metadata_engine.generate_paths(process, process_metadata)
-        
-        # Declare the submission to the database
-        process_history_id = self.database_engine.new_process_history(self, process, process_metadata)
-        
-        # submit the process to the processing engine
-        job_id = self.processing_engine.submit(process)
-        self.database_engine.change_process_history(process_history_id, job_id=job_id)
-        self.update_process_history(process_history_id)
-        
-        return process_history_id
-    
-    def status(self, process_history_id):
-        '''
-        Returns None if the uuid does not correspond to an Execution instance
-        known by the server. Otherwise, returns the status of the processing 
-        corresponding to the query. See ProcessingEngine.status().
-        '''
-        db_status = self.database_engine.status(process_history_id)
-        if db_status is not None:
-            job_id = self.database_engine.job_id(process_history_id)
-            if job_id is not None:
-                job_status = self.processing_engine.status(job_status)
-                if job_status != db_status:
-                    self.update_process_history(process_history_id)
-                    db_status = self.database_engine.status(process_history_id)
-        return db_status
-    
-    def update_process_history(process_history_id):
-        job_id = self.database_engine.job_id(process_history_id)
-        if job_id is not None:
-            job_state = self.processing_engine.state(job_id)
-            if job_state is not None:
-                self.database_engine.change_process_history(
-                    process_history_id,
-                    status=job_state['status'],
-                    job_state=job_state)
+class CapsulEngine(JSONSerializable):
+    def __init__(self, execution_context, processing_engine, database_engine, metadata_engine):
+        self._execution_context = execution_context
+        self._processing_engine = processing_engine
+        self._database_engine = database_engine
+        self._metadata_engine = metadata_engine
+        self._json_file = None
 
-    def process_history(process_history_id):
-        return self.database_engine.get_process_history(process_history_id)
+    @property
+    def execution_context(self):
+        return self._execution_context
+    
+    @property
+    def processing_engine(self):
+        return self.__processing_engine
+    
+    @property
+    def execution_context(self):
+        return self._execution_context
+    
+    @property
+    def database_engine(self):
+        return self._database_engine
+    
+
+    @property
+    def json_file(self):
+        return self._json_file
+    
+    @json_file.setter
+    def json_file(self, json_file):
+        json_file = osp.normpath(osp.abspath(json_file))
+        if json_file != self._json_file:
+            self._json_file = json_file
+            self.save()
+    
+    def save(self):
+        if self.json_file:
+            json_obj = self.to_json()
+            json.dump(json_obj, open(self.json_file, 'w'))
+        else:
+            raise RuntimeError('Cannot save a Capsul engine without json_file defined')
     
     def to_json(self):
         '''
         Returns a dictionary containing JSON compatible representation of
         the engine.
         '''
-        kwargs = {'metadata_engine': self.metadata_engine.to_json(),
-                 'processing_engine': self.processing_engine.to_json()}
-        if self.database_engine is not None:
-            kwargs['database_engine'] = self.database_engine.to_json()
-        return ['capsul.engine.platform', kwargs]
+        kwargs = {'execution_context': self.execution_context.to_json(),
+                 'processing_engine': self.processing_engine.to_json(),
+                 'database_engine': self.database_engine.to_json(),
+                 'metadata_engine': self.metadata_engine.to_json(),
+                }
+        return ['capsul.engine_from_json', kwargs]
 
-def platform(workflow_engine, metadata_engine, processing_engine,
-             database_engine):
+
+def engine(json_file=None):
     '''
-    Factory to create a `Platform`instance from its JSON serialization.
+    User facrory for capsul engines
     '''
-    return Platform(from_json(workflow_engine),
-                    from_json(metadata_engine),
-                    from_json(processing_engine),
-                    from_json(database_engine))
+    if json_file is None:
+        json_file = osp.expanduser('~/.config/capsul/capsul_engine.json')
+    capsul_engine_directory = osp.abspath(osp.dirname(json_file))
+    if osp.exists(json_file):
+        result = from_json(json.load(open(json_file)))
+        result.json_file = json_file
+    else:
+        base_directory = osp.dirname(json_file)
+        sqlite_file = osp.join(base_directory, 'capsul_database.sqlite')
+        database_engine = 'sqlite:///%s' % sqlite_file
+        result = CapsulEngine(None, None, PopulseDBEngine(database_engine), None)
+    result.database_engine.set_named_directory('capsul_engine', capsul_engine_directory)
+    return result
+
+
+def engine_from_json(execution_context, processing_engine, database_engine, metadata_engine):
+   return CapsulEngine(from_json(execution_context),
+                       from_json(processing_engine),
+                       from_json(database_engine),
+                       from_json(metadata_engine))
+    
+
+#class Platform(JSONSerializable):
+    #'''
+    #`Platform` is the main class for using processes in Capsul.
+    
+    #.. py:attribute:: metadata_engine
+    
+        #:py:class:`MetadataEngine` instance used by this platform
+
+    #.. py:attribute:: processing_engine
+    
+        #:py:class:`ProcessingEngine` instance used by this platform
+    
+    #.. py:attribute:: database_engine
+
+        #:py:class:`DatabaseEngine` instance used by this platform
+    #'''
+    #def __init__(self, workflow_engine, metadata_engine,
+                 #processing_engine, database_engine):
+        #self.workflow_engine = workflow_engine
+        #self.metadata_engine = metadata_engine
+        #self.processing_engine = processing_engine
+        #self.database_engine = database_engine
+    
+    
+    #def get_process_in_platform(self, process_source):
+        #'''
+        #Returns a ProcessInPlatform instance for the given process
+        #'''
+        #process = self.workflow_engine.execution_context.get_process_instance(process_source)
+        #return ProcessInPlatform(process)
+        
+    
+    #def submit(self, process_in_platform, **kwargs):
+        #'''
+        #Receive a processing query to be executed as soon as possible. 
+        #It creates a new ExecutionState instance and returns its uuid.
+        #'''
+        ## Split kwargs arguments between process parameters and metadata
+        ## parameters
+           
+        #process_metadata = self.metadata_engine.metadata_parameters(process)
+        #metadata_traits = process_metadata.user_traits()
+        #process_traits = process.user_traits()
+        #has_metadata_parameters = False
+        #for k, v in six.iteritems(kwargs):
+            #if k in process_traits:
+                #setattr(process, k, v)
+            #elif metadata_traits is not None and k in metadata_traits:
+                #setattr(process_metadata, k, v)
+                #has_metadata_parameters = True
+            #else:
+                #raise ValuError("Process %s got an unexpected argument '%s'" % (process.id, k))
+        
+        ## Perform path completion if at least one metadata parameter was used
+        #if has_metadata_parameters:
+            #self.metadata_engine.generate_paths(process, process_metadata)
+        
+        ## Declare the submission to the database
+        #process_history_id = self.database_engine.new_process_history(self, process, process_metadata)
+        
+        ## submit the process to the processing engine
+        #job_id = self.processing_engine.submit(process)
+        #self.database_engine.change_process_history(process_history_id, job_id=job_id)
+        #self.update_process_history(process_history_id)
+        
+        #return process_history_id
+    
+    #def status(self, process_history_id):
+        #'''
+        #Returns None if the uuid does not correspond to an Execution instance
+        #known by the server. Otherwise, returns the status of the processing 
+        #corresponding to the query. See ProcessingEngine.status().
+        #'''
+        #db_status = self.database_engine.status(process_history_id)
+        #if db_status is not None:
+            #job_id = self.database_engine.job_id(process_history_id)
+            #if job_id is not None:
+                #job_status = self.processing_engine.status(job_status)
+                #if job_status != db_status:
+                    #self.update_process_history(process_history_id)
+                    #db_status = self.database_engine.status(process_history_id)
+        #return db_status
+    
+    #def update_process_history(process_history_id):
+        #job_id = self.database_engine.job_id(process_history_id)
+        #if job_id is not None:
+            #job_state = self.processing_engine.state(job_id)
+            #if job_state is not None:
+                #self.database_engine.change_process_history(
+                    #process_history_id,
+                    #status=job_state['status'],
+                    #job_state=job_state)
+
+    #def process_history(process_history_id):
+        #return self.database_engine.get_process_history(process_history_id)
+    
+    #def to_json(self):
+        #'''
+        #Returns a dictionary containing JSON compatible representation of
+        #the engine.
+        #'''
+        #kwargs = {'metadata_engine': self.metadata_engine.to_json(),
+                 #'processing_engine': self.processing_engine.to_json()}
+        #if self.database_engine is not None:
+            #kwargs['database_engine'] = self.database_engine.to_json()
+        #return ['capsul.engine.platform', kwargs]
+
+#def platform(workflow_engine, metadata_engine, processing_engine,
+             #database_engine):
+    #'''
+    #Factory to create a `Platform`instance from its JSON serialization.
+    #'''
+    #return Platform(from_json(workflow_engine),
+                    #from_json(metadata_engine),
+                    #from_json(processing_engine),
+                    #from_json(database_engine))
 
 
 

@@ -1,8 +1,17 @@
 from __future__ import print_function
 
+import datetime
+import json
+import sys
+import os
+import os.path as osp
+from pprint import pprint
 import random
 import string
 import time
+from uuid import uuid4
+
+import capsul
 
 vowels = list('aeiou')
 
@@ -33,12 +42,15 @@ def generate_language(max_words, min_syllabes, max_syllabes):
 
 
 def generate_document(languages, authors, words_count):
+    uuid = str(uuid4())
     language = random.choice(list(languages.keys()))
     language_words = list(languages[language])
     author = random.choice(list(authors))
-    date = time.localtime(time.time() * random.random())
+    #date = time.localtime(time.time() * random.random())
+    date = datetime.date.fromtimestamp(time.time() * random.random())
     words = [random.choice(language_words) for i in range(words_count)]
-    return dict(language=language,
+    return dict(uuid=uuid,
+                language=language,
                 author=author,
                 date=date,
                 words=words)
@@ -47,7 +59,48 @@ max_languages = 3
 max_authors = 4
 max_documents = 50
 
+if len(sys.argv) != 2:
+    print('Invalid arguments: usage:', sys.argv[0], '<directory>', file=sys.stderr)
+    sys.exit(1)
+           
+base_directory = sys.argv[1]
+capsul_engine_json = osp.join(base_directory, 'capsul_engine.json')
+if osp.exists(capsul_engine_json):
+    os.remove(capsul_engine_json)
+if not osp.exists(base_directory):
+    os.mkdir(base_directory)
+
+cengine = capsul.engine(capsul_engine_json)
+
 languages = dict((generate_word(5,5), generate_language(50, 2,4)) for i in range(max_languages))
 authors = set('%s %s' % (generate_word(2,4), generate_word(2,4)) for i in range(max_authors))
-documents = [generate_document(languages, authors, 200) for i in range(max_documents)]
-              
+
+
+#for i in range(max_documents):
+    #document = generate_document(languages, authors, 200)
+    #path = 'source/{language}/{author}/{uuid}.document'.format(**document)
+    #fpath = osp.join(base_directory, path)
+    #dir = osp.dirname(fpath)
+    #if not osp.exists(dir):
+        #os.makedirs(dir)
+    #print('Generating', fpath)
+    #json.dump(document['words'], open(fpath,'w'))
+    #metadata = dict(
+        #language=document['language'],
+        #author=document['author'],
+        #uuid=document['uuid'],
+        #date=document['date'],
+    #)
+    #cengine.database_engine.set_path_metadata(path, metadata)
+
+#with cengine.database_engine.db as dbs:
+    #for d in dbs.filter_documents('path_metadata', 'ALL'):
+        #print(list(d))
+        #pprint(dict(list(d)))
+for root, dirs, files in os.walk(osp.join(base_directory, 'source')):
+    for f in files:
+        path = osp.join(root,f)
+        metadata = cengine.database_engine.path_metadata(path)
+        print(path)
+        pprint(dict(metadata))
+        print()
