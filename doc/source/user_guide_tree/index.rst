@@ -71,15 +71,22 @@ An then run another Python to wait for the termination of the process :
     bet_proxy.wait()
     
     
-=======================
-Capsul engine
-=======================
+=========================
+What is a Capsul engine ?
+=========================
 A Capsul engine simply brings together four objects that are dedicated to specific tasks :
 
 * ``execution_context``: an execution context contains all the information necessary to start a job. For instance, in a previous example we used a process running FSL software. In order to use FSL, it is necessary to setup a few environment variables whose content depends on the location where FSL is installed. The execution context contains the information about FSL installation necessary to define these environment variable when a job is started. The execution context is shared with each processing nodes and used to build the execution environment of each job.
 * ``processing_engine``: a processing engine contains the configuration of a computing ressource. It is able to start jobs on this ressource (typically using Soma-workflow). Its API allows to start the execution of simple processes and complex pipelines, to monitor their execution and to interact with the underlying jobs. For instance, it is used to check the execution status of all jobs of a pipeline ad to retrieve the standard error output of jobs that failed.
 * ``database_engine``: a database engine is used to store, retrieve and query information structured information. It is used to store metadata (information that describe the data such as subject, modality, format, etc.) and processing related information (such as history of processings).
 * ``metadata_engine``: the metadata engine is responsible of data organization and of the production of metadata. For instance, it allows to retrieve metadata for a file given its path, it can generate a path for an output file given metadata, etc. 
+
+==============================
+Why using metadata in Capsul ?
+==============================
+
+It is not mandatory to use metadatain Capsul. However, processing huge databases without metadata if a lot too complicated and error prone because the user have to enter too many information for runnig pipelines. Without metadata, it is necessary to give the input (and often also output) file names as parameter of the pipeline. For pipelines with a lot of file parameters this can be tedious. And it becomes very complicated when one wants to iterate such pipelines on many data. For instance, if one wants to use a pipeline takin two input files and producing ten output files over a hundred of subjects, it is necessary to define 1200 file names (200 input files and 1000 output files). It is a very bad idea to let a human user to enter these file names. The use of metadata in Capsul makes it possible to ignore file names (they exists but are managed automatically) and let the user focus on meaningful information to identify input and output data (file names are not always meaningful). For instance, in our previous example the pipeline was iterated on 100 subjects. The user should focus only on subjects selection let Capsul manage all the file names. Usage of metadata makes this possible. 
+
 .. 
 .. =======================
 .. Tutorial
