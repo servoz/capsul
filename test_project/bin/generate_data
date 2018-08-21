@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 from __future__ import print_function
 
 import datetime
@@ -107,19 +109,21 @@ cengine = capsul.engine(capsul_engine_json)
 if not osp.exists(osp.join(base_directory, 'source')):
     generate_documents(cengine)
 if not osp.exists(capsul_engine_json):
-    cengine.execution_context.python_path_last.append(osp.abspath(osp.dirname(__file__)))
+    python_dir = osp.join(osp.dirname(osp.dirname(__file__)), 'python')
+    cengine.execution_context.python_path_last.append(osp.abspath(python_dir))
+    print('Saving', cengine.json_file)
     cengine.save()
 
-with cengine.execution_context:
-    import capsul_sample
+#with cengine.execution_context:
+    #import capsul_sample
 
 
 
-for root, dirs, files in os.walk(osp.join(base_directory, 'source')):
-    for f in files:
-        path = osp.join(root,f)
-        metadata = cengine.database_engine.path_metadata(path)
-        print(path)
-        pprint(dict(metadata))
-        print()
+#for root, dirs, files in os.walk(osp.join(base_directory, 'source')):
+    #for f in files:
+        #path = osp.join(root,f)
+        #metadata = cengine.database_engine.path_metadata(path)
+        #print(path)
+        #pprint(dict(metadata))
+        #print()
         
