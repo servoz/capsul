@@ -10,4 +10,3 @@ from capsul.pipeline.pipeline_nodes import OptionalOutputSwitch
 from capsul.process.instance import get_process_instance
 from capsul.study_config.study_config import StudyConfig
 from capsul.utils.finder import find_processes
-

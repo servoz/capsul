@@ -32,7 +32,7 @@ class PopulseDBEngine(JSONSerializable):
             if doc is None:
                 if path:
                     doc = {'name': name,
-                        'path': path}
+                           'path': path}
                     dbs.add_document('named_directory', doc)
             else:
                 if path:
@@ -42,7 +42,7 @@ class PopulseDBEngine(JSONSerializable):
     
     def named_directory(self, name):
         with self.db as dbs:
-            return dbs.get_value('named_directory', name)
+            return dbs.get_value('named_directory', name, 'path')
     
     def named_directories(self):
         with self.db as dbs:
@@ -91,11 +91,11 @@ class PopulseDBEngine(JSONSerializable):
             return dbs.get_document('path_metadata', path)
     
     def to_json(self):
-        return ['capsul.engine.database.popuse_db', 
+        return ['capsul.populse_db_engine_from_json', 
                 {'database_engine': self.db.string_engine}]
     
 # populse_db is the factory used to build a PopulseDBEngine instance from
 # parameters coming from JSON. As long as all parameters of 
 # PopulseDBEngine.__init__ are all compatible with JSON base values,
 # the class can be used directly as the factory
-populse_db = PopulseDBEngine
+populse_db_engine_from_json = PopulseDBEngine

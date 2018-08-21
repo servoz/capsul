@@ -12,6 +12,7 @@ import os.path as osp
 from soma.serialization import JSONSerializable, to_json, from_json
 
 from capsul.engine.database import PopulseDBEngine
+from capsul.engine.execution_context import ExecutionContext
 
 
 class CapsulEngine(JSONSerializable):
@@ -81,7 +82,10 @@ def engine(json_file=None):
         base_directory = osp.dirname(json_file)
         sqlite_file = osp.join(base_directory, 'capsul_database.sqlite')
         database_engine = 'sqlite:///%s' % sqlite_file
-        result = CapsulEngine(None, None, PopulseDBEngine(database_engine), None)
+        result = CapsulEngine(execution_context = ExecutionContext(),
+                              processing_engine = None, 
+                              database_engine = PopulseDBEngine(database_engine),
+                              metadata_engine = None)
     result.json_file = json_file
     result.database_engine.set_named_directory('capsul_engine', capsul_engine_directory)
     return result
