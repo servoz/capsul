@@ -71,32 +71,30 @@ if not osp.exists(base_directory):
     os.mkdir(base_directory)
 
 cengine = capsul.engine(capsul_engine_json)
+cengine.save()
 
 languages = dict((generate_word(5,5), generate_language(50, 2,4)) for i in range(max_languages))
 authors = set('%s %s' % (generate_word(2,4), generate_word(2,4)) for i in range(max_authors))
 
 
-#for i in range(max_documents):
-    #document = generate_document(languages, authors, 200)
-    #path = 'source/{language}/{author}/{uuid}.document'.format(**document)
-    #fpath = osp.join(base_directory, path)
-    #dir = osp.dirname(fpath)
-    #if not osp.exists(dir):
-        #os.makedirs(dir)
-    #print('Generating', fpath)
-    #json.dump(document['words'], open(fpath,'w'))
-    #metadata = dict(
-        #language=document['language'],
-        #author=document['author'],
-        #uuid=document['uuid'],
-        #date=document['date'],
-    #)
-    #cengine.database_engine.set_path_metadata(path, metadata)
+for i in range(max_documents):
+    document = generate_document(languages, authors, 200)
+    path = 'source/{language}/{author}/{uuid}.document'.format(**document)
+    fpath = osp.join(base_directory, path)
+    dir = osp.dirname(fpath)
+    if not osp.exists(dir):
+        os.makedirs(dir)
+    print('Generating', fpath)
+    json.dump(document['words'], open(fpath,'w'))
+    metadata = dict(
+        language=document['language'],
+        author=document['author'],
+        uuid=document['uuid'],
+        date=document['date'],
+    )
+    cengine.database_engine.set_path_metadata(path, metadata)
 
-#with cengine.database_engine.db as dbs:
-    #for d in dbs.filter_documents('path_metadata', 'ALL'):
-        #print(list(d))
-        #pprint(dict(list(d)))
+
 for root, dirs, files in os.walk(osp.join(base_directory, 'source')):
     for f in files:
         path = osp.join(root,f)
@@ -104,3 +102,4 @@ for root, dirs, files in os.walk(osp.join(base_directory, 'source')):
         print(path)
         pprint(dict(metadata))
         print()
+        
