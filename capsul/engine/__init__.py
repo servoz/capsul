@@ -6,9 +6,10 @@ or by using a JSON representation of the instance (created by
 :py:meth:`Platform.to_json`) with
 :py:func:`soma.serialization.from_json`
 '''
+import json
 import os.path as osp
 
-from soma.serialization import JSONSerializable, from_json
+from soma.serialization import JSONSerializable, to_json, from_json
 
 from capsul.engine.database import PopulseDBEngine
 
@@ -27,15 +28,15 @@ class CapsulEngine(JSONSerializable):
     
     @property
     def processing_engine(self):
-        return self.__processing_engine
-    
-    @property
-    def execution_context(self):
-        return self._execution_context
+        return self._processing_engine
     
     @property
     def database_engine(self):
         return self._database_engine
+    
+    @property
+    def metadata_engine(self):
+        return self._metadata_engine
     
 
     @property
@@ -47,12 +48,11 @@ class CapsulEngine(JSONSerializable):
         json_file = osp.normpath(osp.abspath(json_file))
         if json_file != self._json_file:
             self._json_file = json_file
-            self.save()
     
     def save(self):
         if self.json_file:
             json_obj = self.to_json()
-            json.dump(json_obj, open(self.json_file, 'w'))
+            json.dump(json_obj, open(self.json_file, 'w'), indent=2)
         else:
             raise RuntimeError('Cannot save a Capsul engine without json_file defined')
     
@@ -61,11 +61,10 @@ class CapsulEngine(JSONSerializable):
         Returns a dictionary containing JSON compatible representation of
         the engine.
         '''
-        kwargs = {'execution_context': self.execution_context.to_json(),
-                 'processing_engine': self.processing_engine.to_json(),
-                 'database_engine': self.database_engine.to_json(),
-                 'metadata_engine': self.metadata_engine.to_json(),
-                }
+        kwargs = {'execution_context': to_json(self.execution_context),
+                  'processing_engine': to_json(self.processing_engine),
+                  'database_engine': to_json(self.database_engine),
+                  'metadata_engine': to_json(self.metadata_engine)}
         return ['capsul.engine_from_json', kwargs]
 
 
@@ -78,12 +77,12 @@ def engine(json_file=None):
     capsul_engine_directory = osp.abspath(osp.dirname(json_file))
     if osp.exists(json_file):
         result = from_json(json.load(open(json_file)))
-        result.json_file = json_file
     else:
         base_directory = osp.dirname(json_file)
         sqlite_file = osp.join(base_directory, 'capsul_database.sqlite')
         database_engine = 'sqlite:///%s' % sqlite_file
         result = CapsulEngine(None, None, PopulseDBEngine(database_engine), None)
+    result.json_file = json_file
     result.database_engine.set_named_directory('capsul_engine', capsul_engine_directory)
     return result
 
