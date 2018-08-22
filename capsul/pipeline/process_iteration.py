@@ -4,7 +4,6 @@ from traits.api import List, Undefined
 
 from capsul.process.process import Process
 from capsul.api import get_process_instance
-import capsul.study_config as study_cmod
 from capsul.attributes.completion_engine import ProcessCompletionEngine
 from traits.api import File, Directory
 
@@ -16,13 +15,8 @@ class ProcessIteration(Process):
                  context_name=None):
         super(ProcessIteration, self).__init__()
 
-        if self.study_config is None and hasattr(Process, '_study_config'):
-            study_config = study_cmod.default_study_config()
-        if study_config is not None:
-            self.study_config = study_config
 
-        self.process = get_process_instance(process,
-                                            study_config=study_config)
+        self.process = get_process_instance(process)
 
         if context_name is not None:
             self.process.context_name = context_name
@@ -31,14 +25,14 @@ class ProcessIteration(Process):
 
         # use the completion system (if any) to get induced (additional)
         # iterated parameters
-        if study_config is not None:
-            completion_engine \
-                = ProcessCompletionEngine.get_completion_engine(self)
-            if hasattr(completion_engine, 'get_induced_iterative_parameters'):
-                induced_iterative_parameters \
-                    = completion_engine.get_induced_iterative_parameters()
-                self.iterative_parameters.update(induced_iterative_parameters)
-                iterative_parameters = self.iterative_parameters
+        #if study_config is not None:
+            #completion_engine \
+                #= ProcessCompletionEngine.get_completion_engine(self)
+            #if hasattr(completion_engine, 'get_induced_iterative_parameters'):
+                #induced_iterative_parameters \
+                    #= completion_engine.get_induced_iterative_parameters()
+                #self.iterative_parameters.update(induced_iterative_parameters)
+                #iterative_parameters = self.iterative_parameters
 
         # Check that all iterative parameters are valid process parameters
         user_traits = self.process.user_traits()
@@ -176,10 +170,6 @@ class ProcessIteration(Process):
                 # operate completion
                 self.complete_iteration(iteration)
                 self.process()
-
-    def set_study_config(self, study_config):
-        super(ProcessIteration, self).set_study_config(study_config)
-        self.process.set_study_config(study_config)
 
     def complete_iteration(self, iteration):
         completion_engine = ProcessCompletionEngine.get_completion_engine(

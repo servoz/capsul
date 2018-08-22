@@ -1,10 +1,10 @@
 import os
 import os.path as osp
+import sys
 
 from soma.serialization import JSONSerializable
 
-
-import sys
+from capsul.api import get_process_instance
 
 active_execution_context = None
 
@@ -60,6 +60,15 @@ class ExecutionContext:
         if error:
             raise ValueError('sys.path was modified and execution context modifications cannot be undone')
 
+
+    def get_process_instance(self, *args, **kwargs):
+        '''
+        The supported way to get a process instance is to use this method.
+        For now, it simply calls capsul.api.get_process_instance but it may
+        change in the future.
+        '''
+        instance = get_process_instance(*args, **kwargs)
+        return instance
 
 
 def execution_context_from_json(python_path_first=[], 

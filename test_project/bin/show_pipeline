@@ -1,0 +1,24 @@
+#! /usr/bin/env python
+from __future__ import print_function
+
+import os.path as osp
+import sys
+
+from soma.qt_gui.qt_backend import QtGui
+import capsul
+from capsul.qt_gui.widgets import PipelineDevelopperView
+
+if len(sys.argv) != 2:
+    print('Invalid arguments: usage:', sys.argv[0], '<directory>', file=sys.stderr)
+    sys.exit(1)
+           
+base_directory = sys.argv[1]
+capsul_engine_json = osp.join(base_directory, 'capsul_engine.json')
+cengine = capsul.engine(capsul_engine_json)
+
+with cengine.execution_context:
+    pipeline = cengine.execution_context.get_process_instance('test_project.DocumentsClassifierPipeline')
+    app = QtGui.QApplication(sys.argv)
+    view = PipelineDevelopperView(pipeline, allow_open_controller=True, show_sub_pipelines=True)
+    view.show()
+    app.exec_()

@@ -1,0 +1,1 @@
+from .processes import WordsClassifier, WordsFrequencies, DocumentClassifier, DocumentsClassifierPipeline
