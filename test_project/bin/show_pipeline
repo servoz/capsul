@@ -17,7 +17,7 @@ capsul_engine_json = osp.join(base_directory, 'capsul_engine.json')
 cengine = capsul.engine(capsul_engine_json)
 
 with cengine.execution_context:
-    pipeline = cengine.execution_context.get_process_instance('test_project.DocumentsClassifierPipeline')
+    pipeline = cengine.get_process_instance('test_project.DocumentsClassifierPipeline')
     app = QtGui.QApplication(sys.argv)
     view = PipelineDevelopperView(pipeline, allow_open_controller=True, show_sub_pipelines=True)
     view.show()

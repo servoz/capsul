@@ -61,13 +61,13 @@ class ExecutionContext:
             raise ValueError('sys.path was modified and execution context modifications cannot be undone')
 
 
-    def get_process_instance(self, *args, **kwargs):
+    def get_process_instance(self, process_or_id, **kwargs):
         '''
         The supported way to get a process instance is to use this method.
         For now, it simply calls capsul.api.get_process_instance but it may
         change in the future.
         '''
-        instance = get_process_instance(*args, **kwargs)
+        instance = get_process_instance(process_or_id, **kwargs)
         return instance
 
 

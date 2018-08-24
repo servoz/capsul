@@ -11,12 +11,14 @@ if sys.version_info[0] >= 3:
     xrange = range
 
 class ProcessIteration(Process):
-    def __init__(self, process, iterative_parameters, study_config=None,
+    def __init__(self, process, iterative_parameters, 
+                 metadata_engine=None,
+                 study_config=None,
                  context_name=None):
-        super(ProcessIteration, self).__init__()
+        super(ProcessIteration, self).__init__(metadata_engine=metadata_engine)
 
 
-        self.process = get_process_instance(process)
+        self.process = get_process_instance(process, metadata_engine=metadata_engine)
 
         if context_name is not None:
             self.process.context_name = context_name

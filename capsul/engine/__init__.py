@@ -39,6 +39,9 @@ class CapsulEngine(JSONSerializable):
     def metadata_engine(self):
         return self._metadata_engine
     
+    @metadata_engine.setter
+    def metadata_engine(self, metadata_engine):
+        self._metadata_engine = metadata_engine
 
     @property
     def json_file(self):
@@ -68,6 +71,19 @@ class CapsulEngine(JSONSerializable):
                   'metadata_engine': to_json(self.metadata_engine)}
         return ['capsul.engine_from_json', kwargs]
 
+    def get_process_instance(self, process_or_id, **kwargs):
+        '''
+        The supported way to get a process instance is to use this method.
+        For now, it simply calls capsul.api.get_process_instance but it may
+        change in the future.
+        '''
+        instance = self.execution_context.get_process_instance(process_or_id,
+                                                        metadata_engine=self.metadata_engine, 
+                                                        **kwargs)
+        return instance
+
+
+
 
 def engine(json_file=None):
     '''
@@ -92,10 +108,12 @@ def engine(json_file=None):
 
 
 def engine_from_json(execution_context, processing_engine, database_engine, metadata_engine):
-   return CapsulEngine(from_json(execution_context),
-                       from_json(processing_engine),
-                       from_json(database_engine),
-                       from_json(metadata_engine))
+    execution_context = from_json(execution_context)
+    with execution_context:
+        return CapsulEngine(execution_context,
+                            from_json(processing_engine),
+                            from_json(database_engine),
+                            from_json(metadata_engine))
     
 
 #class Platform(JSONSerializable):

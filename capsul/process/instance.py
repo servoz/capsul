@@ -70,7 +70,7 @@ def _find_single_process(module_dict, filename):
     return object_name
 
 
-def get_process_instance(process_or_id, **kwargs):
+def get_process_instance(process_or_id, metadata_engine=None, **kwargs):
     """ Return a Process instance given an identifier.
 
     Note that it is convenient to create a process from a StudyConfig instance:
@@ -129,7 +129,7 @@ def get_process_instance(process_or_id, **kwargs):
     # If the function 'process_or_id' parameter is a Process class.
     elif (isinstance(process_or_id, type) and
           issubclass(process_or_id, Process)):
-        result = process_or_id()
+        result = process_or_id(metadata_engine=metadata_engine)
 
     # If the function 'process_or_id' parameter is already a Nipye
     # interface instance, wrap this structure in a Process class
@@ -259,7 +259,7 @@ def get_process_instance(process_or_id, **kwargs):
             if module_object is not None:
                 if (isinstance(module_object, type) and
                     issubclass(module_object, Process)):
-                    result = module_object()
+                    result = module_object(metadata_engine=metadata_engine)
                 elif isinstance(module_object, Interface):
                     # If we have a Nipype interface, wrap this structure in a Process
                     # class
@@ -292,6 +292,9 @@ def get_process_instance(process_or_id, **kwargs):
                          "description or an Interface instance/string "
                          "description".format(process_or_id))
 
+    if metadata_engine is not None:
+        metadata_engine.set_metaparams(result)
+    
     # Set the instance default parameters
     for name, value in six.iteritems(kwargs):
         result.set_parameter(name, value)

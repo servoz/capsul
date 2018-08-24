@@ -111,6 +111,9 @@ if not osp.exists(osp.join(base_directory, 'source')):
 if not osp.exists(capsul_engine_json):
     python_dir = osp.join(osp.dirname(osp.dirname(__file__)), 'python')
     cengine.execution_context.python_path_last.append(osp.abspath(python_dir))
+    with cengine.execution_context:
+        from test_project import TestMetadataEngine
+        cengine.metadata_engine = TestMetadataEngine() 
     print('Saving', cengine.json_file)
     cengine.save()
 

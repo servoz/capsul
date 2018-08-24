@@ -211,7 +211,7 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
 
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, metadata_engine=None):
         """ Initialize the Process class.
         """
         # Inheritance
@@ -219,7 +219,7 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
 
         # Initialize the process identifiers
         self.name = self.__class__.__name__
-        self.id = self.__class__.__module__ + "." + self.name
+        self.id = getattr(self.__class__, 'id', self.__class__.__module__ + "." + self.name)
 
 
     def __getstate__(self):

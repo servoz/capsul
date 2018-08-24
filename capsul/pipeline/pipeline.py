@@ -163,7 +163,8 @@ class Pipeline(Process):
     # this value to False will make it visible.
     hide_nodes_activation = True
 
-    def __init__(self, autoexport_nodes_parameters=None, **kwargs):
+    def __init__(self, autoexport_nodes_parameters=None,
+                 metadata_engine=None):
         """ Initialize the Pipeline class
 
         Parameters
@@ -173,11 +174,13 @@ class Pipeline(Process):
             exported.
         """
         # Inheritance
-        super(Pipeline, self).__init__(**kwargs)
+        super(Pipeline, self).__init__()
         super(Pipeline, self).add_trait(
             'nodes_activation',
             ControllerTrait(Controller(), hidden=self.hide_nodes_activation))
-
+        
+        self.metadata_engine = metadata_engine
+        
         # Class attributes
         self.list_process_in_pipeline = []
         self.attributes = {}
@@ -223,6 +226,26 @@ class Pipeline(Process):
         """
         pass
 
+    def export_metaparams(self):
+        '''
+        Default implementation of meta-parameters exportation. All
+        meta-parameters are exported and they are considered as the
+        same parameter if they have the same name. This behavior can
+        be overrriden by defining a method export_metaparams in
+        the metadata engine.
+        '''
+        exported = set()
+        for node_name, node in six.iteritems(self.nodes):
+            if isinstance(node, ProcessNode):
+                for param_name, trait in six.iteritems(node.process.user_traits()):
+                    roles = getattr(trait, 'roles', None)
+                    if roles and 'meta' in roles:
+                        if param_name in exported:
+                            self.add_link('{0}->{1}.{0}'.format(param_name, node.name))
+                        else:
+                            self.export_parameter(node.name, param_name)
+                            exported.add(param_name)
+        
     def autoexport_nodes_parameters(self, include_optional=False):
         """ Automatically export nodes plugs to the pipeline.
 
@@ -237,6 +260,8 @@ class Pipeline(Process):
             (otherwise they are useless). It should probably be any single
             output plug of a node.
         """
+        if self.metadata_engine:
+            self.metadata_engine.export_metaparams(self)
         for node_name, node in six.iteritems(self.nodes):
             if node_name == "":
                     continue
@@ -373,6 +398,7 @@ class Pipeline(Process):
         from capsul.api import get_process_instance
         # Create a process node
         process = get_process_instance(process,
+                                       metadata_engine=self.metadata_engine,
                                        **kwargs)
         # set full contextual name on process instance
         self._set_subprocess_context_name(process, name)
@@ -458,7 +484,9 @@ class Pipeline(Process):
             context_name = self._make_subprocess_context_name(name)
             self.add_process(
                 name,
-                ProcessIteration(process, iterative_plugs,
+                ProcessIteration(process,
+                                 iterative_plugs,
+                                 metadata_engine=self.metadata_engine,
                                  context_name=context_name),
                 do_not_export, make_optional, **kwargs)
             return
