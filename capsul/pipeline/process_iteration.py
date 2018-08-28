@@ -12,13 +12,13 @@ if sys.version_info[0] >= 3:
 
 class ProcessIteration(Process):
     def __init__(self, process, iterative_parameters, 
-                 metadata_engine=None,
+                 capsul_engine=None,
                  study_config=None,
                  context_name=None):
-        super(ProcessIteration, self).__init__(metadata_engine=metadata_engine)
+        super(ProcessIteration, self).__init__(capsul_engine=capsul_engine)
 
 
-        self.process = get_process_instance(process, metadata_engine=metadata_engine)
+        self.process = get_process_instance(process, capsul_engine=capsul_engine)
 
         if context_name is not None:
             self.process.context_name = context_name
@@ -55,7 +55,9 @@ class ProcessIteration(Process):
         for name, trait in six.iteritems(user_traits):
             if name in iterative_parameters:
                 self.add_trait(name, List(trait, output=trait.output,
-                                          optional=trait.optional))
+                                          optional=trait.optional,
+                                          is_metaparam=trait.is_metaparam,
+                                          hidden=trait.hidden))
                 if trait.groups:
                     self.trait(name).groups = trait.groups
             else:

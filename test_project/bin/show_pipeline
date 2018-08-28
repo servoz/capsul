@@ -16,9 +16,14 @@ base_directory = sys.argv[1]
 capsul_engine_json = osp.join(base_directory, 'capsul_engine.json')
 cengine = capsul.engine(capsul_engine_json)
 
+app = QtGui.QApplication(sys.argv)
 with cengine.execution_context:
+    pipeline1 = cengine.execution_context.get_process_instance('test_project.DocumentsClassifierPipeline')
+    view1 = PipelineDevelopperView(pipeline1, allow_open_controller=True, show_sub_pipelines=True)
+    view1.show()
     pipeline = cengine.get_process_instance('test_project.DocumentsClassifierPipeline')
-    app = QtGui.QApplication(sys.argv)
     view = PipelineDevelopperView(pipeline, allow_open_controller=True, show_sub_pipelines=True)
     view.show()
-    app.exec_()
+    for n, t in pipeline.nodes['WordsClassifier'].process.user_traits().iteritems():
+        print(n, t.hidden)
+app.exec_()

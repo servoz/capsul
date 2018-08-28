@@ -164,7 +164,7 @@ class Pipeline(Process):
     hide_nodes_activation = True
 
     def __init__(self, autoexport_nodes_parameters=None,
-                 metadata_engine=None):
+                 capsul_engine=None):
         """ Initialize the Pipeline class
 
         Parameters
@@ -174,12 +174,15 @@ class Pipeline(Process):
             exported.
         """
         # Inheritance
-        super(Pipeline, self).__init__()
+        # capsul_engine is not passed to Process constructor because Pipeline
+        # needs to control the call of capsul_engine.metadata_engine.set_metaparams
+        super(Pipeline, self).__init__(capsul_engine=None)
+        self.capsul_engine = capsul_engine
         super(Pipeline, self).add_trait(
             'nodes_activation',
             ControllerTrait(Controller(), hidden=self.hide_nodes_activation))
         
-        self.metadata_engine = metadata_engine
+        self.capsul_engine = capsul_engine
         
         # Class attributes
         self.list_process_in_pipeline = []
@@ -199,6 +202,8 @@ class Pipeline(Process):
         self.parent_pipeline = None
         self._disable_update_nodes_and_plugs_activation = 1
         self._must_update_nodes_and_plugs_activation = False
+        if self.capsul_engine is not None and self.capsul_engine.metadata_engine is not None:
+            self.capsul_engine.metadata_engine.set_metaparams(self)
         self.pipeline_definition()
 
         self.workflow_repr = ""
@@ -238,8 +243,7 @@ class Pipeline(Process):
         for node_name, node in six.iteritems(self.nodes):
             if isinstance(node, ProcessNode):
                 for param_name, trait in six.iteritems(node.process.user_traits()):
-                    roles = getattr(trait, 'roles', None)
-                    if roles and 'meta' in roles:
+                    if trait.is_metaparam:
                         if param_name in exported:
                             self.add_link('{0}->{1}.{0}'.format(param_name, node.name))
                         else:
@@ -260,8 +264,8 @@ class Pipeline(Process):
             (otherwise they are useless). It should probably be any single
             output plug of a node.
         """
-        if self.metadata_engine:
-            self.metadata_engine.export_metaparams(self)
+        if self.capsul_engine and self.capsul_engine.metadata_engine:
+            self.capsul_engine.metadata_engine.export_metaparams(self)
         for node_name, node in six.iteritems(self.nodes):
             if node_name == "":
                     continue
@@ -398,7 +402,7 @@ class Pipeline(Process):
         from capsul.api import get_process_instance
         # Create a process node
         process = get_process_instance(process,
-                                       metadata_engine=self.metadata_engine,
+                                       capsul_engine=self.capsul_engine,
                                        **kwargs)
         # set full contextual name on process instance
         self._set_subprocess_context_name(process, name)
@@ -480,13 +484,22 @@ class Pipeline(Process):
 
         # Otherwise, need to create a dynamic structure
         else:
+            if self.capsul_engine and self.capsul_engine.metadata_engine:
+                process = self.capsul_engine.get_process_instance(process)
+                extended_iterative_plugs = set(iterative_plugs)
+                for n in iterative_plugs:
+                    trait = process.trait(n)
+                    controlled_by = getattr(trait, 'controlled_by_metaparams', None)
+                    if controlled_by:
+                        extended_iterative_plugs.update(controlled_by)
+                iterative_plugs = extended_iterative_plugs.difference(getattr(self, 'metaparams_options', {}).get('do_not_iterate',[]))
             from .process_iteration import ProcessIteration
             context_name = self._make_subprocess_context_name(name)
             self.add_process(
                 name,
                 ProcessIteration(process,
                                  iterative_plugs,
-                                 metadata_engine=self.metadata_engine,
+                                 capsul_engine=self.capsul_engine,
                                  context_name=context_name),
                 do_not_export, make_optional, **kwargs)
             return
@@ -1204,12 +1217,12 @@ class Pipeline(Process):
                 for plug_name, plug in six.iteritems(node.plugs):
                     trait = node.process.trait(plug_name)
                     if plug.activated:
-                        if getattr(trait, "hidden", False):
-                            trait.hidden = False
+                        if getattr(trait, 'unused', False):
+                            trait.unused = False
                             traits_changed = True
                     else:
-                        if not getattr(trait, "hidden", False):
-                            trait.hidden = True
+                        if not getattr(trait, 'unused', False):
+                            trait.unused = True
                             traits_changed = True
                 if traits_changed:
                     node.process.user_traits_changed = True

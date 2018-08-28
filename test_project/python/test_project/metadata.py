@@ -1,3 +1,4 @@
+import re
 import six
 
 from traits.api import Unicode, Date
@@ -11,12 +12,39 @@ class MetadataEngine(JSONSerializable):
     def to_json(self):
         raise NotImplementedError()
     
-
+    metaparams_definition = {}
+    
     def set_metaparams(self, process):
         '''
-        Default implementation if set_metaparams
-        does nothing
+        Default implementation parse self.metaparams_definition
+        to modify the process.
         '''
+        param_to_metaparams = {}
+        proc_metaparams_def = self.metaparams_definition.get(process.id)
+        if proc_metaparams_def:
+            if isinstance(proc_metaparams_def, list):
+                metaparams_rules = proc_metaparams_def
+            else:
+                process.metaparams_options = metaparams_options = proc_metaparams_def.get('options')
+                metaparams_rules = proc_metaparams_def.get('rules', [])
+            if metaparams_rules:
+                metaparams_rules = [[re.compile('^%s$' % i), j] for i, j in metaparams_rules]
+                for param_name, param_trait in six.iteritems(process.user_traits()):
+                    if is_trait_pathname(param_trait):
+                        for select, metaparams in metaparams_rules:
+                            if select.match(param_name):
+                                for metaparam_name, metaparam_trait in metaparams:
+                                    if process.trait(metaparam_name) is None:
+                                        process.add_trait(metaparam_name, metaparam_trait)
+                                        process.trait(metaparam_name).is_metaparam = True
+                                    controlled_by = param_trait.controlled_by_metaparams
+                                    if controlled_by is None:
+                                        param_trait.controlled_by_metaparams = [metaparam_name]
+                                    else:
+                                        controlled_by.append(metaparam_name)
+                                print('!!!', process, param_name)
+                                param_trait.hidden = True
+                                break
 
     def export_metaparams(self, pipeline):
         '''
@@ -33,42 +61,32 @@ class TestMetadataEngine(MetadataEngine):
     def to_json(self):
         return 'test_project.TestMetadataEngine'
     
-    def set_metaparams(self, process):
-        handlers = self.metaparams_handlers.get(process.id)
-        if handlers:
-            for handler in handlers:
-                handler(process)
-        for trait in six.itervalues(process.user_traits()):
-            if is_trait_pathname(trait):
-                roles = getattr(trait, 'roles')
-                if roles is not None:
-                    roles.add('sub_meta')
-                else:
-                    trait.roles = {'sub_meta'}
-
+    reference_metaparams = [
+        ['language', Unicode()],
+        ['period_start', Date()],
+        ['period_end', Date()],
+    ]
     
-    @staticmethod
-    def add_document_metaparams(process):
-        if process.trait('language') is None:
-            process.add_trait('language', Unicode(roles={'meta'}))
-        if process.trait('author') is None:
-            process.add_trait('author', Unicode(roles={'meta'}))
-        if process.trait('document_date') is None:
-            process.add_trait('document_date', Date(roles={'meta'}))
-        
-    @staticmethod
-    def add_reference_metaparams(process):
-        if process.trait('language') is None:
-            process.add_trait('language', Unicode(roles={'meta'}))
-        if process.trait('period_start') is None:
-            process.add_trait('period_start', Date(roles={'meta'}))
-        if process.trait('period_end') is None:
-            process.add_trait('period_end', Date(roles={'meta'}))
-
-TestMetadataEngine.metaparams_handlers = {
-    'test_project.WordsClassifier': [TestMetadataEngine.add_reference_metaparams],
-    'test_project.WordsFrequencies': [TestMetadataEngine.add_document_metaparams],
-    'test_project.DocumentClassifier': [TestMetadataEngine.add_document_metaparams,
-                                        TestMetadataEngine.add_reference_metaparams],
-}
+    document_metaparams = [
+        ['language', Unicode()],
+        ['author', Unicode()],
+        ['document_date', Date()],
+    ]
     
+    metaparams_definition = {
+        'test_project.WordsClassifier': [
+            ['.*', reference_metaparams],
+        ],
+        'test_project.WordsFrequencies': [
+            ['.*', document_metaparams],
+        ],
+        'test_project.DocumentClassifier': [
+            ['words_classification', reference_metaparams],
+            ['.*', document_metaparams],
+        ],
+        'test_project.DocumentsClassifierPipeline': {
+            'options': {
+                'do_not_iterate': ['language'],
+            }
+        }
+    }

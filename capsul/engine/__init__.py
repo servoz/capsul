@@ -78,7 +78,7 @@ class CapsulEngine(JSONSerializable):
         change in the future.
         '''
         instance = self.execution_context.get_process_instance(process_or_id,
-                                                        metadata_engine=self.metadata_engine, 
+                                                        capsul_engine=self, 
                                                         **kwargs)
         return instance
 

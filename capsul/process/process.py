@@ -211,7 +211,7 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
 
     """
 
-    def __init__(self, metadata_engine=None):
+    def __init__(self, capsul_engine=None):
         """ Initialize the Process class.
         """
         # Inheritance
@@ -220,6 +220,10 @@ class Process(six.with_metaclass(ProcessMeta, Controller)):
         # Initialize the process identifiers
         self.name = self.__class__.__name__
         self.id = getattr(self.__class__, 'id', self.__class__.__module__ + "." + self.name)
+        self.capsul_engine = capsul_engine
+        if self.capsul_engine is not None and self.capsul_engine.metadata_engine is not None:
+            self.capsul_engine.metadata_engine.set_metaparams(self)
+
 
 
     def __getstate__(self):
