@@ -9,6 +9,7 @@ from soma.sorted_dictionary import OrderedDict
 
 from capsul.process.xml import string_to_value
 from capsul.pipeline.pipeline_construction import PipelineConstructor
+from soma.controller import Controller
 
 from traits.api import Undefined
 
@@ -54,7 +55,8 @@ def create_xml_pipeline(module, name, xml_file):
 
     for child in xml_pipeline:
         if child.tag == 'doc':
-            builder.set_documentation(child.text.strip())
+            if child.text is not None:
+                builder.set_documentation(child.text.strip())
         elif child.tag == 'process':
             process_name = child.get('name')
             module = child.get('module')
@@ -234,26 +236,38 @@ def save_xml_pipeline(pipeline, xml_file):
         OptionalOutputSwitch
     from capsul.pipeline.process_iteration import ProcessIteration
     from capsul.api import NipypeProcess
+    from capsul.study_config.process_instance import get_process_instance
 
     def _write_process(process, parent, name):
         procnode = ET.SubElement(parent, 'process')
-        mod = process.__module__
-        # if process is a function with XML decorator, we need to
-        # retreive the original function name.
-        func = getattr(process, '_function', None)
-        if func:
-            classname = func.__name__
+        if isinstance(process, NipypeProcess):
+            mod = process._nipype_interface.__module__
+            classname = process._nipype_interface.__class__.__name__
         else:
-            classname = process.__class__.__name__
+            mod = process.__module__
+            # if process is a function with XML decorator, we need to
+            # retreive the original function name.
+            func = getattr(process, '_function', None)
+            if func:
+                classname = func.__name__
+            else:
+                classname = process.__class__.__name__
+                if classname == 'Pipeline':
+                    # don't accept the base Pipeline class
+                    classname = name
+                    if '.' in class_name:
+                        classname = classname[:classname.index('.')]
+                    classname = classname[0].upper() + class_name[1:]
         procnode.set('module', "%s.%s" % (mod, classname))
         procnode.set('name', name)
+        proc_copy = get_process_instance("%s.%s" % (mod, classname))
         if isinstance(process, NipypeProcess):
             # WARNING: not sure I'm doing the right things for nipype. To be
             # fixed if needed.
             for param in process.inputs_to_copy:
                 elem = ET.SubElement(procnode, 'nipype')
                 elem.set('name', param)
-                if param in proces.inputs_to_clean:
+                if param in process.inputs_to_clean:
                     elem.set('copyfile', 'discard')
                 else:
                     elem.set('copyfile', 'true')
@@ -273,11 +287,22 @@ def save_xml_pipeline(pipeline, xml_file):
         for param_name, trait in six.iteritems(process.user_traits()):
             if param_name not in ('nodes_activation', 'selection_changed'):
                 value = getattr(process, param_name)
-                if value not in (None, Undefined, '', []):
-                    value = repr(value)
+                if value not in (None, Undefined, '', []) \
+                        or (trait.optional
+                            and not proc_copy.trait(param_name).optional):
+                    if isinstance(value, Controller):
+                        value_repr = repr(dict(value.export_to_dict()))
+                    else:
+                        value_repr = repr(value)
+                    try:
+                        eval(value_repr)
+                    except:
+                        print('warning, value of parameter %s cannot be saved'
+                              % param_name)
+                        continue
                     elem = ET.SubElement(procnode, 'set')
                     elem.set('name', param_name)
-                    elem.set('value', value)
+                    elem.set('value', value_repr)
         return procnode
 
     def _write_iteration(process_iter, parent, name):

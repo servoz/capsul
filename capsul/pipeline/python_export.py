@@ -1,6 +1,8 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+from soma.controller import Controller
+import traits.api as traits
 import os
 import six
 import sys
@@ -23,20 +25,53 @@ def save_py_pipeline(pipeline, py_file):
         OptionalOutputSwitch
     from capsul.pipeline.process_iteration import ProcessIteration
     #from capsul.api import NipypeProcess
+    from capsul.study_config.process_instance import get_process_instance
     from traits.api import Undefined
 
-    def _write_process(process, pyf, name, enabled):
-        mod = process.__module__
-        # if process is a function with XML decorator, we need to
-        # retreive the original function name.
-        func = getattr(process, '_function', None)
-        if func:
-            classname = func.__name__
+    def get_repr_value(value):
+        # TODO: handle None/Undefined in lists/dicts etc
+        if value is Undefined:
+            repvalue = 'traits.Undefined'
+        elif value is None:
+            repvalue = 'None'
         else:
-            classname = process.__class__.__name__
+            repvalue = repr(value)
+        return repvalue
+
+    def _write_process(process, pyf, name, enabled):
+        if isinstance(process, NipypeProcess):
+            mod = process._nipype_interface.__module__
+            classname = process._nipype_interface.__class__.__name__
+        else:
+            mod = process.__module__
+            # if process is a function with XML decorator, we need to
+            # retreive the original function name.
+            func = getattr(process, '_function', None)
+            if func:
+                classname = func.__name__
+            else:
+                classname = process.__class__.__name__
         procname = '.'.join((mod, classname))
-        print('        self.add_process("%s", "%s")' % (name, procname),
+        proc_copy = get_process_instance(procname)
+        make_opt = []
+        for tname, trait in six.iteritems(proc_copy.user_traits()):
+            ntrait = process.trait(tname)
+            if ntrait.optional and not trait.optional:
+                make_opt.append(tname)
+        node_options = ''
+        if len(make_opt) != 0:
+            node_options += ', make_optional=%s' % repr(make_opt)
+        print('        self.add_process("%s", "%s"%s)' % (name, procname,
+                                                          node_options),
               file=pyf)
+        for pname in process.user_traits():
+            value = getattr(process, pname)
+            init_value = getattr(proc_copy, pname)
+            if value != init_value \
+                    and not (value is Undefined and init_value == ''):
+                repvalue = get_repr_value(value)
+                print('        self.nodes["%s"].process.%s = %s'
+                      % (name, pname, repvalue), file=pyf)
         #if isinstance(process, NipypeProcess):
             ## WARNING: not sure I'm doing the right things for nipype. To be
             ## fixed if needed.
@@ -60,16 +95,49 @@ def save_py_pipeline(pipeline, py_file):
                     #elem.set('name', param)
                     #elem.set('use_default', 'true')
 
+    def _write_custom_node(node, pyf, name, enabled):
+        mod = node.__module__
+        classname = node.__class__.__name__
+        nodename = '.'.join((mod, classname))
+        if hasattr(node, 'configured_controller'):
+            c = node.configured_controller()
+            params = dict((p, v) for p, v in six.iteritems(c.export_to_dict())
+                          if v not in (None, traits.Undefined))
+            print(
+                '        self.add_custom_node("%s", "%s", %s)'
+                % (name, nodename, get_repr_value(params)), file=pyf)
+        else:
+            print('        self.add_custom_node("%s", "%s")'
+                  % (name, nodename), file=pyf)
+        # optional plugs
+        for plug_name, plug in six.iteritems(node.plugs):
+            if plug.optional:
+                print('        self.nodes["%s"].plugs["%s"].optional = True'
+                      % (name, plug_name), file=pyf)
+        # non-default: values of unconnected plugs
+        for plug_name, plug in six.iteritems(node.plugs):
+            if len(plug.links_from) == 0 and len(plug.links_to) == 0 \
+                    and node.trait(plug_name) is not None \
+                    and getattr(node, plug_name) \
+                        != node.trait(plug_name).default:
+                value = getattr(node, plug_name)
+                print('        self.nodes["%s"].%s = %s'
+                      % (name, plug_name, get_repr_value(value)), file=pyf)
+
     def _write_iteration(process_iter, pyf, name, enabled):
         process = process_iter.process
-        mod = process.__module__
-        # if process is a function with XML decorator, we need to
-        # retreive the original function name.
-        func = getattr(process, '_function', None)
-        if func:
-            classname = func.__name__
+        if isinstance(process, NipypeProcess):
+            mod = process._nipype_interface.__module__
+            classname = process._nipype_interface.__class__.__name__
         else:
-            classname = process.__class__.__name__
+            mod = process.__module__
+            # if process is a function with XML decorator, we need to
+            # retreive the original function name.
+            func = getattr(process, '_function', None)
+            if func:
+                classname = func.__name__
+            else:
+                classname = process.__class__.__name__
         procname = '.'.join((mod, classname))
 
         iteration_params = ', '.join(process_iter.iterative_parameters)
@@ -139,8 +207,11 @@ def save_py_pipeline(pipeline, py_file):
             elif isinstance(node, ProcessNode) \
                     and isinstance(node.process, ProcessIteration):
                 _write_iteration(node.process, pyf, node_name, node.enabled)
-            else:
+            elif isinstance(node, ProcessNode):
                 _write_process(node.process, pyf, node_name, node.enabled)
+            else:
+                # custom node
+                _write_custom_node(node, pyf, node_name, node.enabled)
 
     def _write_processes_selections(pipeline, pyf):
         selection_parameters = []
@@ -277,17 +348,34 @@ def save_py_pipeline(pipeline, py_file):
                       #% (param_name, repr(trait.default)), file=pyf)
             value = getattr(pipeline, param_name)
             if value != trait.default and value not in (None, '', Undefined):
+                if isinstance(value, Controller):
+                    value_repr = repr(dict(value.export_to_dict()))
+                else:
+                    value_repr = repr(value)
+                try:
+                    eval(value_repr)
+                except:
+                    print('warning, value of parameter %s cannot be saved'
+                          % param_name)
+                    continue
                 if first:
                     first = False
                     print('\n        # default and initial values', file=pyf)
                 print('        self.%s = %s'
-                      % (param_name, repr(value)), file=pyf)
+                      % (param_name, value_repr), file=pyf)
 
     class_name = type(pipeline).__name__
+    if class_name == 'Pipeline':
+        # don't accept the base Pipeline class
+        class_name = os.path.basename(py_file)
+        if '.' in class_name:
+            class_name = class_name[:class_name.index('.')]
+        class_name = class_name[0].upper() + class_name[1:]
 
     pyf = open(py_file, 'w')
 
     print('from capsul.api import Pipeline', file=pyf)
+    print('import traits.api as traits', file=pyf)
     print(file=pyf)
     print(file=pyf)
     print('class %s(Pipeline):' % class_name, file=pyf)

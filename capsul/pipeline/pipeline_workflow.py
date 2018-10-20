@@ -274,6 +274,9 @@ def workflow_from_pipeline(pipeline, study_config=None, disabled_nodes=None,
         _replace_transfers(
             process_cmdline, process, iproc_transfers, oproc_transfers)
 
+        # handle native specification (cluster-specific specs as in
+        # soma-workflow)
+        native_spec = getattr(process, 'native_specification', None)
         # Return the soma-workflow job
         job = swclient.Job(
             name=job_name,
@@ -284,7 +287,12 @@ def workflow_from_pipeline(pipeline, study_config=None, disabled_nodes=None,
             referenced_output_files
                 =output_replaced_paths \
                     + [x[0] for x in oproc_transfers.values()],
-            priority=priority)
+            priority=priority,
+            native_specification=native_spec)
+        # handle parallel job info (as in soma-workflow)
+        parallel_job_info = getattr(process, 'parallel_job_info', None)
+        if parallel_job_info:
+            job.parallel_job_info = parallel_job_info
         if step_name:
             job.user_storage = step_name
         return job
@@ -966,11 +974,15 @@ def workflow_from_pipeline(pipeline, study_config=None, disabled_nodes=None,
     for format, values in six.iteritems(formats):
         merged_formats.update(values)
 
+    if study_config is None:
+        study_config = pipeline.get_study_config()
+
     if not isinstance(pipeline, Pipeline):
         # "pipeline" is actally a single process (or should, if it is not a
         # pipeline). Get it into a pipeine (with a single node) to make the
         # workflow.
         new_pipeline = Pipeline()
+        new_pipeline.set_study_config(study_config)
         new_pipeline.add_process('main', pipeline)
         new_pipeline.autoexport_nodes_parameters()
         pipeline = new_pipeline
@@ -978,9 +990,6 @@ def workflow_from_pipeline(pipeline, study_config=None, disabled_nodes=None,
     temp_subst_list = [(x1, x2[0]) for x1, x2 in six.iteritems(temp_map)]
     temp_subst_map = dict(temp_subst_list)
     shared_map = {}
-
-    if study_config is None:
-        study_config = pipeline.get_study_config()
 
     swf_paths = _get_swf_paths(study_config)
     transfers = _get_transfers(pipeline, swf_paths[0], merged_formats)

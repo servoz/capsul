@@ -4,7 +4,6 @@ import hashlib
 import time
 import shutil
 import json
-import numpy
 import logging
 import six
 import sys
@@ -692,6 +691,12 @@ class CapsulResultEncoder(json.JSONEncoder):
     """ Deal with ProcessResult in json.
     """
     def default(self, obj):
+        try:
+            import numpy
+        except ImportError:
+            # numpy is not here
+            numpy = None
+
         # Undefined parameter special case
         if isinstance(obj, Undefined.__class__):
             return "<undefined_trait_value>"
@@ -701,7 +706,7 @@ class CapsulResultEncoder(json.JSONEncoder):
             return "<skip_nipype_interface_result>"
 
         # Array special case
-        if isinstance(obj, numpy.ndarray):
+        if numpy is not None and isinstance(obj, numpy.ndarray):
             return obj.tolist()
 
         # Call the base class default method

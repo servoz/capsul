@@ -1,5 +1,5 @@
 from __future__ import division
-import subprocess
+import soma.subprocess
 import os
 
 import capsul
@@ -18,8 +18,8 @@ def run_all_tests():
     capsul_path = capsul.__path__[0]
     os.chdir(capsul_path)
     cmd = "nosetests --with-coverage --cover-package=capsul"
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, shell=True)
+    process = soma.subprocess.Popen(cmd, stdout=soma.subprocess.PIPE,
+                               stderr=soma.subprocess.PIPE, shell=True)
     stdout, stderr = process.communicate()
     if process.returncode:
         error = "Error will running cmd: {0}\n{1}".format(cmd, stderr)

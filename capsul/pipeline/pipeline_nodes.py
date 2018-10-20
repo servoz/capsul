@@ -9,6 +9,7 @@ from traits.api import Str
 from traits.api import Bool
 from traits.api import Any
 from traits.api import Undefined
+from traits.api import TraitError
 
 from soma.controller.trait_utils import trait_ids
 from soma.controller.trait_utils import is_trait_pathname
@@ -62,6 +63,26 @@ class Plug(Controller):
 
 class Node(Controller):
     """ Basic Node structure of the pipeline that need to be tuned.
+
+    It is possible to defile custom nodes inheriting Node. To be usable in all
+    contexts (GUI construction, pipeline save / reload), custom nodes should
+    define a few additional instance and class methods which will allow
+    automatic systems (such as :func:`~capsul.study_config.get_node_instance`)
+    to reinstantiate and save them:
+
+    * configure_controller(cls): classmethod
+        return a Controller instance which specifies parameters needed to build
+        the node instance. Typically it may contain a paremeters (plugs) list
+        and other specifications.
+    * configured_controller(self): instance method:
+        on an instance, returns a Controller instance in the same shape as
+        configure_controller above, but with values filled from the instance.
+        This controller will allow saving parameters needed to instantiate
+        again the node with the same state.
+    * build_node(cls, pipeline, name, conf_controller): class method
+        returns an instance of the node class, built using appropriate
+        parameters (using configure_controller() or configured_controller()
+        from another instance)
 
     Attributes
     ----------
@@ -166,7 +187,10 @@ class Node(Controller):
                         value):
         """ Spread the source plug value to the destination plug.
         """
-        dest_node.set_plug_value(dest_plug_name, value)
+        try:
+            dest_node.set_plug_value(dest_plug_name, value)
+        except traits.TraitError:
+            pass
 
     def _value_callback_with_logging(
             self, log_stream, prefix, source_plug_name, dest_node,
@@ -449,7 +473,10 @@ class ProcessNode(Node):
         """
         if not isinstance(self.get_trait(plug_name).handler,
                           traits.Event):
-            return getattr(self.process, plug_name)
+            try:
+                return getattr(self.process, plug_name)
+            except TraitError:
+                return Undefined
         else:
             return None
 

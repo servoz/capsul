@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 import tempfile
-from subprocess import check_call
+from soma.subprocess import check_call
 
 from soma.qt_gui.qt_backend import QtGui
 

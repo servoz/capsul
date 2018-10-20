@@ -294,7 +294,7 @@ class Pipeline(Process):
         """
         # Add the trait
         super(Pipeline, self).add_trait(name, trait)
-        self.get(name)
+        #self.get(name)
 
         # If we insert a user trait, create the associated plug
         if getattr(self, 'pipeline_node', False) and self.is_user_trait(trait):
@@ -647,6 +647,37 @@ class Pipeline(Process):
 
         self._set_subprocess_context_name(node, name)
 
+    def add_custom_node(self, name, node_type, parameters=None):
+        """
+        Inserts a custom node (Node subclass instance which is not a Process)
+        in the pipeline.
+
+        Parameters
+        ----------
+        node_type: str or Node subclass or Node instance
+            node type to be built. Either a class (Node subclass) or a Node
+            instance (the node will be re-instantiated), or a string
+            describing a module and class.
+        parameters: dict or Controller or None
+            configuration dict or Controller defining parameters needed to
+            build the node. The controller should be obtained using the node
+            class's `configure_node()` static method, then filled with the
+            desired values.
+            If not given the node is supposed to be built with no parameters,
+            which will not work for every node type.
+        """
+        # It is necessary not to import study_config.process_instance at
+        # the module level because there are circular dependencies between
+        # modules. For instance, Pipeline class needs get_process_instance
+        # which needs create_xml_pipeline which needs Pipeline class.
+        from capsul.study_config.process_instance import get_node_instance
+        node = get_node_instance(node_type, self, parameters)
+        if node is None:
+            raise ValueError(
+                "could not build a Node of type '%s' with the given parameters"
+                % node_type)
+        self.nodes[name] = node
+
     def parse_link(self, link):
         """ Parse a link comming from export_parameter method.
 
@@ -887,7 +918,11 @@ class Pipeline(Process):
         self.add_trait(pipeline_parameter, trait)
 
         # Propagate the parameter value to the new exported one
-        self.set_parameter(pipeline_parameter, node.get_plug_value(plug_name))
+        try:
+            self.set_parameter(pipeline_parameter,
+                               node.get_plug_value(plug_name))
+        except traits.TraitError:
+            pass
 
         # Do not forget to link the node with the pipeline node
 
@@ -1276,9 +1311,9 @@ class Pipeline(Process):
                 # Plug need to be activated
                 if dest_node.activated:
 
-                    # If plug links to a switch, we need to address the switch
-                    # plugs
-                    if not isinstance(dest_node, Switch):
+                    # If plug links to an inert node (switch...), we need to
+                    # address the node plugs
+                    if isinstance(dest_node, ProcessNode):
                         dependencies.add((node_name, dest_node_name))
                     else:
                         for switch_plug in dest_node.plugs.itervalues():
@@ -1306,7 +1341,7 @@ class Pipeline(Process):
 
             # Select only active Process nodes
             if (node.activated or not remove_disabled_nodes) \
-                    and not isinstance(node, Switch) \
+                    and isinstance(node, ProcessNode) \
                     and (not remove_disabled_steps
                          or node not in disabled_nodes):
 
@@ -1870,9 +1905,8 @@ class Pipeline(Process):
                     'pipeline.get_step_nodes("my_step")'))
             self.trait('pipeline_steps').expanded = False
             self.pipeline_steps = Controller()
-        self.pipeline_steps.add_trait(step_name, Bool)
+        self.pipeline_steps.add_trait(step_name, Bool(nodes=nodes))
         trait = self.pipeline_steps.trait(step_name)
-        trait.nodes = nodes
         setattr(self.pipeline_steps, step_name, enabled)
 
     def remove_pipeline_step(self, step_name):

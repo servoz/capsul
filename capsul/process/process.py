@@ -2,10 +2,7 @@ import os
 import operator
 from copy import deepcopy
 import json
-try:
-    import subprocess32 as subprocess
-except ImportError:
-    import subprocess
+import soma.subprocess
 import six
 import sys
 import functools
