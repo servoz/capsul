@@ -53,6 +53,7 @@ def clean_coverage_report(nose_coverage):
     total = [0, 0]
     tested_modules = [
         b"capsul/attributes/",
+        b"capsul/engine/",
         b"capsul/pipeline/",
         b"capsul/process/",
         b"capsul/study_config/",
