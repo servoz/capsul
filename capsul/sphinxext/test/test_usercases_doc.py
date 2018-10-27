@@ -1,3 +1,5 @@
+from __future__ import with_statement
+
 import unittest
 
 import capsul.sphinxext.test as my_module
@@ -20,7 +22,6 @@ def pilot_dummy_test():
     ------
 
     Start with some imports."""
-    from future import with_statement
     import socket
 
     """

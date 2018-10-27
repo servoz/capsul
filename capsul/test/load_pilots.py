@@ -7,6 +7,7 @@ def load_pilots(root, path):
     """ Load all the modules in the use_cases module: path is
     recursively scanned for __init__.py files.
     Any function declared inside will be loaded.
+    Test functions should be named 'test' in order to be selected.
 
     Parameters
     ----------
@@ -24,6 +25,7 @@ def load_pilots(root, path):
 
     pilots = {}
     files = os.listdir(path)
+
 
     for fname in files:
         if os.path.isdir(os.path.join(path, fname)):
