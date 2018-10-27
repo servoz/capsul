@@ -1,6 +1,7 @@
 from __future__ import division, print_function
 import soma.subprocess
 import os
+import sys
 
 import capsul
 
@@ -17,7 +18,11 @@ def run_all_tests():
     # run nose tests
     capsul_path = capsul.__path__[0]
     os.chdir(capsul_path)
-    cmd = "nosetests --with-coverage capsul"
+    if sys.version_info[0] >= 3:
+        nosetests = 'nosetests%d' % sys.version_info[0]
+    else:
+        nosetests = 'nosetests'
+    cmd = "%s --with-coverage capsul" % nosetests
     process = soma.subprocess.Popen(cmd, stdout=soma.subprocess.PIPE,
                                stderr=soma.subprocess.PIPE, shell=True)
     stdout, stderr = process.communicate()
@@ -46,20 +51,22 @@ def clean_coverage_report(nose_coverage):
         the cleaned nose coverage report
     """
     # Clean report
+    if sys.version_info[0] >= 3 and isinstance(nose_coverage, bytes):
+        nose_coverage = nose_coverage.decode()
     lines = nose_coverage.splitlines()
     coverage_report = []
     header = None
     tcount = None
     total = [0, 0]
     tested_modules = [
-        b"capsul/attributes/",
-        b"capsul/engine/",
-        b"capsul/pipeline/",
-        b"capsul/process/",
-        b"capsul/study_config/",
-        b"capsul/subprocess/"
-        b"capsul/utils/",
-        b"soma/controller/"
+        "capsul/attributes/",
+        "capsul/engine/",
+        "capsul/pipeline/",
+        "capsul/process/",
+        "capsul/study_config/",
+        "capsul/subprocess/"
+        "capsul/utils/",
+        "soma/controller/"
     ]
     for line in lines:
 
@@ -80,23 +87,23 @@ def clean_coverage_report(nose_coverage):
             #total[1] += 1
             total[0] += covered
             total[1] += stmts
-        if line.startswith(b"Name"):
+        if line.startswith("Name"):
             header = line
-        if line.startswith(b"Ran"):
+        if line.startswith("Ran"):
             tcount = line
     # Get capsul coverage rate
     if total[1] == 0:
         raise ValueError("No tests found - check Capsul installation")
     coverge_rate = float(total[0]) * 100 / total[1]
-    coverage_report.insert(0, header.replace(b"Missing", ""))
+    coverage_report.insert(0, header.replace("Missing", ""))
 
     # Format report
-    coverage_report.insert(1, b"-" * 70)
-    coverage_report.append(b"-" * 70)
+    coverage_report.insert(1, "-" * 70)
+    coverage_report.append("-" * 70)
     coverage_report.append(
-        b"TOTAL {0}% ({1} / {2} statements".format(
+        "TOTAL {0}% ({1} / {2} statements".format(
             int(round(coverge_rate)), total[0], total[1]))
-    coverage_report.append(b"-" * 70)
+    coverage_report.append("-" * 70)
     coverage_report.append(tcount)
     coverage_report = "\n".join(coverage_report)
 
