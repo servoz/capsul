@@ -10,13 +10,12 @@ active_execution_context = None
 
 class ExecutionContext:
     '''
-    an execution context contains all the information necessary to start a 
-    job. For instance, in a previous example we used a process running FSL
-    software. In order to use FSL, it is necessary to setup a few
+    An execution context contains all the information necessary to start a 
+    job. For instance, in order to use FSL, it is necessary to setup a few
     environment variables whose content depends on the location where FSL 
     is installed. The execution context contains the information about FSL 
     installation necessary to define these environment variable when a job 
-    is started. The execution context is shared with each processing nodes 
+    is started. The execution context is shared with every processing nodes 
     and used to build the execution environment of each job.
     '''
     
